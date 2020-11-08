@@ -1,6 +1,7 @@
 plugins {
     `kotlin-dsl`
     kotlin("jvm")
+    id("com.gradle.plugin-publish") version "0.12.0"
     id("maven-publish")
     id("me.tylerbwong.gradle.metalava")
 }
@@ -10,9 +11,22 @@ version = "0.1.0-alpha01"
 
 gradlePlugin {
     plugins {
-        register("metalavaPlugin") {
+        create("metalavaPlugin") {
             id = "me.tylerbwong.gradle.metalava"
             implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
+        }
+    }
+}
+
+pluginBundle {
+    website = "https://github.com/tylerbwong/metalava-gradle"
+    vcsUrl = "https://github.com/tylerbwong/metalava-gradle"
+    description = "A Gradle plugin for Metalava, AOSP's tool for API compatibility tracking."
+    (plugins) {
+        "metalavaPlugin" {
+            displayName = "Metalava Gradle Plugin"
+            tags = listOf("metalava", "api-tracking")
+            version = "${project.version}"
         }
     }
 }
