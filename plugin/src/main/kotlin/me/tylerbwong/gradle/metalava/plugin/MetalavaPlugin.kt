@@ -49,6 +49,7 @@ class MetalavaPlugin : Plugin<Project> {
             "downloadMetalavaJar",
             DownloadTask::class.java
         ) {
+            description = "Downloads a Metalava JAR to the root project build folder."
             url.set(METALAVA_URL)
             output.set(layout.buildDirectory.file("${rootProject.buildDir}$JAR_LOCATION"))
         }
@@ -60,6 +61,8 @@ class MetalavaPlugin : Plugin<Project> {
         downloadMetalavaJarTaskProvider: TaskProvider<DownloadTask>
     ) {
         tasks.register("metalavaSignature", JavaExec::class.java) {
+            group = "documentation"
+            description = "Generates a Metalava signature descriptor file."
             @Suppress("UnstableApiUsage")
             classpath(
                 extension.metalavaJarPath?.let { files(it) }

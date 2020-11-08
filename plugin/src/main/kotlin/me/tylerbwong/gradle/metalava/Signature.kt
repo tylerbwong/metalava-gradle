@@ -1,7 +1,7 @@
 package me.tylerbwong.gradle.metalava
 
 /**
- * Flags to determine which type of signature file to extract.
+ * Flags to determine which type of signature file to generate.
  */
 enum class Signature(private val signature: String) {
     /**
