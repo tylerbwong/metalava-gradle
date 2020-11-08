@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.0-alpha01"
+version = "0.1.0-alpha02"
 
 gradlePlugin {
     plugins {
@@ -43,7 +43,7 @@ publishing {
 }
 
 metalava {
-    outputFileName = "api/${project.version}.txt"
+    filename = "api/${project.version}.txt"
 }
 
 dependencies {

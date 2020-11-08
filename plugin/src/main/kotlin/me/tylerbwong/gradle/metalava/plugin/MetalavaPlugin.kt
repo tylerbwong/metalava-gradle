@@ -94,7 +94,7 @@ class MetalavaPlugin : Plugin<Project> {
                 "--no-banner",
                 "--no-color",
                 "--format=${extension.format}",
-                "${extension.signature}", extension.outputFileName,
+                "${extension.signature}", extension.filename,
                 "--java-source", "${extension.javaSourceLevel}",
                 "--classpath", fullClasspath,
                 "--output-kotlin-nulls=${extension.shouldOutputKotlinNulls.flagValue}",

@@ -13,7 +13,7 @@ android {
 }
 
 metalava {
-    outputFileName = "api/$name-api.txt"
+    filename = "api/$name-api.txt"
 }
 
 dependencies {

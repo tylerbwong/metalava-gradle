@@ -29,7 +29,7 @@ open class MetalavaExtension {
     /**
      * The final descriptor file output name.
      */
-    var outputFileName = "api.txt"
+    var filename = "api.txt"
 
     /**
      * @see Documentation
