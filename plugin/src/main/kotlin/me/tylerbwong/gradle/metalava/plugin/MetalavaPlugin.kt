@@ -16,6 +16,14 @@ import org.gradle.kotlin.dsl.findPlugin
 import java.io.File
 import java.util.Locale
 
+/**
+ * This plugin will register two tasks on modules that it is applied to.
+ *
+ * 1. downloadMetalavaJar - Downloads and caches the Metalava JAR in the root project's build folder if one does not
+ * exist at the same location already.
+ * 2. metalavaSignature - Executes the Metalava JAR with the following arguments configured in [MetalavaExtension]. If
+ * no custom JAR location is provided, it will use the result of the download task.
+ */
 class MetalavaPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
