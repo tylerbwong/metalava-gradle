@@ -29,7 +29,7 @@ open class MetalavaExtension {
     /**
      * The final descriptor file output name.
      */
-    var outputFileName = DEFAULT_FILE_NAME
+    var outputFileName = "api.txt"
 
     /**
      * @see Documentation
@@ -67,8 +67,4 @@ open class MetalavaExtension {
      * Treat any elements annotated with the given annotation as hidden.
      */
     val hideAnnotations = mutableSetOf<String>()
-
-    companion object {
-        private const val DEFAULT_FILE_NAME = "api.txt"
-    }
 }

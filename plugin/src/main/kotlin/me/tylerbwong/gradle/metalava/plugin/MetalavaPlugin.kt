@@ -3,7 +3,6 @@ package me.tylerbwong.gradle.metalava.plugin
 import com.android.build.gradle.LibraryExtension
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
-import me.tylerbwong.gradle.metalava.utils.flagValue
 import me.tylerbwong.gradle.task.DownloadTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -25,6 +24,9 @@ import java.util.Locale
  * no custom JAR location is provided, it will use the result of the download task.
  */
 class MetalavaPlugin : Plugin<Project> {
+
+    private val Boolean.flagValue: String get() = if (this) "yes" else "no"
+
     override fun apply(target: Project) {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)

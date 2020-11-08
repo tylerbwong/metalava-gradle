@@ -2,6 +2,7 @@ plugins {
     `kotlin-dsl`
     kotlin("jvm")
     id("maven-publish")
+    id("me.tylerbwong.gradle.metalava")
 }
 
 group = "me.tylerbwong.gradle"
@@ -19,12 +20,16 @@ gradlePlugin {
 publishing {
     publications {
         create<MavenPublication>("pluginPublication") {
-            from(components["java"])
+            from(components["kotlin"])
             groupId = "${project.group}"
             artifactId = rootProject.name
             version = "${project.version}"
         }
     }
+}
+
+metalava {
+    outputFileName = "api/${project.version}.txt"
 }
 
 dependencies {
