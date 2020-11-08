@@ -1,11 +1,11 @@
 package me.tylerbwong.gradle.metalava
 
-sealed class Signature(private val signature: String) {
-    object Api : Signature("--api")
-    object PrivateApi : Signature("--private-api")
-    object DexApi : Signature("--dex-api")
-    object PrivateDexApi : Signature("--private-dex-api")
-    object RemovedApi : Signature("--removed-api")
+enum class Signature(private val signature: String) {
+    API("--api"),
+    PRIVATE_API("--private-api"),
+    DEX_API("--dex-api"),
+    PRIVATE_DEX_API("--private-dex-api"),
+    REMOVED_API("--removed-api");
 
     override fun toString(): String = signature
 }

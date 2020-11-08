@@ -1,11 +1,11 @@
 package me.tylerbwong.gradle.metalava
 
-sealed class Documentation(private val flagValue: String) {
-    object Public : Documentation("--public")
-    object Protected : Documentation("--protected")
-    object Package : Documentation("--package")
-    object Private : Documentation("--private")
-    object Hidden : Documentation("--hidden")
+enum class Documentation(private val flagValue: String) {
+    PUBLIC("--public"),
+    PROTECTED("--protected"),
+    PACKAGE("--package"),
+    PRIVATE("--private"),
+    HIDDEN("--hidden");
 
     override fun toString(): String = flagValue
 }
