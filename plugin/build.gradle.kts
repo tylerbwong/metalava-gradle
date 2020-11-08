@@ -21,7 +21,7 @@ publishing {
         create("pluginPublication", MavenPublication::class) {
             from(components.findByName("java"))
             groupId = "${project.group}"
-            artifactId = "metalava-gradle"
+            artifactId = rootProject.name
             version = "${project.version}"
         }
     }
