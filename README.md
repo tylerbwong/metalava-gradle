@@ -1,7 +1,10 @@
 # metalava-gradle
 ![CI](https://github.com/tylerbwong/metalava-gradle/workflows/CI/badge.svg)
 
-A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API compatibility tracking. This plugin is currently in active development and does not yet fully support all of Metalava's features. Currently it is only capable of generating API signature descriptor files.
+A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API metadata extraction and compatibility tracking. This plugin is currently in active development and does not yet fully support all of Metalava's features. Currently it is only capable of generating API signature descriptor files.
+
+### How it Works
+This Gradle plugin serves as a wrapper for invoking the Metalava JAR directly. It will first download the JAR if needed from [here](https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar) if no local JAR is found and then run it using the passed in arguments from `MetalavaExtension`.
 
 ### Supported Plugins
 
