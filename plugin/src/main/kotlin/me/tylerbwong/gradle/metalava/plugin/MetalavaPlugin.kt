@@ -39,8 +39,8 @@ class MetalavaPlugin : Plugin<Project> {
             "downloadMetalavaJar",
             DownloadTask::class.java
         ) {
-            url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")
-            output.set(layout.buildDirectory.file("${rootProject.buildDir}/metalava/metalava.jar"))
+            url.set(METALAVA_URL)
+            output.set(layout.buildDirectory.file("${rootProject.buildDir}$JAR_LOCATION"))
         }
     }
 
@@ -76,7 +76,7 @@ class MetalavaPlugin : Plugin<Project> {
                 extension.hidePackages.map { "--hide-package $it" }
             val hideAnnotations = extension.hideAnnotations.map { "--hide-annotation $it " }
 
-            val args = listOf(
+            val args: List<String> = listOf(
                 "${extension.documentation}",
                 "--no-banner",
                 "--no-color",
@@ -93,5 +93,10 @@ class MetalavaPlugin : Plugin<Project> {
             isIgnoreExitValue = true
             setArgs(args)
         }
+    }
+
+    companion object {
+        private const val METALAVA_URL = "https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar"
+        private const val JAR_LOCATION = "/metalava/metalava.jar"
     }
 }
