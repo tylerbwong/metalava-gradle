@@ -21,7 +21,7 @@ gradlePlugin {
 pluginBundle {
     website = "https://github.com/tylerbwong/metalava-gradle"
     vcsUrl = "https://github.com/tylerbwong/metalava-gradle"
-    description = "A Gradle plugin for Metalava, AOSP's tool for API compatibility tracking."
+    description = "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
     (plugins) {
         "metalavaPlugin" {
             displayName = "Metalava Gradle Plugin"
