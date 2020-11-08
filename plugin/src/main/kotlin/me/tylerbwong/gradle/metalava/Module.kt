@@ -5,7 +5,7 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.kotlin.dsl.get
 import java.io.File
 
-sealed class Module(
+internal sealed class Module(
     val bootClasspath: Collection<File>,
     val compileClasspath: Collection<File>
 ) {

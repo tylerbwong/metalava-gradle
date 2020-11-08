@@ -16,7 +16,7 @@ import org.gradle.api.tasks.TaskAction
  * @property url The location of the desired file to download from
  * @property output The location of the downloaded file
  */
-abstract class DownloadTask : DefaultTask() {
+internal abstract class DownloadTask : DefaultTask() {
     @get:Input
     abstract val url: Property<String>
 
