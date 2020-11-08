@@ -3,7 +3,8 @@ package me.tylerbwong.gradle.metalava.plugin
 import com.android.build.gradle.LibraryExtension
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
-import me.tylerbwong.gradle.task.DownloadFileTask
+import me.tylerbwong.gradle.metalava.utils.flagValue
+import me.tylerbwong.gradle.task.DownloadTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -33,10 +34,10 @@ class MetalavaPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.registerDownloadMetalavaJarTask(): TaskProvider<DownloadFileTask> {
+    private fun Project.registerDownloadMetalavaJarTask(): TaskProvider<DownloadTask> {
         return tasks.register(
             "downloadMetalavaJar",
-            DownloadFileTask::class.java
+            DownloadTask::class.java
         ) {
             url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")
             output.set(layout.buildDirectory.file("${rootProject.buildDir}/metalava/metalava.jar"))
@@ -46,7 +47,7 @@ class MetalavaPlugin : Plugin<Project> {
     private fun Project.registerMetalavaSignatureTask(
         extension: MetalavaExtension,
         module: Module,
-        downloadMetalavaJarTaskProvider: TaskProvider<DownloadFileTask>
+        downloadMetalavaJarTaskProvider: TaskProvider<DownloadTask>
     ) {
         tasks.register("metalavaSignature", JavaExec::class.java) {
             @Suppress("UnstableApiUsage")
@@ -76,14 +77,17 @@ class MetalavaPlugin : Plugin<Project> {
             val hideAnnotations = extension.hideAnnotations.map { "--hide-annotation $it " }
 
             val args = listOf(
-                extension.documentation,
+                "${extension.documentation}",
                 "--no-banner",
+                "--no-color",
                 "--format=${extension.format}",
                 "${extension.signature}", extension.outputFileName,
+                "--java-source", "${extension.javaSourceLevel}",
                 "--classpath", fullClasspath,
-                "--output-kotlin-nulls=${if (extension.shouldOutputKotlinNulls) "yes" else "no"}",
-                "--output-default-values=${if (extension.shouldOutputDefaultValues) "yes" else "no"}",
-                "--omit-common-packages=${if (extension.shouldOmitCommonPackages) "yes" else "no"}"
+                "--output-kotlin-nulls=${extension.shouldOutputKotlinNulls.flagValue}",
+                "--output-default-values=${extension.shouldOutputDefaultValues.flagValue}",
+                "--omit-common-packages=${extension.shouldOmitCommonPackages.flagValue}",
+                "--include-signature-version=${extension.shouldIncludeSignatureVersion.flagValue}"
             ) + sourcePaths + hidePackages + hideAnnotations
 
             isIgnoreExitValue = true
