@@ -81,6 +81,8 @@ metalava {
 
 See [`MetalavaExtension`](https://github.com/tylerbwong/metalava-gradle/blob/main/plugin/src/main/kotlin/me/tylerbwong/gradle/metalava/extension/MetalavaExtension.kt) for all configurable options.
 
+### License
+
     Copyright 2020 Tyler Wong
 
     Licensed under the Apache License, Version 2.0 (the "License");
