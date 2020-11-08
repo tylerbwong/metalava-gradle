@@ -1,4 +1,6 @@
 # metalava-gradle
+![CI](https://github.com/tylerbwong/metalava-gradle/workflows/CI/badge.svg)
+
 A Gradle plugin for Metalava, AOSP's tool for API compatibility tracking.
 
     Copyright 2020 Tyler Wong
