@@ -18,7 +18,7 @@ gradlePlugin {
 
 publishing {
     publications {
-        create("pluginPublication", MavenPublication::class) {
+        create<MavenPublication>("pluginPublication") {
             from(components["java"])
             groupId = "${project.group}"
             artifactId = rootProject.name
