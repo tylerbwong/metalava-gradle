@@ -15,8 +15,30 @@ This plugin currently supports the following plugins:
 
 ### Setup
 
-<details>
-<summary>Groovy</summary>
+#### Kotlin
+
+```kt
+buildscript {
+    repositories {
+        maven("https://plugins.gradle.org/m2/")
+    }
+    dependencies {
+        classpath("me.tylerbwong.gradle:metalava-gradle:<current_version>")
+    }
+}
+
+apply(plugin = "me.tylerbwong.gradle.metalava")
+```
+
+or, using the new plugin API
+
+```kt
+plugins {
+    id("me.tylerbwong.gradle.metalava") version "<current_version>"
+}
+```
+
+#### Groovy
 
 ```groovy
 buildscript {
@@ -32,31 +54,6 @@ buildscript {
 
 apply plugin: "me.tylerbwong.gradle.metalava"
 ```
-</details>
-<details open>
-<summary>Kotlin</summary>
-
-```kotlin
-buildscript {
-    repositories {
-        maven("https://plugins.gradle.org/m2/")
-    }
-    dependencies {
-        classpath("me.tylerbwong.gradle:metalava-gradle:<current_version>")
-    }
-}
-
-apply(plugin = "me.tylerbwong.gradle.metalava")
-```
-
-or, using the new plugin API
-
-```kotlin
-plugins {
-    id("me.tylerbwong.gradle.metalava") version "<current_version>"
-}
-```
-</details>
 
 ### Usage
 
