@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.0-alpha03"
+version = "0.1.0-alpha04"
 
 gradlePlugin {
     plugins {
@@ -30,7 +30,9 @@ pluginBundle {
         }
     }
     mavenCoordinates {
+        groupId = "${project.group}"
         artifactId = rootProject.name
+        version = "${project.version}"
     }
 }
 
