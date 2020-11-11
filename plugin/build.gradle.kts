@@ -3,11 +3,11 @@ plugins {
     kotlin("jvm")
     id("com.gradle.plugin-publish") version "0.12.0"
     id("maven-publish")
-    id("me.tylerbwong.gradle.metalava")
+    id("me.tylerbwong.gradle.metalava") // TODO Use released version
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.0-alpha02"
+version = "0.1.0-alpha02-SNAPSHOT"
 
 gradlePlugin {
     plugins {
