@@ -1,7 +1,5 @@
 package me.tylerbwong.gradle.task
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
@@ -9,6 +7,9 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 /**
  * A simple task to download a file from a given URL.
@@ -28,15 +29,13 @@ internal abstract class DownloadTask : DefaultTask() {
         if (output.asFile.get().exists()) {
             return
         }
-        val client = OkHttpClient()
         val rawUrl = url.get()
-        val request = Request.Builder().get().url(rawUrl).build()
-        val body = client.newCall(request).execute().body ?: throw GradleException("Unable to download from $rawUrl")
-
-        body.byteStream().use {
-            output.asFile.get().outputStream().buffered().use { file ->
-                it.copyTo(file)
+        try {
+            URL(rawUrl).openStream().use {
+                Files.copy(it, output.asFile.get().toPath(), StandardCopyOption.REPLACE_EXISTING)
             }
+        } catch (ex: Exception) {
+            throw GradleException("Unable to download from $rawUrl", ex)
         }
     }
 }

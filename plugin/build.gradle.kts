@@ -50,5 +50,4 @@ dependencies {
     implementation(gradleApi())
     implementation(kotlin("stdlib"))
     implementation("com.android.tools.build:gradle:4.2.0-alpha16")
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 }
