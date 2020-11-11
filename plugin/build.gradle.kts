@@ -3,11 +3,11 @@ plugins {
     kotlin("jvm")
     id("com.gradle.plugin-publish") version "0.12.0"
     id("maven-publish")
-    id("me.tylerbwong.gradle.metalava") // TODO Use released version
+    id("me.tylerbwong.gradle.metalava")
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.0-alpha02"
+version = "0.1.0-alpha03"
 
 gradlePlugin {
     plugins {
@@ -28,6 +28,9 @@ pluginBundle {
             tags = listOf("metalava", "api-tracking")
             version = "${project.version}"
         }
+    }
+    mavenCoordinates {
+        artifactId = rootProject.name
     }
 }
 
