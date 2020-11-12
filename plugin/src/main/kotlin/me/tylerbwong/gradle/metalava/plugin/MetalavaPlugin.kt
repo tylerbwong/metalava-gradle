@@ -1,17 +1,13 @@
 package me.tylerbwong.gradle.metalava.plugin
 
-import com.android.build.gradle.LibraryExtension
 import me.tylerbwong.gradle.metalava.Module
+import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import me.tylerbwong.gradle.task.DownloadTask
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.findPlugin
 import java.io.File
 import java.util.Locale
 
@@ -32,13 +28,6 @@ class MetalavaPlugin : Plugin<Project> {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
                 val downloadMetalavaJarTaskProvider = registerDownloadMetalavaJarTask()
-                val libraryExtension = extensions.findByType<LibraryExtension>()
-                val javaPluginConvention = convention.findPlugin<JavaPluginConvention>()
-                val module = when {
-                    libraryExtension != null -> Module.Android(libraryExtension)
-                    javaPluginConvention != null -> Module.Java(javaPluginConvention)
-                    else -> throw GradleException("This module is currently not supported by the Metalava plugin")
-                }
                 registerMetalavaSignatureTask(extension, module, downloadMetalavaJarTaskProvider)
             }
         }
@@ -50,8 +39,8 @@ class MetalavaPlugin : Plugin<Project> {
             DownloadTask::class.java
         ) {
             description = "Downloads a Metalava JAR to the root project build folder."
-            url.set(METALAVA_URL)
-            output.set(layout.buildDirectory.file("${rootProject.buildDir}$JAR_LOCATION"))
+            url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")
+            output.set(layout.buildDirectory.file("${rootProject.buildDir}/metalava/metalava.jar"))
         }
     }
 
@@ -106,10 +95,5 @@ class MetalavaPlugin : Plugin<Project> {
             isIgnoreExitValue = true
             setArgs(args)
         }
-    }
-
-    companion object {
-        private const val METALAVA_URL = "https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar"
-        private const val JAR_LOCATION = "/metalava/metalava.jar"
     }
 }
