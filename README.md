@@ -13,7 +13,7 @@ This plugin currently supports the following plugins:
 
 * `com.android.library`
 * `java-library`
-* `kotlin("multiplatform")
+* `kotlin("multiplatform")`
 
 ### Setup
 
