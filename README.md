@@ -76,7 +76,7 @@ metalava {
 }
 ```
 
-See [`MetalavaExtension`](https://github.com/tylerbwong/metalava-gradle/blob/main/plugin/src/main/kotlin/me/tylerbwong/gradle/metalava/extension/MetalavaExtension.kt) for all configurable options.
+Check out the [samples](https://github.com/tylerbwong/metalava-gradle/tree/main/samples) for more example usages and see [`MetalavaExtension`](https://github.com/tylerbwong/metalava-gradle/blob/main/plugin/src/main/kotlin/me/tylerbwong/gradle/metalava/extension/MetalavaExtension.kt) for all configurable options.
 
 ### License
 
