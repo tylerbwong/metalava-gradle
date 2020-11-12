@@ -7,7 +7,12 @@ import org.gradle.api.JavaVersion
 
 open class MetalavaExtension {
     /**
-     * A custom Metalava JAR location path to use instead of downloading.
+     * The version of Metalava to use.
+     */
+    var version = "1.0.0-alpha01"
+
+    /**
+     * A custom Metalava JAR location path to use instead of the embedded dependency.
      */
     var metalavaJarPath: String? = null
 

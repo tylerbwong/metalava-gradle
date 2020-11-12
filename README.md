@@ -2,10 +2,7 @@
 [![CI](https://github.com/tylerbwong/metalava-gradle/workflows/CI/badge.svg)](https://github.com/tylerbwong/metalava-gradle/actions?query=workflow%3ACI)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/me/tylerbwong/gradle/metalava/me.tylerbwong.gradle.metalava.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/me.tylerbwong.gradle.metalava)
 
-A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API metadata extraction and compatibility tracking. This plugin is currently in active development and does not yet fully support all of Metalava's features. Currently it is only capable of generating API signature descriptor files.
-
-### How it Works
-This Gradle plugin serves as a wrapper for invoking the Metalava JAR directly. It will first download the JAR if needed from [here](https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar) if no local JAR is found and then run it using the passed in arguments from `MetalavaExtension`.
+A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API metadata extraction and compatibility tracking. This plugin is currently in active development and does not yet fully support all of Metalava's features. Currently, it is only capable of generating API signature descriptor files.
 
 ### Supported Plugins
 
@@ -59,10 +56,7 @@ apply plugin: "me.tylerbwong.gradle.metalava"
 
 ### Usage
 
-Applying this plugin to a given module will generate two tasks:
-
-1. `downloadMetalavaJar` - Downloads and caches the Metalava JAR in the root project's build folder if one does not exist at the same location already.
-2. `metalavaSignature` - Executes the Metalava JAR with the following arguments configured in `MetalavaExtension`. If no custom JAR location is provided, it will use the result of the download task.
+Run `./gradlew metalavaSignature` to generate signature descriptor files for each module the plugin is applied to.
 
 The plugin can also be configured using the `metalava` extension block
 

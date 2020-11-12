@@ -3,6 +3,8 @@ package me.tylerbwong.gradle.metalava {
 
   public enum Documentation {
     method public String toString();
+    method public static me.tylerbwong.gradle.metalava.Documentation valueOf(String name);
+    method public static me.tylerbwong.gradle.metalava.Documentation[] values();
     enum_constant public static final me.tylerbwong.gradle.metalava.Documentation HIDDEN;
     enum_constant public static final me.tylerbwong.gradle.metalava.Documentation PACKAGE;
     enum_constant public static final me.tylerbwong.gradle.metalava.Documentation PRIVATE;
@@ -12,6 +14,8 @@ package me.tylerbwong.gradle.metalava {
 
   public enum Format {
     method public String toString();
+    method public static me.tylerbwong.gradle.metalava.Format valueOf(String name);
+    method public static me.tylerbwong.gradle.metalava.Format[] values();
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V1;
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V2;
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V3;
@@ -19,6 +23,8 @@ package me.tylerbwong.gradle.metalava {
 
   public enum Signature {
     method public String toString();
+    method public static me.tylerbwong.gradle.metalava.Signature valueOf(String name);
+    method public static me.tylerbwong.gradle.metalava.Signature[] values();
     enum_constant public static final me.tylerbwong.gradle.metalava.Signature API;
     enum_constant public static final me.tylerbwong.gradle.metalava.Signature DEX_API;
     enum_constant public static final me.tylerbwong.gradle.metalava.Signature DEX_API_MAPPING;
@@ -44,6 +50,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final boolean getShouldOutputDefaultValues();
     method public final boolean getShouldOutputKotlinNulls();
     method public final me.tylerbwong.gradle.metalava.Signature getSignature();
+    method public final String getVersion();
     method public final void setDocumentation(me.tylerbwong.gradle.metalava.Documentation p);
     method public final void setFilename(String p);
     method public final void setFormat(me.tylerbwong.gradle.metalava.Format p);
@@ -54,6 +61,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setShouldOutputDefaultValues(boolean p);
     method public final void setShouldOutputKotlinNulls(boolean p);
     method public final void setSignature(me.tylerbwong.gradle.metalava.Signature p);
+    method public final void setVersion(String p);
     property public final me.tylerbwong.gradle.metalava.Documentation documentation;
     property public final String filename;
     property public final me.tylerbwong.gradle.metalava.Format format;
@@ -65,6 +73,7 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final boolean shouldOutputDefaultValues;
     property public final boolean shouldOutputKotlinNulls;
     property public final me.tylerbwong.gradle.metalava.Signature signature;
+    property public final String version;
   }
 
 }

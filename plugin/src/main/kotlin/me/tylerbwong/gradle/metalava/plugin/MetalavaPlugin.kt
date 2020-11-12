@@ -3,21 +3,17 @@ package me.tylerbwong.gradle.metalava.plugin
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
-import me.tylerbwong.gradle.task.DownloadTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.JavaExec
-import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.repositories
 import java.io.File
 import java.util.Locale
 
 /**
- * This plugin will register two tasks on modules that it is applied to.
- *
- * 1. downloadMetalavaJar - Downloads and caches the Metalava JAR in the root project's build folder if one does not
- * exist at the same location already.
- * 2. metalavaSignature - Executes the Metalava JAR with the following arguments configured in [MetalavaExtension]. If
- * no custom JAR location is provided, it will use the result of the download task.
+ * This plugin will register a helper task `metalavaSignature` on modules that it is applied to. The task runs Metalava
+ * with the following arguments configured in [MetalavaExtension].
  */
 class MetalavaPlugin : Plugin<Project> {
 
@@ -27,36 +23,18 @@ class MetalavaPlugin : Plugin<Project> {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
-                val downloadMetalavaJarTaskProvider = registerDownloadMetalavaJarTask()
-                registerMetalavaSignatureTask(extension, module, downloadMetalavaJarTaskProvider)
+                registerMetalavaSignatureTask(extension, module)
             }
         }
     }
 
-    private fun Project.registerDownloadMetalavaJarTask(): TaskProvider<DownloadTask> {
-        return tasks.register(
-            "downloadMetalavaJar",
-            DownloadTask::class.java
-        ) {
-            description = "Downloads a Metalava JAR to the root project build folder."
-            url.set("https://storage.googleapis.com/android-ci/metalava-full-1.3.0-SNAPSHOT.jar")
-            output.set(layout.buildDirectory.file("${rootProject.buildDir}/metalava/metalava.jar"))
-        }
-    }
-
-    private fun Project.registerMetalavaSignatureTask(
-        extension: MetalavaExtension,
-        module: Module,
-        downloadMetalavaJarTaskProvider: TaskProvider<DownloadTask>
-    ) {
+    private fun Project.registerMetalavaSignatureTask(extension: MetalavaExtension, module: Module) {
         tasks.register("metalavaSignature", JavaExec::class.java) {
             group = "documentation"
             description = "Generates a Metalava signature descriptor file."
-            @Suppress("UnstableApiUsage")
-            classpath(
-                extension.metalavaJarPath?.let { files(it) }
-                    ?: downloadMetalavaJarTaskProvider.flatMap { it.output.asFile }
-            )
+            main = "com.android.tools.metalava.Driver"
+            classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
+
             val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(":")
             val sources = file("src").walk()
                 .maxDepth(2)
@@ -95,5 +73,18 @@ class MetalavaPlugin : Plugin<Project> {
             isIgnoreExitValue = true
             setArgs(args)
         }
+    }
+
+    private fun Project.getMetalavaClasspath(version: String): FileCollection {
+        repositories {
+            google()
+        }
+        val configuration = configurations.maybeCreate("metalava").apply {
+            val dependency = this@getMetalavaClasspath.dependencies.create(
+                "com.android.tools.metalava:metalava:$version"
+            )
+            dependencies.add(dependency)
+        }
+        return files(configuration)
     }
 }
