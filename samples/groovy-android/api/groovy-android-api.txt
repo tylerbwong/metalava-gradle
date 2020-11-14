@@ -1,9 +1,9 @@
 // Signature format: 3.0
 package me.tylerbwong.gradle.metalava.sample {
 
-  public abstract interface SamplePublicApi {
-    method public abstract String getPublicApiProperty();
-    method public abstract void publicApiFunction();
+  public interface SamplePublicApi {
+    method public String getPublicApiProperty();
+    method public void publicApiFunction();
     property public abstract String publicApiProperty;
   }
 

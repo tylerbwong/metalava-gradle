@@ -57,7 +57,10 @@ apply plugin: "me.tylerbwong.gradle.metalava"
 
 ### Usage
 
-Run `./gradlew metalavaSignature` to generate signature descriptor files for each module the plugin is applied to.
+This plugin registers the following tasks:
+
+`metalavaSignaturePublish` - Generates a Metalava signature descriptor file at a specified location.
+`metalavaCheckCompatibility` - Checks API compatibility between the code base and the current API.
 
 The plugin can also be configured using the `metalava` extension block
 
@@ -70,8 +73,8 @@ plugins {
 
 metalava {
     documentation = Documentation.PUBLIC
-    shouldOutputKotlinNulls = false
-    shouldIncludeSignatureVersion = false
+    outputKotlinNulls = false
+    includeSignatureVersion = false
     ...
 }
 ```

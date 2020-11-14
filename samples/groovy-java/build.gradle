@@ -5,8 +5,8 @@ plugins {
 
 metalava {
     filename = "api/$name-api.txt"
-    shouldOutputKotlinNulls = false
-    shouldIncludeSignatureVersion = false
+    outputKotlinNulls = false
+    includeSignatureVersion = false
 }
 
 dependencies {
