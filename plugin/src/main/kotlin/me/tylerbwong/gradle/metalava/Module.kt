@@ -29,14 +29,16 @@ internal sealed class Module {
                 .flatMap { it.compilations }
                 .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
                 .flatMap { it.compileDependencyFiles }
+                .filter { it.exists() }
     }
 
     class Java(private val convention: JavaPluginConvention) : Module() {
         override val compileClasspath: Collection<File>
             get() = convention.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
-                .map { it.compileClasspath.files }
+                .map { it.compileClasspath }
                 .flatten()
+                .filter { it.exists() }
     }
 
     companion object {
