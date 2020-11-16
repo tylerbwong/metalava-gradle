@@ -27,6 +27,10 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
                 dependsOn(generateTempMetalavaSignatureTask)
 
+                // TODO Consolidate flags between tasks
+                val hidePackages = extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
+                val hideAnnotations = extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
+
                 val args: List<String> = listOf(
                     "--no-banner",
                     "--no-color",
@@ -35,7 +39,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                     "--check-compatibility:api:current", extension.filename,
                     "--input-kotlin-nulls=${extension.outputKotlinNulls.flagValue}"
                 ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
-                    extension.reportLintsAsErrors.flag("--lints-as-errors")
+                    extension.reportLintsAsErrors.flag("--lints-as-errors")  + hidePackages + hideAnnotations
 
                 isIgnoreExitValue = false
                 setArgs(args)
