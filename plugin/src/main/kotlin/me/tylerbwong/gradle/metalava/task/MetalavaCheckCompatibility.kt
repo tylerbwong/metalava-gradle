@@ -33,7 +33,6 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
 
                 val args: List<String> = listOf(
                     "--no-banner",
-                    "--no-color",
                     "--format=${extension.format}",
                     "--source-files", tempFilename,
                     "--check-compatibility:api:current", extension.filename,

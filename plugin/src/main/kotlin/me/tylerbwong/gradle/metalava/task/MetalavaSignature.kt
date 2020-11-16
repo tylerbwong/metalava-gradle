@@ -37,7 +37,6 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 val args: List<String> = listOf(
                     "${extension.documentation}",
                     "--no-banner",
-                    "--no-color",
                     "--format=${extension.format}",
                     "${extension.signature}", filename,
                     "--java-source", "${extension.javaSourceLevel}",
