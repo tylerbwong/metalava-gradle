@@ -81,6 +81,13 @@ metalava {
 
 Check out the [samples](https://github.com/tylerbwong/metalava-gradle/tree/main/samples) for more example usages and see [`MetalavaExtension`](https://github.com/tylerbwong/metalava-gradle/blob/main/plugin/src/main/kotlin/me/tylerbwong/gradle/metalava/extension/MetalavaExtension.kt) for all configurable options.
 
+### Attributions
+
+Huge thanks to the projects that helped throughout the development of this plugin:
+
+* https://github.com/androidx/androidx
+* https://github.com/apollographql/apollo-android
+
 ### License
 
     Copyright 2020 Tyler Wong
