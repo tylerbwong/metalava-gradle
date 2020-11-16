@@ -86,8 +86,8 @@ Check out the [samples](https://github.com/tylerbwong/metalava-gradle/tree/main/
 
 Huge thanks to the projects that helped throughout the development of this plugin:
 
-* https://github.com/androidx/androidx
-* https://github.com/apollographql/apollo-android
+* [androidx/androidx](https://github.com/androidx/androidx)
+* [apollographql/apollo-android](https://github.com/apollographql/apollo-android)
 
 ### License
 
