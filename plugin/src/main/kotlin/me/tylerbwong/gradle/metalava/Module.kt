@@ -29,16 +29,15 @@ internal sealed class Module {
                 .flatMap { it.compilations }
                 .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
                 .flatMap { it.compileDependencyFiles }
-                .filter { it.exists() }
+                .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
     }
 
     class Java(private val convention: JavaPluginConvention) : Module() {
         override val compileClasspath: Collection<File>
             get() = convention.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
-                .map { it.compileClasspath }
-                .flatten()
-                .filter { it.exists() }
+                .flatMap { it.compileClasspath }
+                .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
     }
 
     companion object {
@@ -54,5 +53,13 @@ internal sealed class Module {
                     else -> throw GradleException("This module is currently not supported by the Metalava plugin")
                 }
             }
+
+        internal fun File.checkDirectory(validExtensions: Collection<String>): Boolean {
+            return if (isFile) {
+                validExtensions.any { name.endsWith(it, ignoreCase = true) }
+            } else {
+                listFiles()?.all { it.checkDirectory(validExtensions) } ?: false
+            }
+        }
     }
 }
