@@ -1,12 +1,13 @@
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
+    `maven-publish`
     id("com.gradle.plugin-publish") version "0.12.0"
-    id("maven-publish")
     id("me.tylerbwong.gradle.metalava")
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.1"
+version = "0.1.3-SNAPSHOT"
 
 gradlePlugin {
     plugins {
@@ -51,8 +52,8 @@ metalava {
 }
 
 dependencies {
-    implementation(gradleApi())
-    implementation(kotlin("stdlib"))
-    implementation("com.android.tools.build:gradle:4.1.1")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+    compileOnly(gradleApi())
+    compileOnly(kotlin("gradle-plugin", "1.4.10"))
+    compileOnly("com.android.tools.build:gradle:4.1.1")
+    compileOnly(kotlin("stdlib"))
 }
