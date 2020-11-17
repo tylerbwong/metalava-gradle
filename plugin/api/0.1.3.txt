@@ -44,6 +44,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final me.tylerbwong.gradle.metalava.Format getFormat();
     method public final java.util.Set<java.lang.String> getHiddenAnnotations();
     method public final boolean getIncludeSignatureVersion();
+    method public final boolean getInputKotlinNulls();
     method public final org.gradle.api.JavaVersion getJavaSourceLevel();
     method public final String? getMetalavaJarPath();
     method public final boolean getOmitCommonPackages();
@@ -57,6 +58,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setFilename(String p);
     method public final void setFormat(me.tylerbwong.gradle.metalava.Format p);
     method public final void setIncludeSignatureVersion(boolean p);
+    method public final void setInputKotlinNulls(boolean p);
     method public final void setJavaSourceLevel(org.gradle.api.JavaVersion p);
     method public final void setMetalavaJarPath(String? p);
     method public final void setOmitCommonPackages(boolean p);
@@ -71,6 +73,7 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final me.tylerbwong.gradle.metalava.Format format;
     property public final java.util.Set<java.lang.String> hiddenAnnotations;
     property public final boolean includeSignatureVersion;
+    property public final boolean inputKotlinNulls;
     property public final org.gradle.api.JavaVersion javaSourceLevel;
     property public final String? metalavaJarPath;
     property public final boolean omitCommonPackages;

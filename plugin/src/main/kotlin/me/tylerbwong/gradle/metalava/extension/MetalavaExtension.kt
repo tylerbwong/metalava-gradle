@@ -42,8 +42,8 @@ open class MetalavaExtension {
     var documentation: Documentation = Documentation.PROTECTED
 
     /**
-     * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable types, "" for non
-     * nullable types, and "!" for unknown. The default is yes.
+     * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
+     * types, "" for non-nullable types, and "!" for unknown. The default is yes.
      */
     var outputKotlinNulls = true
 
@@ -53,13 +53,14 @@ open class MetalavaExtension {
     var outputDefaultValues = true
 
     /**
-     * Skip common package prefixes like java.lang.* and kotlin.* in signature files, along with packages for well known
-     * annotations like @Nullable and @NonNull.
+     * Skip common package prefixes like java.lang.* and kotlin.* in signature files, along with
+     * packages for well known annotations like @Nullable and @NonNull.
      */
     var omitCommonPackages = true
 
     /**
-     * Whether the signature files should include a comment listing the format version of the signature file.
+     * Whether the signature files should include a comment listing the format version of the
+     * signature file.
      */
     var includeSignatureVersion = true
 
@@ -72,6 +73,13 @@ open class MetalavaExtension {
      * Treat any elements annotated with the given annotation as hidden.
      */
     val hiddenAnnotations = mutableSetOf<String>()
+
+    /**
+     * Whether the signature file being read should be interpreted as having encoded its types using
+     * Kotlin style types: a suffix of "?" for nullable types, no suffix for non nullable types, and
+     * "!" for unknown. The default is no.
+     */
+    var inputKotlinNulls = false
 
     /**
      * Promote all warnings to errors.
