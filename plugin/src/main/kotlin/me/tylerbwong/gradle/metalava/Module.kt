@@ -14,11 +14,18 @@ internal sealed class Module {
     open val bootClasspath: Collection<File> = emptyList()
     abstract val compileClasspath: Collection<File>
 
-    class Android(private val extension: LibraryExtension) : Module() {
+    /**
+     * Accept the extension as [Any] to avoid requiring owners to have the Android Gradle plugin in
+     * their classpath when applying this plugin.
+     */
+    class Android(extension: Any) : Module() {
+
+        private val libraryExtension = extension as LibraryExtension
+
         override val bootClasspath: Collection<File>
-            get() = extension.bootClasspath
+            get() = libraryExtension.bootClasspath
         override val compileClasspath: Collection<File>
-            get() = extension.libraryVariants.find {
+            get() = libraryExtension.libraryVariants.find {
                 it.name.contains("debug", ignoreCase = true)
             }?.getCompileClasspath(null)?.filter { it.exists() }?.files ?: emptyList()
     }
@@ -43,7 +50,7 @@ internal sealed class Module {
     companion object {
         internal val Project.module: Module
             get() {
-                val libraryExtension = extensions.findByType<LibraryExtension>()
+                val libraryExtension = extensions.findByName("android")
                 val multiplatformExtension = extensions.findByType<KotlinMultiplatformExtension>()
                 val javaPluginConvention = convention.findPlugin<JavaPluginConvention>()
                 return when {
