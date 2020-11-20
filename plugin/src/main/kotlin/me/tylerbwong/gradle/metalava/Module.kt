@@ -15,8 +15,8 @@ internal sealed class Module {
     abstract val compileClasspath: Collection<File>
 
     /**
-     * Accept the extension as [Any] to avoid requiring owners to have the Android Gradle plugin in
-     * their classpath when applying this plugin.
+     * Accept the extension as [Any] to avoid requiring consumers to have the Android Gradle plugin
+     * in their classpath when applying this plugin.
      */
     class Android(extension: Any) : Module() {
 
