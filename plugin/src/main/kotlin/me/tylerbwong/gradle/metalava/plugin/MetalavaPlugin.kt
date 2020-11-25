@@ -15,7 +15,7 @@ class MetalavaPlugin : Plugin<Project> {
                 val currentModule = module
                 MetalavaSignature.registerMetalavaSignatureTask(
                     project = this,
-                    name = "metalavaSignaturePublish",
+                    name = "metalavaGenerateSignature",
                     description = "Generates a Metalava signature descriptor file.",
                     extension = extension,
                     module = currentModule
