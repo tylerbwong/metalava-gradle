@@ -11,7 +11,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
             val tempFilename = layout.buildDirectory.file("metalava/current.txt").get().asFile.absolutePath
             val generateTempMetalavaSignatureTask = MetalavaSignature.registerMetalavaSignatureTask(
                 project = this,
-                name = "metalavaTempSignature",
+                name = "metalavaGenerateTempSignature",
                 description = """
                     Generates a Metalava signature descriptor file in the project build directory for API compatibility 
                     checking.
