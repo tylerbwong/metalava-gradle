@@ -5,6 +5,7 @@ import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
+import java.io.File
 
 internal object MetalavaSignature : MetalavaTaskContainer() {
     fun registerMetalavaSignatureTask(
@@ -23,8 +24,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
                 doFirst {
-                    val fullClasspath =
-                        (module.bootClasspath + module.compileClasspath).joinToString(":")
+                    val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
                     val sources = file("src")
                         .walk()
                         .maxDepth(2)
@@ -32,7 +32,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                         .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
                         .toList()
 
-                    val sourcePaths = listOf("--source-path") + sources.joinToString(":")
+                    val sourcePaths = listOf("--source-path") + sources.joinToString(File.pathSeparator)
                     val hidePackages =
                         extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
                     val hideAnnotations =
