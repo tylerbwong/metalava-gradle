@@ -14,18 +14,11 @@ internal sealed class Module {
     open val bootClasspath: Collection<File> = emptyList()
     abstract val compileClasspath: Collection<File>
 
-    /**
-     * Accept the extension as [Any] to avoid requiring consumers to have the Android Gradle plugin
-     * in their classpath when applying this plugin.
-     */
-    class Android(extension: Any) : Module() {
-
-        private val libraryExtension = extension as LibraryExtension
-
+    class Android(private val extension: LibraryExtension) : Module() {
         override val bootClasspath: Collection<File>
-            get() = libraryExtension.bootClasspath
+            get() = extension.bootClasspath
         override val compileClasspath: Collection<File>
-            get() = libraryExtension.libraryVariants.find {
+            get() = extension.libraryVariants.find {
                 it.name.contains("debug", ignoreCase = true)
             }?.getCompileClasspath(null)?.filter { it.exists() }?.files ?: emptyList()
     }
@@ -50,11 +43,13 @@ internal sealed class Module {
     companion object {
         internal val Project.module: Module
             get() {
+                // Use findByName to avoid requiring consumers to have the Android Gradle plugin
+                // in their classpath when applying this plugin to a non-Android project
                 val libraryExtension = extensions.findByName("android")
                 val multiplatformExtension = extensions.findByType<KotlinMultiplatformExtension>()
                 val javaPluginConvention = convention.findPlugin<JavaPluginConvention>()
                 return when {
-                    libraryExtension != null -> Android(libraryExtension)
+                    libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension)
                     multiplatformExtension != null -> Multiplatform(multiplatformExtension)
                     javaPluginConvention != null -> Java(javaPluginConvention)
                     else -> throw GradleException("This module is currently not supported by the Metalava plugin")
