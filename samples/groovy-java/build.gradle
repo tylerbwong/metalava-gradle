@@ -3,6 +3,11 @@ plugins {
     id("me.tylerbwong.gradle.metalava")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 metalava {
     filename = "api/$name-api.txt"
     outputKotlinNulls = false
@@ -10,5 +15,5 @@ metalava {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.20"
 }

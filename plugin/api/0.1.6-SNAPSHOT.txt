@@ -19,6 +19,7 @@ package me.tylerbwong.gradle.metalava {
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V1;
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V2;
     enum_constant public static final me.tylerbwong.gradle.metalava.Format V3;
+    enum_constant public static final me.tylerbwong.gradle.metalava.Format V4;
   }
 
   public enum Signature {

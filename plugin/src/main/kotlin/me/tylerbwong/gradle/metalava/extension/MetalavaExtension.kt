@@ -9,7 +9,7 @@ open class MetalavaExtension {
     /**
      * The version of Metalava to use.
      */
-    var version = "1.0.0-alpha01"
+    var version = "1.0.0-alpha02"
 
     /**
      * A custom Metalava JAR location path to use instead of the embedded dependency.
@@ -24,7 +24,7 @@ open class MetalavaExtension {
     /**
      * @see Format
      */
-    var format: Format = Format.V3
+    var format: Format = Format.V4
 
     /**
      * @see Signature
