@@ -33,6 +33,10 @@ internal sealed class Module {
     }
 
     class Java(private val convention: JavaPluginConvention) : Module() {
+        override val bootClasspath: Collection<File>
+            get() = File(System.getProperty("java.home")).walkTopDown()
+                .toList()
+                .filter { it.exists() && it.name == "rt.jar" }
         override val compileClasspath: Collection<File>
             get() = convention.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
