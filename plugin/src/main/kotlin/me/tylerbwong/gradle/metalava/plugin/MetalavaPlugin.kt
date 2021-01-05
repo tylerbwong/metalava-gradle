@@ -12,7 +12,7 @@ class MetalavaPlugin : Plugin<Project> {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
-                val currentModule = module
+                val currentModule = module(extension)
                 MetalavaSignature.registerMetalavaSignatureTask(
                     project = this,
                     name = "metalavaGenerateSignature",
