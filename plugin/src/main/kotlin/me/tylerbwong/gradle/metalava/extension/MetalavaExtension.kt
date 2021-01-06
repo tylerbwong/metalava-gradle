@@ -90,4 +90,10 @@ open class MetalavaExtension {
      * Promote all API lint warnings to errors.
      */
     var reportLintsAsErrors = false
+
+    /**
+     * For Android modules defines which variant should be used to resolve classpath when Metalava
+     * generates or checks API.
+     */
+    var androidVariantName = "debug"
 }

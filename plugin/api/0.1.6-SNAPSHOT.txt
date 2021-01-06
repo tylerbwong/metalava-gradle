@@ -40,6 +40,7 @@ package me.tylerbwong.gradle.metalava.extension {
 
   public class MetalavaExtension {
     ctor public MetalavaExtension();
+    method public final String getAndroidVariantName();
     method public final me.tylerbwong.gradle.metalava.Documentation getDocumentation();
     method public final String getFilename();
     method public final me.tylerbwong.gradle.metalava.Format getFormat();
@@ -55,6 +56,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final boolean getReportWarningsAsErrors();
     method public final me.tylerbwong.gradle.metalava.Signature getSignature();
     method public final String getVersion();
+    method public final void setAndroidVariantName(String p);
     method public final void setDocumentation(me.tylerbwong.gradle.metalava.Documentation p);
     method public final void setFilename(String p);
     method public final void setFormat(me.tylerbwong.gradle.metalava.Format p);
@@ -69,6 +71,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setReportWarningsAsErrors(boolean p);
     method public final void setSignature(me.tylerbwong.gradle.metalava.Signature p);
     method public final void setVersion(String p);
+    property public final String androidVariantName;
     property public final me.tylerbwong.gradle.metalava.Documentation documentation;
     property public final String filename;
     property public final me.tylerbwong.gradle.metalava.Format format;
