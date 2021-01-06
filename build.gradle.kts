@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
-        classpath("me.tylerbwong.gradle:metalava-gradle:0.1.5")
+        classpath("me.tylerbwong.gradle:metalava-gradle:0.1.6")
     }
 }
 

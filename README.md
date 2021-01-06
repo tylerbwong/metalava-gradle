@@ -1,7 +1,7 @@
 # metalava-gradle
 [![CI](https://github.com/tylerbwong/metalava-gradle/workflows/CI/badge.svg)](https://github.com/tylerbwong/metalava-gradle/actions?query=workflow%3ACI)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/me/tylerbwong/gradle/metalava/me.tylerbwong.gradle.metalava.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/me.tylerbwong.gradle.metalava)
-[![Metalava](https://img.shields.io/badge/Metalava-1.0.0--alpha01-orange)](https://maven.google.com/web/index.html#com.android.tools.metalava:metalava:1.0.0-alpha01)
+[![Metalava](https://img.shields.io/badge/Metalava-1.0.0--alpha02-orange)](https://maven.google.com/web/index.html#com.android.tools.metalava:metalava:1.0.0-alpha02)
 
 A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API metadata extraction and compatibility tracking. This plugin is currently in active development and does not yet fully support all of Metalava's features.
 
