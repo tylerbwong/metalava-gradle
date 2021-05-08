@@ -55,5 +55,5 @@ dependencies {
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
     compileOnly(kotlin("stdlib"))
-    compileOnly("com.android.tools.build:gradle:4.1.1")
+    compileOnly("com.android.tools.build:gradle:4.2.0")
 }

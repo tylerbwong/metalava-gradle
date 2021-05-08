@@ -8,3 +8,5 @@ include(
     ":samples:kotlin-dsl-java",
     ":samples:kotlin-multiplatform"
 )
+
+enableFeaturePreview("VERSION_CATALOGS")
