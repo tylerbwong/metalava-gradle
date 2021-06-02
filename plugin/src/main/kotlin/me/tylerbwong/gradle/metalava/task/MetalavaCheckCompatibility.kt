@@ -20,7 +20,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 module = module,
                 filename = tempFilename
             )
-            tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
+            val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
                 group = "verification"
                 description = "Checks API compatibility between the code base and the current API."
                 main = "com.android.tools.metalava.Driver"
@@ -47,6 +47,8 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                     setArgs(args)
                 }
             }
+            // Projects that apply this plugin should include API compatibility checking as part of their regular checks
+            afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
         }
     }
 }
