@@ -8,5 +8,5 @@ metalava {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.0")
+    implementation(libs.kotlin.stdlib.jdk8)
 }
