@@ -1,5 +1,5 @@
 # metalava-gradle
-[![CI](https://github.com/tylerbwong/metalava-gradle/workflows/CI/badge.svg)](https://github.com/tylerbwong/metalava-gradle/actions?query=workflow%3ACI)
+[![Build](https://github.com/tylerbwong/metalava-gradle/actions/workflows/build.yml/badge.svg)](https://github.com/tylerbwong/metalava-gradle/actions/workflows/build.yml)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/me/tylerbwong/gradle/metalava/me.tylerbwong.gradle.metalava.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/me.tylerbwong.gradle.metalava)
 [![Metalava](https://img.shields.io/badge/Metalava-1.0.0--alpha03-orange)](https://maven.google.com/web/index.html#com.android.tools.metalava:metalava:1.0.0-alpha03)
 
