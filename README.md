@@ -55,6 +55,8 @@ buildscript {
 apply plugin: "me.tylerbwong.gradle.metalava"
 ```
 
+Also ensure that [Google's Maven Repository](https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:maven_google) is added to your project.
+
 ### Usage
 
 This plugin registers the following tasks:

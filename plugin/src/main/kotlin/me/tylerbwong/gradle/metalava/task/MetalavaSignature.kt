@@ -20,7 +20,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
             tasks.register(name, JavaExec::class.java) {
                 group = "documentation"
                 this.description = description
-                main = "com.android.tools.metalava.Driver"
+                mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
                 doFirst {

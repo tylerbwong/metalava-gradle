@@ -23,7 +23,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
             val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
                 group = "verification"
                 description = "Checks API compatibility between the code base and the current API."
-                main = "com.android.tools.metalava.Driver"
+                mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
                 dependsOn(generateTempMetalavaSignatureTask)
 
