@@ -18,15 +18,3 @@ jobs:
           java-version: 11
       - name: Run Build
         run: ./gradlew build
-
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set Up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Run Checks
-        run: ./gradlew check
