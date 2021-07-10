@@ -4,9 +4,8 @@ import com.android.build.gradle.LibraryExtension
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.findPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
@@ -33,13 +32,13 @@ internal sealed class Module {
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
     }
 
-    class Java(private val convention: JavaPluginConvention) : Module() {
+    class Java(private val extension: JavaPluginExtension) : Module() {
         override val bootClasspath: Collection<File>
             get() = File(System.getProperty("java.home")).walkTopDown()
                 .toList()
                 .filter { it.exists() && it.name == "rt.jar" }
         override val compileClasspath: Collection<File>
-            get() = convention.sourceSets
+            get() = extension.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
                 .flatMap { it.compileClasspath }
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
@@ -51,11 +50,11 @@ internal sealed class Module {
             // in their classpath when applying this plugin to a non-Android project
             val libraryExtension = extensions.findByName("android")
             val multiplatformExtension = extensions.findByType<KotlinMultiplatformExtension>()
-            val javaPluginConvention = convention.findPlugin<JavaPluginConvention>()
+            val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
             return when {
                 libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension, extension.androidVariantName)
                 multiplatformExtension != null -> Multiplatform(multiplatformExtension)
-                javaPluginConvention != null -> Java(javaPluginConvention)
+                javaPluginExtension != null -> Java(javaPluginExtension)
                 else -> throw GradleException("This module is currently not supported by the Metalava plugin")
             }
         }
