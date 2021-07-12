@@ -26,6 +26,11 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
                 dependsOn(generateTempMetalavaSignatureTask)
+                // Use temp signature file for incremental Gradle task output
+                // If both the current API and temp API have not changed since last run, then
+                // consider this task UP-TO-DATE
+                inputs.file(extension.filename)
+                outputs.file(tempFilename)
 
                 doFirst {
                     // TODO Consolidate flags between tasks

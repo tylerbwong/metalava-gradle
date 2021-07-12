@@ -22,15 +22,17 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 this.description = description
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
+                val sources = file("src")
+                    .walk()
+                    .maxDepth(2)
+                    .onEnter { !it.name.contains("test", ignoreCase = true) }
+                    .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
+                    .toList()
+                inputs.files(sources)
+                outputs.file(filename)
 
                 doFirst {
                     val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
-                    val sources = file("src")
-                        .walk()
-                        .maxDepth(2)
-                        .onEnter { !it.name.contains("test", ignoreCase = true) }
-                        .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
-                        .toList()
 
                     val sourcePaths = listOf("--source-path") + sources.joinToString(File.pathSeparator)
                     val hidePackages =
