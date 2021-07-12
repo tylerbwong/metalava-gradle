@@ -49,11 +49,11 @@ internal sealed class Module {
             // Use findByName to avoid requiring consumers to have the Android Gradle plugin
             // in their classpath when applying this plugin to a non-Android project
             val libraryExtension = extensions.findByName("android")
-            val multiplatformExtension = extensions.findByType<KotlinMultiplatformExtension>()
+            val multiplatformExtension = extensions.findByName("kotlin")
             val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
             return when {
                 libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension, extension.androidVariantName)
-                multiplatformExtension != null -> Multiplatform(multiplatformExtension)
+                multiplatformExtension != null && multiplatformExtension is KotlinMultiplatformExtension -> Multiplatform(multiplatformExtension)
                 javaPluginExtension != null -> Java(javaPluginExtension)
                 else -> throw GradleException("This module is currently not supported by the Metalava plugin")
             }
