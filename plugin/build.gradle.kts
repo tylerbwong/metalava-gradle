@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.tylerbwong.gradle"
-version = "0.1.9-SNAPSHOT"
+version = "0.1.9"
 
 gradlePlugin {
     plugins {
