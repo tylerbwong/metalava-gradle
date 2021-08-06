@@ -9,7 +9,7 @@ open class MetalavaExtension {
     /**
      * The version of Metalava to use.
      */
-    var version = "1.0.0-alpha03"
+    var version = "1.0.0-alpha04"
 
     /**
      * A custom Metalava JAR location path to use instead of the embedded dependency.
@@ -17,9 +17,9 @@ open class MetalavaExtension {
     var metalavaJarPath: String? = null
 
     /**
-     * Sets the source level for Java source files; default is 1.8.
+     * Sets the source level for Java source files; default is 11.
      */
-    var javaSourceLevel = JavaVersion.VERSION_1_8
+    var javaSourceLevel = JavaVersion.VERSION_11
 
     /**
      * @see Format
