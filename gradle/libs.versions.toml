@@ -1,9 +1,13 @@
 [versions]
-android-gradle = "7.0.2"
+androidGradle = "7.0.2"
 kotlin = "1.5.30"
-metalava-gradle = "0.1.9"
+pluginPublish = "0.15.0"
+metalavaGradle = "0.1.9"
+
+[plugins]
+pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
+metalavaGradle = { id = "me.tylerbwong.gradle.metalava", version.ref = "metalavaGradle" }
 
 [libraries]
-android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
-kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-metalava-gradle = { module = "me.tylerbwong.gradle:metalava-gradle", version.ref = "metalava-gradle" }
+androidGradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
+kotlinGradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

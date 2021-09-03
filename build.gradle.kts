@@ -7,9 +7,8 @@ buildscript {
     }
 
     dependencies {
-        classpath(libs.android.gradle)
-        classpath(libs.kotlin.gradle)
-        classpath(libs.metalava.gradle)
+        classpath(libs.androidGradle)
+        classpath(libs.kotlinGradle)
     }
 }
 

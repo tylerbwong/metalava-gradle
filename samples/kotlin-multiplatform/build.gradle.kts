@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("me.tylerbwong.gradle.metalava")
+    alias(libs.plugins.metalavaGradle)
 }
 
 kotlin {

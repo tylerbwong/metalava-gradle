@@ -1,14 +1,14 @@
 plugins {
     id("com.android.library")
-    id("me.tylerbwong.gradle.metalava")
+    alias(libs.plugins.metalavaGradle)
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 31
 
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = 21
+        targetSdk = 30
     }
 }
 
