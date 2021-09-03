@@ -7,9 +7,9 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21")
-        classpath("me.tylerbwong.gradle:metalava-gradle:0.1.9")
+        classpath(libs.android.gradle)
+        classpath(libs.kotlin.gradle)
+        classpath(libs.metalava.gradle)
     }
 }
 

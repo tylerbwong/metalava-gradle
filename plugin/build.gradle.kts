@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "0.12.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
     id("me.tylerbwong.gradle.metalava")
     MetalavaGradleProjectPlugin
 }
@@ -55,6 +55,5 @@ metalava {
 dependencies {
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
-    compileOnly(kotlin("stdlib"))
-    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.android.gradle)
 }

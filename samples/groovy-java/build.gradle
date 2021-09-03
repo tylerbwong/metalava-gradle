@@ -13,7 +13,3 @@ metalava {
     outputKotlinNulls = false
     includeSignatureVersion = false
 }
-
-dependencies {
-    implementation libs.kotlin.stdlib.jdk8
-}
