@@ -55,7 +55,7 @@ internal sealed class Module {
                 libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension, extension.androidVariantName)
                 multiplatformExtension != null && multiplatformExtension is KotlinMultiplatformExtension -> Multiplatform(multiplatformExtension)
                 javaPluginExtension != null -> Java(javaPluginExtension)
-                else -> throw GradleException("This module is currently not supported by the Metalava plugin")
+                else -> if (extension.ignoreUnsupportedModules.not()) throw GradleException("This module is currently not supported by the Metalava plugin")
             }
         }
 
