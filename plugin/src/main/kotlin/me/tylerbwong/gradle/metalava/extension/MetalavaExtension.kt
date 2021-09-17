@@ -92,6 +92,12 @@ open class MetalavaExtension {
     var reportLintsAsErrors = false
 
     /**
+     * If the value is `true`, ignore the unsupported module, otherwise the module that does not
+     * support will throw an exception.
+     */
+    var ignoreUnsupportedModules = false
+
+    /**
      * For Android modules defines which variant should be used to resolve classpath when Metalava
      * generates or checks API.
      */
