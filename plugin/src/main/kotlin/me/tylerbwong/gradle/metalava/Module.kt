@@ -45,7 +45,7 @@ internal sealed class Module {
     }
 
     companion object {
-        internal fun Project.module(extension: MetalavaExtension): Module {
+        internal fun Project.module(extension: MetalavaExtension): Module? {
             // Use findByName to avoid requiring consumers to have the Android Gradle plugin
             // in their classpath when applying this plugin to a non-Android project
             val libraryExtension = extensions.findByName("android")
@@ -55,7 +55,9 @@ internal sealed class Module {
                 libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension, extension.androidVariantName)
                 multiplatformExtension != null && multiplatformExtension is KotlinMultiplatformExtension -> Multiplatform(multiplatformExtension)
                 javaPluginExtension != null -> Java(javaPluginExtension)
-                else -> if (extension.ignoreUnsupportedModules.not()) throw GradleException("This module is currently not supported by the Metalava plugin")
+                else -> if (extension.ignoreUnsupportedModules.not()) {
+                    throw GradleException("This module is currently not supported by the Metalava plugin")
+                } else null
             }
         }
 
