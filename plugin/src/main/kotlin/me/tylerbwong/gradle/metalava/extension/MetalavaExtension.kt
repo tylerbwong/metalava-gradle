@@ -92,11 +92,10 @@ open class MetalavaExtension {
     var androidVariantName = "debug"
 
     /**
-     * Customization of the severities to apply when doing compatibility checking
-     * "current" will identify all changes (i.e. removals and additions)
-     * "released" will identify only removals and additions of abstract methods
-     * The default is "current"
+     * Customization of the severities to apply when doing compatibility checking.
+     * "current" will identify all changes (i.e. removals and additions).
+     * "released" will identify only removals and additions of abstract methods.
+     * The default is "current".
      */
-
     var releaseType = "current"
 }
