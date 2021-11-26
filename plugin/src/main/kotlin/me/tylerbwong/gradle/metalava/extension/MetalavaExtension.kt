@@ -53,12 +53,6 @@ open class MetalavaExtension {
     var outputDefaultValues = true
 
     /**
-     * Skip common package prefixes like java.lang.* and kotlin.* in signature files, along with
-     * packages for well known annotations like @Nullable and @NonNull.
-     */
-    var omitCommonPackages = true
-
-    /**
      * Whether the signature files should include a comment listing the format version of the
      * signature file.
      */
@@ -96,4 +90,13 @@ open class MetalavaExtension {
      * generates or checks API.
      */
     var androidVariantName = "debug"
+
+    /**
+     * Customization of the severities to apply when doing compatibility checking
+     * "current" will identify all changes (i.e. removals and additions)
+     * "released" will identify only removals and additions of abstract methods
+     * The default is "current"
+     */
+
+    var releaseType = "current"
 }
