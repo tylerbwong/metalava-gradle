@@ -49,7 +49,6 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                         "--classpath", fullClasspath,
                         "--output-kotlin-nulls=${extension.outputKotlinNulls.flagValue}",
                         "--output-default-values=${extension.outputDefaultValues.flagValue}",
-                        "--omit-common-packages=${extension.omitCommonPackages.flagValue}",
                         "--include-signature-version=${extension.includeSignatureVersion.flagValue}"
                     ) + sourcePaths + hidePackages + hideAnnotations
 

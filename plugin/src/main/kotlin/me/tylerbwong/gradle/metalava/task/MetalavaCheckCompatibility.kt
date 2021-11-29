@@ -43,7 +43,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                         "--no-banner",
                         "--format=${extension.format}",
                         "--source-files", tempFilename,
-                        "--check-compatibility:api:current", extension.filename,
+                        "--check-compatibility:api:${extension.releaseType}", extension.filename,
                         "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
                     ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
                             extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
