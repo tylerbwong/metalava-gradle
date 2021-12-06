@@ -32,25 +32,23 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 inputs.file(extension.filename)
                 outputs.file(tempFilename)
 
-                doFirst {
-                    // TODO Consolidate flags between tasks
-                    val hidePackages =
-                        extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
-                    val hideAnnotations =
-                        extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
+                // TODO Consolidate flags between tasks
+                val hidePackages =
+                    extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
+                val hideAnnotations =
+                    extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
 
-                    val args: List<String> = listOf(
-                        "--no-banner",
-                        "--format=${extension.format}",
-                        "--source-files", tempFilename,
-                        "--check-compatibility:api:${extension.releaseType}", extension.filename,
-                        "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
-                    ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
-                            extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
+                val args: List<String> = listOf(
+                    "--no-banner",
+                    "--format=${extension.format}",
+                    "--source-files", tempFilename,
+                    "--check-compatibility:api:${extension.releaseType}", extension.filename,
+                    "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
+                ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
+                        extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
 
-                    isIgnoreExitValue = false
-                    setArgs(args)
-                }
+                isIgnoreExitValue = false
+                setArgs(args)
             }
             // Projects that apply this plugin should include API compatibility checking as part of their regular checks
             afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
