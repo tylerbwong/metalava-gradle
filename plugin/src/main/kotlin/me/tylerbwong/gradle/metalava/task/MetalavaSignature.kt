@@ -29,30 +29,41 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                     .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
                     .toList()
                 inputs.files(sources)
+                inputs.property("documentation", extension.documentation)
+                inputs.property("format", extension.format)
+                inputs.property("signature", extension.signature)
+                inputs.property("javaSourceLevel", extension.javaSourceLevel)
+                inputs.property("outputKotlinNulls", extension.outputKotlinNulls.flagValue)
+                inputs.property("outputDefaultValues", extension.outputDefaultValues.flagValue)
+                inputs.property("includeSignatureVersion", extension.includeSignatureVersion.flagValue)
+                inputs.property("hiddenPackages", extension.hiddenPackages)
+                inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
                 outputs.file(filename)
 
-                val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
+                doFirst {
+                    val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
 
-                val sourcePaths = listOf("--source-path") + sources.joinToString(File.pathSeparator)
-                val hidePackages =
-                    extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
-                val hideAnnotations =
-                    extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
+                    val sourcePaths = listOf("--source-path") + sources.joinToString(File.pathSeparator)
+                    val hidePackages =
+                        extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
+                    val hideAnnotations =
+                        extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
 
-                val args: List<String> = listOf(
-                    "${extension.documentation}",
-                    "--no-banner",
-                    "--format=${extension.format}",
-                    "${extension.signature}", filename,
-                    "--java-source", "${extension.javaSourceLevel}",
-                    "--classpath", fullClasspath,
-                    "--output-kotlin-nulls=${extension.outputKotlinNulls.flagValue}",
-                    "--output-default-values=${extension.outputDefaultValues.flagValue}",
-                    "--include-signature-version=${extension.includeSignatureVersion.flagValue}"
-                ) + sourcePaths + hidePackages + hideAnnotations
+                    val args: List<String> = listOf(
+                        "${extension.documentation}",
+                        "--no-banner",
+                        "--format=${extension.format}",
+                        "${extension.signature}", filename,
+                        "--java-source", "${extension.javaSourceLevel}",
+                        "--classpath", fullClasspath,
+                        "--output-kotlin-nulls=${extension.outputKotlinNulls.flagValue}",
+                        "--output-default-values=${extension.outputDefaultValues.flagValue}",
+                        "--include-signature-version=${extension.includeSignatureVersion.flagValue}"
+                    ) + sourcePaths + hidePackages + hideAnnotations
 
-                isIgnoreExitValue = true
-                setArgs(args)
+                    isIgnoreExitValue = true
+                    setArgs(args)
+                }
             }
         }
     }

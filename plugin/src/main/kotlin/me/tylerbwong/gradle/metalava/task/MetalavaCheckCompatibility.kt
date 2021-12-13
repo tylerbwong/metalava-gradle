@@ -30,25 +30,32 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 // If both the current API and temp API have not changed since last run, then
                 // consider this task UP-TO-DATE
                 inputs.file(extension.filename)
+                inputs.property("format", extension.format)
+                inputs.property("inputKotlinNulls", extension.inputKotlinNulls.flagValue)
+                inputs.property("releaseType", extension.releaseType)
+                inputs.property("hiddenPackages", extension.hiddenPackages)
+                inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
                 outputs.file(tempFilename)
 
-                // TODO Consolidate flags between tasks
-                val hidePackages =
-                    extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
-                val hideAnnotations =
-                    extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
+                doFirst {
+                    // TODO Consolidate flags between tasks
+                    val hidePackages =
+                        extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
+                    val hideAnnotations =
+                        extension.hiddenAnnotations.flatMap { listOf("--hide-annotation", it) }
 
-                val args: List<String> = listOf(
-                    "--no-banner",
-                    "--format=${extension.format}",
-                    "--source-files", tempFilename,
-                    "--check-compatibility:api:${extension.releaseType}", extension.filename,
-                    "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
-                ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
-                        extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
+                    val args: List<String> = listOf(
+                        "--no-banner",
+                        "--format=${extension.format}",
+                        "--source-files", tempFilename,
+                        "--check-compatibility:api:${extension.releaseType}", extension.filename,
+                        "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
+                    ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
+                            extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
 
-                isIgnoreExitValue = false
-                setArgs(args)
+                    isIgnoreExitValue = false
+                    setArgs(args)
+                }
             }
             // Projects that apply this plugin should include API compatibility checking as part of their regular checks
             afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
