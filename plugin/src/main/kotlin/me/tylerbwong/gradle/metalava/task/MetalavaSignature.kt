@@ -29,6 +29,15 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                     .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
                     .toList()
                 inputs.files(sources)
+                inputs.property("documentation", extension.documentation)
+                inputs.property("format", extension.format)
+                inputs.property("signature", extension.signature)
+                inputs.property("javaSourceLevel", extension.javaSourceLevel)
+                inputs.property("outputKotlinNulls", extension.outputKotlinNulls.flagValue)
+                inputs.property("outputDefaultValues", extension.outputDefaultValues.flagValue)
+                inputs.property("includeSignatureVersion", extension.includeSignatureVersion.flagValue)
+                inputs.property("hiddenPackages", extension.hiddenPackages)
+                inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
                 outputs.file(filename)
 
                 doFirst {

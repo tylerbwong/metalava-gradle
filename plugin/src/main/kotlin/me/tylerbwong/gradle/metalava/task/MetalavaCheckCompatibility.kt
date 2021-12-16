@@ -30,6 +30,11 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 // If both the current API and temp API have not changed since last run, then
                 // consider this task UP-TO-DATE
                 inputs.file(extension.filename)
+                inputs.property("format", extension.format)
+                inputs.property("inputKotlinNulls", extension.inputKotlinNulls.flagValue)
+                inputs.property("releaseType", extension.releaseType)
+                inputs.property("hiddenPackages", extension.hiddenPackages)
+                inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
                 outputs.file(tempFilename)
 
                 doFirst {
