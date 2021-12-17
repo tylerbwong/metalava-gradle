@@ -41,22 +41,18 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                // Use a provider to defer evaluation, as some source directories may not be
-                // present during the configuration phase.
-                inputs.files(provider {
-                    val sourceFiles = mutableSetOf<File>()
-                    for (directory in extension.sourcePath) {
-                        sourceFiles.addAll(
-                            file(directory)
-                                .walk()
-                                .onEnter { it.name.toLowerCase() in sourceLanguageDirectoryNames }
-                                .onEnter { isProductionCodeDirectory(it.name) }
-                                .filter { it.isDirectory }
-                                .toList()
-                        )
-                    }
-                    sourceFiles
-                })
+                val sourceFiles = mutableSetOf<File>()
+                for (directory in extension.sourcePath) {
+                    sourceFiles.addAll(
+                        file(directory)
+                            .walk()
+                            .onEnter { it.name.toLowerCase() in sourceLanguageDirectoryNames }
+                            .onEnter { isProductionCodeDirectory(it.name) }
+                            .filter { it.isDirectory }
+                            .toList()
+                    )
+                }
+                inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
                 inputs.property("signature", extension.signature)
