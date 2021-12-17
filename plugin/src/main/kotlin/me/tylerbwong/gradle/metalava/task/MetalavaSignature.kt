@@ -7,6 +7,22 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
 
+private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
+
+// Predicate to determine whether a given directory contains exported APIs.
+private val isProductionCodeDirectory: (String) -> Boolean = { dirName ->
+    var isProductionCodeDirectory = true
+    run loop@{
+        listOf("test").forEach {
+            if (dirName.contains(it, ignoreCase = true)) {
+                isProductionCodeDirectory = false
+                return@loop
+            }
+        }
+    }
+    isProductionCodeDirectory
+}
+
 internal object MetalavaSignature : MetalavaTaskContainer() {
     fun registerMetalavaSignatureTask(
         project: Project,
@@ -18,17 +34,29 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
     ): TaskProvider<JavaExec> {
         return with(project) {
             tasks.register(name, JavaExec::class.java) {
+                require(extension.sourcePath.isNotEmpty()) {"No sourcePath was provided."}
+
                 group = "documentation"
                 this.description = description
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
-                val sources = file("src")
-                    .walk()
-                    .maxDepth(2)
-                    .onEnter { !it.name.contains("test", ignoreCase = true) }
-                    .filter { it.isDirectory && (it.name == "java" || it.name == "kotlin") }
-                    .toList()
-                inputs.files(sources)
+
+                // Use a provider to defer evaluation, as some source directories may not be
+                // present during the configuration phase.
+                inputs.files(provider {
+                    val sourceFiles = mutableSetOf<File>()
+                    for (directory in extension.sourcePath) {
+                        sourceFiles.addAll(
+                            file(directory)
+                                .walk()
+                                .onEnter { it.name.toLowerCase() in sourceLanguageDirectoryNames }
+                                .onEnter { isProductionCodeDirectory(it.name) }
+                                .filter { it.isDirectory }
+                                .toList()
+                        )
+                    }
+                    sourceFiles
+                })
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
                 inputs.property("signature", extension.signature)
@@ -43,7 +71,8 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 doFirst {
                     val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
 
-                    val sourcePaths = listOf("--source-path") + sources.joinToString(File.pathSeparator)
+                    val sourcePaths = listOf("--source-path") + inputs.files.joinToString(File.pathSeparator)
+
                     val hidePackages =
                         extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
                     val hideAnnotations =

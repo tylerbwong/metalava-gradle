@@ -22,7 +22,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
             )
             val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
                 group = "verification"
-                description = "Checks API compatibility between the code base and the current API."
+                description = "Checks API compatibility between the code base and the current or release API."
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
                 dependsOn(generateTempMetalavaSignatureTask)
@@ -57,8 +57,10 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                     setArgs(args)
                 }
             }
-            // Projects that apply this plugin should include API compatibility checking as part of their regular checks
-            afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
+            // Projects that apply this plugin should include API compatibility checking as part of their regular checks.
+            // However, it may be that source dirs are generated only after some other build phase, and so the
+            // association with 'check' should be configurable.
+            if (extension.enforceCheck) afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
         }
     }
 }

@@ -54,7 +54,7 @@ open class MetalavaExtension {
 
     /**
      * Whether the signature files should include a comment listing the format version of the
-     * signature file.
+     * signature file. The default is yes.
      */
     var includeSignatureVersion = true
 
@@ -98,4 +98,15 @@ open class MetalavaExtension {
      * The default is "current".
      */
     var releaseType = "current"
+
+    /**
+     * The directories to search for source files. An exception will be thrown is the named
+     * directories are not direct children of the project root. The default is "src".
+     */
+    var sourcePath = mutableSetOf<String>("src")
+
+    /**
+     * If the tasks should run as part of Gradle's `check` task. The default is yes.
+     */
+    var enforceCheck = true;
 }
