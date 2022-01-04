@@ -6,21 +6,38 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
+import java.util.Locale
 
 private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
 
-// Predicate to determine whether a given directory contains exported APIs.
-private val isProductionCodeDirectory: (String) -> Boolean = { dirName ->
-    var isProductionCodeDirectory = true
+// Predicate to determine whether a given directory is to be excluded from metalava API processing.
+// Uses String.contains with case-insensitive matching for comparison.
+private val isDirectoryToBeIgnored = { directoryName: String, ignoredDirectoryNames: Set<String> ->
+    var isDirectoryToBeIgnored = false
     run loop@{
-        listOf("test").forEach {
-            if (dirName.contains(it, ignoreCase = true)) {
-                isProductionCodeDirectory = false
+        ignoredDirectoryNames.forEach {
+            if (directoryName.contains(it, ignoreCase = true)) {
+                    isDirectoryToBeIgnored = true
+                    return@loop
+                }
+        }
+    }
+    isDirectoryToBeIgnored
+}
+
+// Predicate to determine whether a given directory is to be excluded from metalava API processing.
+// Uses String.equals for comparison.
+private val isDirectoryToBeIgnoredStrict = { directoryName: String, ignoredDirectoryNames: Set<String> ->
+    var isDirectoryToBeIgnored = false
+    run loop@{
+        ignoredDirectoryNames.forEach {
+            if (directoryName == it) {
+                isDirectoryToBeIgnored = true
                 return@loop
             }
         }
     }
-    isProductionCodeDirectory
+    isDirectoryToBeIgnored
 }
 
 internal object MetalavaSignature : MetalavaTaskContainer() {
@@ -34,20 +51,22 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
     ): TaskProvider<JavaExec> {
         return with(project) {
             tasks.register(name, JavaExec::class.java) {
-                require(extension.sourcePath.isNotEmpty()) {"No sourcePath was provided."}
+                require(extension.sourcePaths.isNotEmpty()) {"sourcePaths cannot be empty."}
 
                 group = "documentation"
                 this.description = description
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
+                val directoryCompareFunction = if (extension.ignoreSourcePathsExactMatch) isDirectoryToBeIgnoredStrict else isDirectoryToBeIgnored
+
                 val sourceFiles = mutableSetOf<File>()
-                for (directory in extension.sourcePath) {
+                for (directory in extension.sourcePaths) {
                     sourceFiles.addAll(
                         file(directory)
                             .walk()
-                            .onEnter { it.name.toLowerCase() in sourceLanguageDirectoryNames }
-                            .onEnter { isProductionCodeDirectory(it.name) }
+                            .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
+                            .onEnter { !directoryCompareFunction(it.name, extension.ignoreSourcePaths) }
                             .filter { it.isDirectory }
                             .toList()
                     )
@@ -67,7 +86,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 doFirst {
                     val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
 
-                    val sourcePaths = listOf("--source-path") + inputs.files.joinToString(File.pathSeparator)
+                    val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
 
                     val hidePackages =
                         extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
