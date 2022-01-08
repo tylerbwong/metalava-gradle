@@ -102,29 +102,19 @@ open class MetalavaExtension {
     /**
      * The directories to search for source files. An exception will be thrown is the named
      * directories are not direct children of the project root. The default is "src".
+     *
+     * @see ignoreSourcePaths
      */
     var sourcePaths = mutableSetOf("src")
 
     /**
-     * The sub-directories of those specified by [sourcePaths] that contain any of the given strings
-     * that are not to be searched for source files. The default is "test".
+     * The sub-directories of each directory specified by [sourcePaths] that should not be searched
+     * for source files. Directory name matching is conducted using case-insensitive equality. The
+     * default values are `("test", "commonTest", "androidTest", "iosTest", "jsTest")`.
      *
-     * The behavior of this property can be configured using [ignoreSourcePathsExactMatch].
-     *
-     * @see ignoreSourcePathsExactMatch
+     * @see sourcePaths
      */
-    var ignoreSourcePaths = mutableSetOf("test")
-
-    /**
-     * Flag to be used in conjunction with [ignoreSourcePaths] to toggle the matching behaviour. The
-     * default behavior (i.e. `false`) is that directories specified by [ignoreSourcePaths] are
-     * successfully matched if the elements of [ignoreSourcePaths] form (using a case-insensitive
-     * match) part of the directory name (i.e. `String.contains(ignoreCase = true)`). Enabling this
-     * flag will change that behavior to case-sensitive exact-matching (i.e. equality) only.
-     *
-     * @see ignoreSourcePaths
-     */
-    var ignoreSourcePathsExactMatch = false
+    var ignoreSourcePaths = mutableSetOf("test", "commonTest", "androidTest", "iosTest", "jsTest")
 
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is yes.

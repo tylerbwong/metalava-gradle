@@ -8,39 +8,9 @@ import org.gradle.api.tasks.TaskProvider
 import java.io.File
 import java.util.Locale
 
-private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
-
-// Predicate to determine whether a given directory is to be excluded from metalava API processing.
-// Uses String.contains with case-insensitive matching for comparison.
-private val isDirectoryToBeIgnored = { directoryName: String, ignoredDirectoryNames: Set<String> ->
-    var isDirectoryToBeIgnored = false
-    run loop@{
-        ignoredDirectoryNames.forEach {
-            if (directoryName.contains(it, ignoreCase = true)) {
-                    isDirectoryToBeIgnored = true
-                    return@loop
-                }
-        }
-    }
-    isDirectoryToBeIgnored
-}
-
-// Predicate to determine whether a given directory is to be excluded from metalava API processing.
-// Uses String.equals for comparison.
-private val isDirectoryToBeIgnoredStrict = { directoryName: String, ignoredDirectoryNames: Set<String> ->
-    var isDirectoryToBeIgnored = false
-    run loop@{
-        ignoredDirectoryNames.forEach {
-            if (directoryName == it) {
-                isDirectoryToBeIgnored = true
-                return@loop
-            }
-        }
-    }
-    isDirectoryToBeIgnored
-}
-
 internal object MetalavaSignature : MetalavaTaskContainer() {
+    private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
+
     fun registerMetalavaSignatureTask(
         project: Project,
         name: String,
@@ -51,26 +21,28 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
     ): TaskProvider<JavaExec> {
         return with(project) {
             tasks.register(name, JavaExec::class.java) {
-                require(extension.sourcePaths.isNotEmpty()) {"sourcePaths cannot be empty."}
+                require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
 
                 group = "documentation"
                 this.description = description
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                val directoryCompareFunction = if (extension.ignoreSourcePathsExactMatch) isDirectoryToBeIgnoredStrict else isDirectoryToBeIgnored
-
-                val sourceFiles = mutableSetOf<File>()
-                for (directory in extension.sourcePaths) {
-                    sourceFiles.addAll(
-                        file(directory)
-                            .walk()
-                            .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
-                            .onEnter { !directoryCompareFunction(it.name, extension.ignoreSourcePaths) }
-                            .filter { it.isDirectory }
-                            .toList()
-                    )
-                }
+                    val sourceFiles = mutableSetOf<File>()
+                    for (directory in extension.sourcePaths) {
+                        sourceFiles.addAll(
+                            file(directory)
+                                .walk()
+                                .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
+                                .onEnter {
+                                    extension.ignoreSourcePaths.none { ignoredDirectoryName ->
+                                        ignoredDirectoryName.equals(it.name, ignoreCase = true)
+                                    }
+                                }
+                                .filter { it.isDirectory }
+                                .toList()
+                        )
+                    }
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
