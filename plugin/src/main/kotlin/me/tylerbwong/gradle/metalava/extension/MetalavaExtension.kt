@@ -54,7 +54,7 @@ open class MetalavaExtension {
 
     /**
      * Whether the signature files should include a comment listing the format version of the
-     * signature file.
+     * signature file. The default is yes.
      */
     var includeSignatureVersion = true
 
@@ -98,4 +98,26 @@ open class MetalavaExtension {
      * The default is "current".
      */
     var releaseType = "current"
+
+    /**
+     * The directories to search for source files. An exception will be thrown is the named
+     * directories are not direct children of the project root. The default is "src".
+     *
+     * @see ignoreSourcePaths
+     */
+    var sourcePaths = mutableSetOf("src")
+
+    /**
+     * The sub-directories of each directory specified by [sourcePaths] that should not be searched
+     * for source files. Directory name matching is conducted using case-insensitive equality. The
+     * default values are `("test", "commonTest", "androidTest", "iosTest", "jsTest")`.
+     *
+     * @see sourcePaths
+     */
+    var ignoreSourcePaths = mutableSetOf("test", "commonTest", "androidTest", "iosTest", "jsTest")
+
+    /**
+     * If the tasks should run as part of Gradle's `check` task. The default is yes.
+     */
+    var enforceCheck = true
 }
