@@ -1,7 +1,7 @@
 [versions]
-androidGradle = "7.0.2"
-kotlin = "1.5.30"
-pluginPublish = "0.15.0"
+androidGradle = "7.0.4"
+kotlin = "1.6.10"
+pluginPublish = "0.19.0"
 metalavaGradle = "0.1.9"
 
 [plugins]
