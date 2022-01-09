@@ -28,21 +28,19 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                    val sourceFiles = mutableSetOf<File>()
-                    for (directory in extension.sourcePaths) {
-                        sourceFiles.addAll(
-                            file(directory)
-                                .walk()
-                                .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
-                                .onEnter {
-                                    extension.ignoreSourcePaths.none { ignoredDirectoryName ->
-                                        ignoredDirectoryName.equals(it.name, ignoreCase = true)
-                                    }
-                                }
-                                .filter { it.isDirectory }
-                                .toList()
-                        )
-                    }
+                val sourceFiles = extension.sourcePaths.flatMap { sourcePath ->
+                    file(sourcePath)
+                        .walk()
+                        .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
+                        .onEnter {
+                            extension.ignoreSourcePaths.none { ignoredDirectoryName ->
+                                ignoredDirectoryName.equals(it.name, ignoreCase = true)
+                            }
+                        }
+                        .filter { it.isDirectory }
+                        .toList()
+                }
+
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
