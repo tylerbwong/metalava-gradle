@@ -23,3 +23,5 @@ local.properties
 !.idea/icon.png
 
 .DS_Store
+
+kotlin-js-store

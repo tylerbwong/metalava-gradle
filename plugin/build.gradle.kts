@@ -2,6 +2,7 @@ plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
     `maven-publish`
+    alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
     MetalavaGradleProjectPlugin
