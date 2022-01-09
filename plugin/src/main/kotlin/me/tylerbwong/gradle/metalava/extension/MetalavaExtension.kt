@@ -119,5 +119,5 @@ open class MetalavaExtension {
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is yes.
      */
-    var enforceCheck = true;
+    var enforceCheck = true
 }
