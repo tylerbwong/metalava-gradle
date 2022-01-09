@@ -51,7 +51,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                         "--check-compatibility:api:${extension.releaseType}", extension.filename,
                         "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
                     ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
-                            extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
+                        extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
 
                     isIgnoreExitValue = false
                     setArgs(args)
