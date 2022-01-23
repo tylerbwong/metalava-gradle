@@ -10,3 +10,11 @@ include(
 )
 
 enableFeaturePreview("VERSION_CATALOGS")
+
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}

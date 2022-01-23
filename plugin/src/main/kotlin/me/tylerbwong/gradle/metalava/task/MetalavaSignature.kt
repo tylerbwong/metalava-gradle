@@ -31,13 +31,13 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 val sourceFiles = extension.sourcePaths.flatMap { sourcePath ->
                     file(sourcePath)
                         .walk()
-                        .onEnter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
                         .onEnter {
                             extension.ignoreSourcePaths.none { ignoredDirectoryName ->
                                 ignoredDirectoryName.equals(it.name, ignoreCase = true)
                             }
                         }
                         .filter { it.isDirectory }
+                        .filter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
                         .toList()
                 }
 
