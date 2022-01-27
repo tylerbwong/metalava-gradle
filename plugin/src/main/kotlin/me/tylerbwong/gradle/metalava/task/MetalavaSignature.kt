@@ -6,7 +6,6 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
-import java.util.Locale
 
 internal object MetalavaSignature : MetalavaTaskContainer() {
     private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
@@ -28,17 +27,9 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                val sourceFiles = extension.sourcePaths.flatMap { sourcePath ->
-                    file(sourcePath)
-                        .walk()
-                        .onEnter {
-                            extension.ignoreSourcePaths.none { ignoredDirectoryName ->
-                                ignoredDirectoryName.equals(it.name, ignoreCase = true)
-                            }
-                        }
-                        .filter { it.isDirectory }
-                        .filter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
-                        .toList()
+                val sourceFiles = mutableSetOf<File>()
+                for (directory in extension.sourcePaths) {
+                    sourceFiles.add(file(directory))
                 }
 
                 inputs.files(sourceFiles)

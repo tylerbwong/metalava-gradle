@@ -13,6 +13,7 @@ internal sealed class Module {
 
     open val bootClasspath: Collection<File> = emptyList()
     abstract val compileClasspath: Collection<File>
+    open val taskVariants: Collection<String> = emptyList()
 
     class Android(private val extension: LibraryExtension, private val variantName: String) : Module() {
         override val bootClasspath: Collection<File>
@@ -21,6 +22,8 @@ internal sealed class Module {
             get() = extension.libraryVariants.find {
                 it.name.contains(variantName, ignoreCase = true)
             }?.getCompileClasspath(null)?.filter { it.exists() }?.files ?: emptyList()
+        override val taskVariants: Collection<String>
+            get() = extension.libraryVariants.map { it.name }
     }
 
     class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {

@@ -6,6 +6,7 @@ import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibility
 import me.tylerbwong.gradle.metalava.task.MetalavaSignature
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.util.Locale
 
 class MetalavaPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -13,18 +14,25 @@ class MetalavaPlugin : Plugin<Project> {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
                 val currentModule = module(extension)
-                MetalavaSignature.registerMetalavaSignatureTask(
-                    project = this,
-                    name = "metalavaGenerateSignature",
-                    description = "Generates a Metalava signature descriptor file.",
-                    extension = extension,
-                    module = currentModule
-                )
-                MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
-                    project = this,
-                    extension = extension,
-                    module = currentModule
-                )
+                val taskVariants = currentModule.taskVariants.ifEmpty { listOf("") }
+                taskVariants.forEach {
+                    val variantName = it.capitalize(Locale.getDefault())
+
+                    MetalavaSignature.registerMetalavaSignatureTask(
+                        project = this,
+                        name = "metalavaGenerateSignature$variantName",
+                        description = "Generates a Metalava signature descriptor file.",
+                        extension = extension,
+                        module = currentModule
+                    )
+
+                    MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
+                        project = this,
+                        taskVariant = variantName,
+                        extension = extension,
+                        module = currentModule
+                    )
+                }
             }
         }
     }

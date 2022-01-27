@@ -6,12 +6,17 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 
 internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
-    fun registerMetalavaCheckCompatibilityTask(project: Project, extension: MetalavaExtension, module: Module) {
+    fun registerMetalavaCheckCompatibilityTask(
+        project: Project,
+        taskVariant: String = "",
+        extension: MetalavaExtension,
+        module: Module
+    ) {
         with(project) {
             val tempFilename = layout.buildDirectory.file("metalava/current.txt").get().asFile.absolutePath
             val generateTempMetalavaSignatureTask = MetalavaSignature.registerMetalavaSignatureTask(
                 project = this,
-                name = "metalavaGenerateTempSignature",
+                name = "metalavaGenerateTempSignature$taskVariant",
                 description = """
                     Generates a Metalava signature descriptor file in the project build directory for API compatibility 
                     checking.
@@ -20,7 +25,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 module = module,
                 filename = tempFilename
             )
-            val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
+            val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility$taskVariant", JavaExec::class.java) {
                 group = "verification"
                 description = "Checks API compatibility between the code base and the current or release API."
                 mainClass.set("com.android.tools.metalava.Driver")
