@@ -1,5 +1,5 @@
 [versions]
-androidGradle = "7.0.4"
+androidGradle = "7.1.0"
 kotlin = "1.6.10"
 ktlintGradle = "10.2.1"
 pluginPublish = "0.19.0"
