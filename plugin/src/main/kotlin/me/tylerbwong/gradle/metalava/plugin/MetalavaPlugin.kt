@@ -13,18 +13,22 @@ class MetalavaPlugin : Plugin<Project> {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
                 val currentModule = module(extension)
-                MetalavaSignature.registerMetalavaSignatureTask(
-                    project = this,
-                    name = "metalavaGenerateSignature",
-                    description = "Generates a Metalava signature descriptor file.",
-                    extension = extension,
-                    module = currentModule
-                )
-                MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
-                    project = this,
-                    extension = extension,
-                    module = currentModule
-                )
+                if (currentModule != null) {
+                    MetalavaSignature.registerMetalavaSignatureTask(
+                        project = this,
+                        name = "metalavaGenerateSignature",
+                        description = "Generates a Metalava signature descriptor file.",
+                        extension = extension,
+                        module = currentModule
+                    )
+                    MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
+                        project = this,
+                        extension = extension,
+                        module = currentModule
+                    )
+                } else {
+                    logger.warn("Module $name is not supported by the Metalava Gradle plugin")
+                }
             }
         }
     }
