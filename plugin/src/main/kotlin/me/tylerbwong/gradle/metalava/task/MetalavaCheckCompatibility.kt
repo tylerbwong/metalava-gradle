@@ -18,6 +18,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 """.trimIndent(),
                 extension = extension,
                 module = module,
+                taskGroup = null,
                 filename = tempFilename
             )
             val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {

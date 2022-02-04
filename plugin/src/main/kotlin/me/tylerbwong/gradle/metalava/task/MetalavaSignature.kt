@@ -17,13 +17,15 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
         description: String,
         extension: MetalavaExtension,
         module: Module,
+        taskGroup: String? = "documentation",
         filename: String = extension.filename
     ): TaskProvider<JavaExec> {
         return with(project) {
             tasks.register(name, JavaExec::class.java) {
                 require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
-
-                group = "documentation"
+                if (taskGroup != null) {
+                    group = taskGroup
+                }
                 this.description = description
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
