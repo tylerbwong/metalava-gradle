@@ -2,6 +2,7 @@ package me.tylerbwong.gradle.metalava.task
 
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
     protected val Boolean.flagValue: String get() = if (this) "yes" else "no"
@@ -20,5 +21,13 @@ internal abstract class MetalavaTaskContainer {
             dependencies.add(dependency)
         }
         return files(configuration)
+    }
+
+    protected fun getFullTaskname(taskName: String, variantName: String?): String {
+        return if (variantName != null) {
+            taskName + variantName.capitalize(Locale.getDefault())
+        } else {
+            taskName
+        }
     }
 }

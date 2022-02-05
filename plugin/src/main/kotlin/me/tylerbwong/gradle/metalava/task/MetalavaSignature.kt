@@ -8,29 +8,25 @@ import org.gradle.api.tasks.TaskProvider
 import java.io.File
 
 internal object MetalavaSignature : MetalavaTaskContainer() {
-    private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
-
     fun registerMetalavaSignatureTask(
         project: Project,
-        name: String,
-        description: String,
         extension: MetalavaExtension,
         module: Module,
+        taskName: String,
+        taskDescription: String,
+        variantName: String?,
         filename: String = extension.filename
     ): TaskProvider<JavaExec> {
         return with(project) {
-            tasks.register(name, JavaExec::class.java) {
+            tasks.register(getFullTaskname(taskName, variantName), JavaExec::class.java) {
                 require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
 
                 group = "documentation"
-                this.description = description
+                description = taskDescription
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                val sourceFiles = mutableSetOf<File>()
-                for (directory in extension.sourcePaths) {
-                    sourceFiles.add(file(directory))
-                }
+                val sourceFiles = extension.sourcePaths.map { file(it) }
 
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
@@ -45,7 +41,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 outputs.file(filename)
 
                 doFirst {
-                    val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
+                    val fullClasspath = (module.bootClasspath + module.compileClasspath(variantName)).joinToString(File.pathSeparator)
 
                     val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
 
