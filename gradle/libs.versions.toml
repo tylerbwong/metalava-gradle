@@ -1,5 +1,5 @@
 [versions]
-androidGradle = "7.1.0"
+androidGradle = "7.1.1"
 junit = "4.13.2"
 kotlin = "1.6.10"
 ktlintGradle = "10.2.1"
