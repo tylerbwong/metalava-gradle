@@ -1,7 +1,6 @@
 package me.tylerbwong.gradle.metalava
 
 import com.android.build.gradle.LibraryExtension
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.findByType
@@ -28,8 +27,6 @@ internal sealed class Module {
      * @param variant Identifies a classpath retained by the Module. If `null` then the default
      * classpath for that Platform is used.
      * @return The classpath for to be passed to metalava. May be empty.
-     *
-     * @see variants
      */
     abstract fun compileClasspath(variant: String? = null): Collection<File>
 
@@ -76,7 +73,7 @@ internal sealed class Module {
     }
 
     companion object {
-        internal val Project.module: Module
+        internal val Project.module: Module?
             get() {
                 // Use findByName to avoid requiring consumers to have the Android Gradle plugin
                 // in their classpath when applying this plugin to a non-Android project
@@ -87,7 +84,7 @@ internal sealed class Module {
                     libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension)
                     multiplatformExtension != null && multiplatformExtension is KotlinMultiplatformExtension -> Multiplatform(multiplatformExtension)
                     javaPluginExtension != null -> Java(javaPluginExtension)
-                    else -> throw GradleException("This module is currently not supported by the Metalava plugin.")
+                    else -> null
                 }
             }
 

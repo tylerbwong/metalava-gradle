@@ -34,12 +34,16 @@ class MetalavaPlugin : Plugin<Project> {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
                 val currentModule = module
-                if (currentModule is Module.Android) {
-                    currentModule.libraryVariants.forEach {
-                        createMetalavaTasks(this, extension, currentModule, it)
+                if (currentModule != null) {
+                    if (currentModule is Module.Android) {
+                        currentModule.libraryVariants.forEach {
+                            createMetalavaTasks(this, extension, currentModule, it)
+                        }
+                    } else {
+                        createMetalavaTasks(this, extension, currentModule)
                     }
                 } else {
-                    createMetalavaTasks(this, extension, currentModule)
+                    logger.warn("Module $name is not supported by the Metalava Gradle plugin")
                 }
             }
         }
