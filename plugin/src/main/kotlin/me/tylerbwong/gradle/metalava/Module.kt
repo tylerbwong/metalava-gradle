@@ -33,29 +33,27 @@ internal sealed class Module {
      */
     abstract fun compileClasspath(variant: String? = null): Collection<File>
 
-    /**
-     * The list of available variants to be passed into [compileClasspath] so as to filter
-     * its output. Can be null.
-     *
-     * @see compileClasspath
-     */
-    open val variants: Collection<String>? = null
-
     class Android(private val extension: LibraryExtension) : Module() {
         override val bootClasspath: Collection<File>
             get() = extension.bootClasspath
         override fun compileClasspath(variant: String?): Collection<File> {
             require(variant != null) { "The compileClasspath variant cannot be null." }
-            require(variants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
+            require(libraryVariants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
             return extension.libraryVariants.find { it.name.equals(variant) }!!.getCompileClasspath(null).files
         }
-        override val variants: Collection<String>
+
+        /**
+         * The list of available library variants to be passed into [compileClasspath] so as to
+         * filter its output.
+         *
+         * @see compileClasspath
+         */
+        val libraryVariants: Collection<String>
             get() = extension.libraryVariants.map { it.name }
     }
 
     class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {
         override fun compileClasspath(variant: String?): Collection<File> {
-            require(variant == null) { "Unexpected compileClasspath variant. Got $variant." }
             return extension.targets
                 .flatMap { it.compilations }
                 .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
@@ -70,7 +68,6 @@ internal sealed class Module {
                 .toList()
                 .filter { it.exists() && it.name == "rt.jar" }
         override fun compileClasspath(variant: String?): Collection<File> {
-            require(variant == null) { "Unexpected compileClasspath variant. Got $variant." }
             return extension.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
                 .flatMap { it.compileClasspath }
