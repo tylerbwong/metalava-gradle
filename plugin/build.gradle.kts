@@ -57,4 +57,6 @@ dependencies {
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
     compileOnly(libs.androidGradle)
+
+    testImplementation(libs.junit)
 }
