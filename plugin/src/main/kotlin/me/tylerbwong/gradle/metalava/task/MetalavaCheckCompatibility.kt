@@ -25,6 +25,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                     Generates a Metalava signature descriptor file in the project build directory for API compatibility 
                     checking.
                 """.trimIndent(),
+                taskGroup = null,
                 variantName = variantName,
                 filename = tempFilename
             )
