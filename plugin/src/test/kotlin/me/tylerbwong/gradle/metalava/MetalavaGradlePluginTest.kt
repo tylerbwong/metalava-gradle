@@ -90,8 +90,8 @@ class MetalavaGradlePluginTest {
                     }
                     
                     tasks.register("customTask") {
-                      inputs.file(metalava.outputSignatureFileProvider)
-                      doFirst { }
+                        inputs.file(metalava.outputSignatureFileProvider)
+                        doFirst { }
                     }
                 """
             )
