@@ -14,13 +14,17 @@ class MetalavaPlugin : Plugin<Project> {
             afterEvaluate {
                 val currentModule = module(extension)
                 if (currentModule != null) {
-                    MetalavaSignature.registerMetalavaSignatureTask(
+                    val registerSignatureTaskProvider = MetalavaSignature.registerMetalavaSignatureTask(
                         project = this,
                         name = "metalavaGenerateSignature",
                         description = "Generates a Metalava signature descriptor file.",
                         extension = extension,
                         module = currentModule
                     )
+                    val outputSignatureFileProvider = registerSignatureTaskProvider
+                        .map { layout.projectDirectory.file(extension.filename) }
+                    extension.outputSignatureFileProperty.set(outputSignatureFileProvider)
+
                     MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
                         project = this,
                         extension = extension,

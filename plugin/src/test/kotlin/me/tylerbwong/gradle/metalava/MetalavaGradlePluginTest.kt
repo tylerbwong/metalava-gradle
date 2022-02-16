@@ -72,6 +72,36 @@ class MetalavaGradlePluginTest {
         assertTrue(result.output.contains("not supported by the Metalava Gradle plugin"))
     }
 
+    @Test
+    fun `check outputSignatureFileProvider creates dependency on generation task`() {
+        buildscriptFile = testProjectDir.newFile("build.gradle.kts").apply {
+            appendText(
+                """
+                    allprojects {
+                        repositories {
+                            google()
+                            mavenCentral()
+                        }
+                    }
+    
+                    plugins {
+                        `java-library`
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+                    
+                    tasks.register("customTask") {
+                      inputs.file(metalava.outputSignatureFileProvider)
+                      doFirst { }
+                    }
+                """
+            )
+        }
+        val result = gradleRunner
+            .withArguments("customTask")
+            .build()
+        assertTrue(result.tasks.any { it.path == ":metalavaGenerateSignature" })
+    }
+
     @After
     fun tearDown() {
         buildscriptFile.delete()
