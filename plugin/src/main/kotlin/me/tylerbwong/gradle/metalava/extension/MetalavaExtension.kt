@@ -107,7 +107,7 @@ open class MetalavaExtension @Inject constructor(
      * The directories to search for source files. An exception will be thrown is the named
      * directories are not direct children of the project root. The default is "src".
      *
-     * @see addSourcePath
+     * @see addSourcePaths
      * @see ignoreSourcePaths
      */
     var sourcePaths = mutableSetOf("src")
@@ -116,10 +116,10 @@ open class MetalavaExtension @Inject constructor(
     internal val sourcePathsFileCollection = objects.fileCollection()
 
     /**
-     * Add a directory in which to search for source files.
-     * The given path is evaluated as per [org.gradle.api.Project.files].
+     * Add a directory (or multiple) in which to search for source files.
+     * The given paths are evaluated as per [org.gradle.api.Project.files].
      */
-    fun addSourcePath(sourcePath: Any) {
+    fun addSourcePaths(sourcePath: Any) {
         sourcePathsFileCollection.from(sourcePath)
     }
 

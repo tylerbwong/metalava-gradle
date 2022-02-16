@@ -74,7 +74,7 @@ class MetalavaGradlePluginTest {
 
 
     @Test
-    fun `check addSourcePath propagates task dependency`() {
+    fun `check addSourcePaths propagates task dependency`() {
         buildscriptFile = testProjectDir.newFile("build.gradle.kts").apply {
             appendText(
                 """
@@ -99,7 +99,7 @@ class MetalavaGradlePluginTest {
                     }
                     
                     metalava {
-                        addSourcePath(customSourceGeneratingTaskProvider.map { it.outputs.files })
+                        addSourcePaths(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
                 """
             )
