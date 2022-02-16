@@ -72,6 +72,44 @@ class MetalavaGradlePluginTest {
         assertTrue(result.output.contains("not supported by the Metalava Gradle plugin"))
     }
 
+
+    @Test
+    fun `check addSourcePath propagates task dependency`() {
+        buildscriptFile = testProjectDir.newFile("build.gradle.kts").apply {
+            appendText(
+                """
+                    allprojects {
+                        repositories {
+                            google()
+                            mavenCentral()
+                        }
+                    }
+    
+                    plugins {
+                        `java-library`
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+                    
+                    val customSourceGeneratingTaskProvider = tasks.register("customSourceGeneratingTask") {
+                        val outputDir = file("customSrc/")
+                        outputs.dir(outputDir)
+                        doFirst {
+                            mkdir(outputDir)
+                        }
+                    }
+                    
+                    metalava {
+                        addSourcePath(customSourceGeneratingTaskProvider.map { it.outputs.files })
+                    }
+                """
+            )
+        }
+        val result = gradleRunner
+            .withArguments("metalavaGenerateSignature")
+            .build()
+        assertTrue(result.tasks.any { it.path == ":customSourceGeneratingTask" })
+    }
+
     @After
     fun tearDown() {
         buildscriptFile.delete()

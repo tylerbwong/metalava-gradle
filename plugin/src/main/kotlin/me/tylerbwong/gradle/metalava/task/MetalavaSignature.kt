@@ -44,6 +44,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 }
 
                 inputs.files(sourceFiles)
+                inputs.files(extension.sourcePathsFileCollection)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
                 inputs.property("signature", extension.signature)
@@ -58,7 +59,19 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 doFirst {
                     val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
 
-                    val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
+                    val sourcePaths = (sourceFiles +
+                        extension.sourcePathsFileCollection.elements.get().map { it.asFile })
+                        .also { files ->
+                            val nonExistentDirs = files.filter { !it.exists() }
+                            require(nonExistentDirs.isEmpty()) {
+                                "Specified source path doesn't exist: $nonExistentDirs"
+                            }
+                            val nonDirectories = files.filter { !it.isDirectory }
+                            require(nonDirectories.isEmpty()) {
+                                "Specified source path isn't a directory: $nonDirectories"
+                            }
+                        }
+                        .joinToString(File.pathSeparator)
 
                     val hidePackages =
                         extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
@@ -74,8 +87,9 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                         "--classpath", fullClasspath,
                         "--output-kotlin-nulls=${extension.outputKotlinNulls.flagValue}",
                         "--output-default-values=${extension.outputDefaultValues.flagValue}",
-                        "--include-signature-version=${extension.includeSignatureVersion.flagValue}"
-                    ) + sourcePaths + hidePackages + hideAnnotations
+                        "--include-signature-version=${extension.includeSignatureVersion.flagValue}",
+                        "--source-path", sourcePaths,
+                    ) + hidePackages + hideAnnotations
 
                     isIgnoreExitValue = true
                     setArgs(args)
