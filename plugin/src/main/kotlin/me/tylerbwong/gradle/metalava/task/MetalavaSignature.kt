@@ -43,6 +43,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                         .toList()
                 }
 
+                inputs.files(module.compileClasspath)
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
@@ -56,7 +57,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 outputs.file(filename)
 
                 doFirst {
-                    val fullClasspath = (module.bootClasspath + module.compileClasspath).joinToString(File.pathSeparator)
+                    val fullClasspath = (module.bootClasspath + module.compileClasspath.files).joinToString(File.pathSeparator)
 
                     val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
 
