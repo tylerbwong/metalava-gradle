@@ -119,8 +119,8 @@ open class MetalavaExtension @Inject constructor(
      * Add a directory (or multiple) in which to search for source files.
      * The given paths are evaluated as per [org.gradle.api.Project.files].
      */
-    fun addSourcePaths(sourcePath: Any) {
-        sourcePathsFileCollection.from(sourcePath)
+    fun addSourcePaths(sourcePaths: Any) {
+        sourcePathsFileCollection.from(sourcePaths)
     }
 
     /**
