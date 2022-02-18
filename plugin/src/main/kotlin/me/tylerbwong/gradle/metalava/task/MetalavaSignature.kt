@@ -29,8 +29,10 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
+                val compileClasspath = module.compileClasspath(variantName)
                 val sourceFiles = extension.sourcePaths.map { file(it) }
 
+                inputs.files(compileClasspath)
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
@@ -44,7 +46,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 outputs.file(filename)
 
                 doFirst {
-                    val fullClasspath = (module.bootClasspath + module.compileClasspath(variantName)).joinToString(File.pathSeparator)
+                    val fullClasspath = (module.bootClasspath + compileClasspath).joinToString(File.pathSeparator)
 
                     val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
 

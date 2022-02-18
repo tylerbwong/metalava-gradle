@@ -2,6 +2,7 @@ package me.tylerbwong.gradle.metalava
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -28,15 +29,16 @@ internal sealed class Module {
      * classpath for that Platform is used.
      * @return The classpath for to be passed to metalava. May be empty.
      */
-    abstract fun compileClasspath(variant: String? = null): Collection<File>
+    abstract fun compileClasspath(variant: String? = null): FileCollection
 
     class Android(private val extension: LibraryExtension) : Module() {
         override val bootClasspath: Collection<File>
             get() = extension.bootClasspath
-        override fun compileClasspath(variant: String?): Collection<File> {
+        override fun compileClasspath(variant: String?): FileCollection {
             require(variant != null) { "The compileClasspath variant cannot be null." }
             require(libraryVariants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
-            return extension.libraryVariants.find { it.name.equals(variant) }!!.getCompileClasspath(null).files
+            return extension.libraryVariants.find { it.name.equals(variant) }!!
+                .getCompileClasspath(null).filter { it.exists() }
         }
 
         /**
@@ -50,11 +52,12 @@ internal sealed class Module {
     }
 
     class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {
-        override fun compileClasspath(variant: String?): Collection<File> {
+        override fun compileClasspath(variant: String?): FileCollection {
             return extension.targets
                 .flatMap { it.compilations }
                 .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
-                .flatMap { it.compileDependencyFiles }
+                .map { it.compileDependencyFiles }
+                .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
         }
     }
@@ -64,10 +67,11 @@ internal sealed class Module {
             get() = File(System.getProperty("java.home")).walkTopDown()
                 .toList()
                 .filter { it.exists() && it.name == "rt.jar" }
-        override fun compileClasspath(variant: String?): Collection<File> {
+        override fun compileClasspath(variant: String?): FileCollection {
             return extension.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
-                .flatMap { it.compileClasspath }
+                .map { it.compileClasspath }
+                .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
         }
     }
