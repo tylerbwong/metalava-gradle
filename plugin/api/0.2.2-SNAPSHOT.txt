@@ -33,7 +33,7 @@ package me.tylerbwong.gradle.metalava {
 package me.tylerbwong.gradle.metalava.extension {
 
   public class MetalavaExtension {
-    ctor public MetalavaExtension();
+    ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objects);
     method public final String getAndroidVariantName();
     method public final me.tylerbwong.gradle.metalava.Documentation getDocumentation();
     method public final boolean getEnforceCheck();
@@ -47,6 +47,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final String? getMetalavaJarPath();
     method public final boolean getOutputDefaultValues();
     method public final boolean getOutputKotlinNulls();
+    method public final org.gradle.api.provider.Provider<org.gradle.api.file.RegularFile> getOutputSignatureFileProvider();
     method public final String getReleaseType();
     method public final boolean getReportLintsAsErrors();
     method public final boolean getReportWarningsAsErrors();
@@ -84,6 +85,7 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final String? metalavaJarPath;
     property public final boolean outputDefaultValues;
     property public final boolean outputKotlinNulls;
+    property public final org.gradle.api.provider.Provider<org.gradle.api.file.RegularFile> outputSignatureFileProvider;
     property public final String releaseType;
     property public final boolean reportLintsAsErrors;
     property public final boolean reportWarningsAsErrors;
