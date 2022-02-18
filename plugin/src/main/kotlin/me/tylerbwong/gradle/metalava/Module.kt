@@ -3,6 +3,7 @@ package me.tylerbwong.gradle.metalava
 import com.android.build.gradle.LibraryExtension
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -11,23 +12,24 @@ import java.io.File
 internal sealed class Module {
 
     open val bootClasspath: Collection<File> = emptyList()
-    abstract val compileClasspath: Collection<File>
+    abstract val compileClasspath: FileCollection
 
     class Android(private val extension: LibraryExtension, private val variantName: String) : Module() {
         override val bootClasspath: Collection<File>
             get() = extension.bootClasspath
-        override val compileClasspath: Collection<File>
+        override val compileClasspath: FileCollection
             get() = extension.libraryVariants.find {
                 it.name.contains(variantName, ignoreCase = true)
-            }?.getCompileClasspath(null)?.filter { it.exists() }?.files ?: emptyList()
+            }?.getCompileClasspath(null)?.filter { it.exists() }!!
     }
 
     class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {
-        override val compileClasspath: Collection<File>
+        override val compileClasspath: FileCollection
             get() = extension.targets
                 .flatMap { it.compilations }
                 .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
-                .flatMap { it.compileDependencyFiles }
+                .map { it.compileDependencyFiles }
+                .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
     }
 
@@ -36,10 +38,11 @@ internal sealed class Module {
             get() = File(System.getProperty("java.home")).walkTopDown()
                 .toList()
                 .filter { it.exists() && it.name == "rt.jar" }
-        override val compileClasspath: Collection<File>
+        override val compileClasspath: FileCollection
             get() = extension.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
-                .flatMap { it.compileClasspath }
+                .map { it.compileClasspath }
+                .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
     }
 
