@@ -60,8 +60,10 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 doFirst {
                     val fullClasspath = (module.bootClasspath + module.compileClasspath.files).joinToString(File.pathSeparator)
 
-                    val sourcePaths = (sourceFiles +
-                        extension.sourcePathsFileCollection.elements.get().map { it.asFile })
+                    val sourcePaths = (
+                        sourceFiles +
+                            extension.sourcePathsFileCollection.elements.get().map { it.asFile }
+                        )
                         .also { files ->
                             val nonExistentDirs = files.filter { !it.exists() }
                             require(nonExistentDirs.isEmpty()) {
