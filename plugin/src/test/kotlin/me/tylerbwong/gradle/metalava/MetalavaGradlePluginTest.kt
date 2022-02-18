@@ -71,7 +71,7 @@ class MetalavaGradlePluginTest {
         val result = gradleRunner.build()
         assertTrue(result.output.contains("not supported by the Metalava Gradle plugin"))
     }
-  
+
     @Test
     fun `check addSourcePaths propagates task dependency`() {
         buildscriptFile = testProjectDir.newFile("build.gradle.kts").apply {
