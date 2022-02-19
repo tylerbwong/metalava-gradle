@@ -35,13 +35,11 @@ package me.tylerbwong.gradle.metalava.extension {
   public class MetalavaExtension {
     ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objects);
     method public final void addSourcePaths(Object sourcePaths);
-    method public final String getAndroidVariantName();
     method public final me.tylerbwong.gradle.metalava.Documentation getDocumentation();
     method public final boolean getEnforceCheck();
     method public final String getFilename();
     method public final me.tylerbwong.gradle.metalava.Format getFormat();
     method public final java.util.Set<java.lang.String> getHiddenAnnotations();
-    method public final java.util.Set<java.lang.String> getIgnoreSourcePaths();
     method public final boolean getIncludeSignatureVersion();
     method public final boolean getInputKotlinNulls();
     method public final org.gradle.api.JavaVersion getJavaSourceLevel();
@@ -54,12 +52,10 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final me.tylerbwong.gradle.metalava.Signature getSignature();
     method public final java.util.Set<java.lang.String> getSourcePaths();
     method public final String getVersion();
-    method public final void setAndroidVariantName(String androidVariantName);
     method public final void setDocumentation(me.tylerbwong.gradle.metalava.Documentation documentation);
     method public final void setEnforceCheck(boolean enforceCheck);
     method public final void setFilename(String filename);
     method public final void setFormat(me.tylerbwong.gradle.metalava.Format format);
-    method public final void setIgnoreSourcePaths(java.util.Set<java.lang.String> ignoreSourcePaths);
     method public final void setIncludeSignatureVersion(boolean includeSignatureVersion);
     method public final void setInputKotlinNulls(boolean inputKotlinNulls);
     method public final void setJavaSourceLevel(org.gradle.api.JavaVersion javaSourceLevel);
@@ -72,13 +68,11 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setSignature(me.tylerbwong.gradle.metalava.Signature signature);
     method public final void setSourcePaths(java.util.Set<java.lang.String> sourcePaths);
     method public final void setVersion(String version);
-    property public final String androidVariantName;
     property public final me.tylerbwong.gradle.metalava.Documentation documentation;
     property public final boolean enforceCheck;
     property public final String filename;
     property public final me.tylerbwong.gradle.metalava.Format format;
     property public final java.util.Set<java.lang.String> hiddenAnnotations;
-    property public final java.util.Set<java.lang.String> ignoreSourcePaths;
     property public final boolean includeSignatureVersion;
     property public final boolean inputKotlinNulls;
     property public final org.gradle.api.JavaVersion javaSourceLevel;
