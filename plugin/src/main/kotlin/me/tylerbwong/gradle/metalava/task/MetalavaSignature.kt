@@ -6,44 +6,33 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
-import java.util.Locale
 
 internal object MetalavaSignature : MetalavaTaskContainer() {
-    private val sourceLanguageDirectoryNames = listOf("java", "kotlin")
-
     fun registerMetalavaSignatureTask(
         project: Project,
-        name: String,
-        description: String,
         extension: MetalavaExtension,
         module: Module,
+        taskName: String,
+        taskDescription: String,
         taskGroup: String? = "documentation",
+        variantName: String? = null,
         filename: String = extension.filename
     ): TaskProvider<JavaExec> {
         return with(project) {
-            tasks.register(name, JavaExec::class.java) {
+            tasks.register(getFullTaskname(taskName, variantName), JavaExec::class.java) {
                 require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
+
                 if (taskGroup != null) {
                     group = taskGroup
                 }
-                this.description = description
+                description = taskDescription
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
 
-                val sourceFiles = extension.sourcePaths.flatMap { sourcePath ->
-                    file(sourcePath)
-                        .walk()
-                        .onEnter {
-                            extension.ignoreSourcePaths.none { ignoredDirectoryName ->
-                                ignoredDirectoryName.equals(it.name, ignoreCase = true)
-                            }
-                        }
-                        .filter { it.isDirectory }
-                        .filter { it.name.toLowerCase(Locale.getDefault()) in sourceLanguageDirectoryNames }
-                        .toList()
-                }
+                val compileClasspath = module.compileClasspath(variantName)
+                val sourceFiles = extension.sourcePaths.map { file(it) }
 
-                inputs.files(module.compileClasspath)
+                inputs.files(compileClasspath)
                 inputs.files(sourceFiles)
                 inputs.property("documentation", extension.documentation)
                 inputs.property("format", extension.format)
@@ -57,7 +46,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                 outputs.file(filename)
 
                 doFirst {
-                    val fullClasspath = (module.bootClasspath + module.compileClasspath.files).joinToString(File.pathSeparator)
+                    val fullClasspath = (module.bootClasspath + compileClasspath).joinToString(File.pathSeparator)
 
                     val sourcePaths = listOf("--source-path") + sourceFiles.joinToString(File.pathSeparator)
 

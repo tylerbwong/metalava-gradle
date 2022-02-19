@@ -6,27 +6,36 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
 
 internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
-    fun registerMetalavaCheckCompatibilityTask(project: Project, extension: MetalavaExtension, module: Module) {
+    fun registerMetalavaCheckCompatibilityTask(
+        project: Project,
+        extension: MetalavaExtension,
+        module: Module,
+        taskName: String,
+        taskDescription: String,
+        variantName: String?
+    ) {
         with(project) {
             val tempFilename = layout.buildDirectory.file("metalava/current.txt").get().asFile.absolutePath
             val generateTempMetalavaSignatureTask = MetalavaSignature.registerMetalavaSignatureTask(
                 project = this,
-                name = "metalavaGenerateTempSignature",
-                description = """
+                extension = extension,
+                module = module,
+                taskName = "metalavaGenerateTempSignature",
+                taskDescription = """
                     Generates a Metalava signature descriptor file in the project build directory for API compatibility 
                     checking.
                 """.trimIndent(),
-                extension = extension,
-                module = module,
                 taskGroup = null,
+                variantName = variantName,
                 filename = tempFilename
             )
-            val checkCompatibilityTask = tasks.register("metalavaCheckCompatibility", JavaExec::class.java) {
+            val checkCompatibilityTask = tasks.register(getFullTaskname(taskName, variantName), JavaExec::class.java) {
                 group = "verification"
-                description = "Checks API compatibility between the code base and the current or release API."
+                description = taskDescription
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
                 dependsOn(generateTempMetalavaSignatureTask)
+
                 // Use temp signature file for incremental Gradle task output
                 // If both the current API and temp API have not changed since last run, then
                 // consider this task UP-TO-DATE

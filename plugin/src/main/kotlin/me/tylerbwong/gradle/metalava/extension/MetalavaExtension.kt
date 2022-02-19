@@ -86,12 +86,6 @@ open class MetalavaExtension {
     var reportLintsAsErrors = false
 
     /**
-     * For Android modules defines which variant should be used to resolve classpath when Metalava
-     * generates or checks API.
-     */
-    var androidVariantName = "debug"
-
-    /**
      * Customization of the severities to apply when doing compatibility checking.
      * "current" will identify all changes (i.e. removals and additions).
      * "released" will identify only removals and additions of abstract methods.
@@ -102,19 +96,8 @@ open class MetalavaExtension {
     /**
      * The directories to search for source files. An exception will be thrown is the named
      * directories are not direct children of the project root. The default is "src".
-     *
-     * @see ignoreSourcePaths
      */
     var sourcePaths = mutableSetOf("src")
-
-    /**
-     * The sub-directories of each directory specified by [sourcePaths] that should not be searched
-     * for source files. Directory name matching is conducted using case-insensitive equality. The
-     * default values are `("test", "commonTest", "androidTest", "iosTest", "jsTest")`.
-     *
-     * @see sourcePaths
-     */
-    var ignoreSourcePaths = mutableSetOf("test", "commonTest", "androidTest", "iosTest", "jsTest")
 
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is yes.
