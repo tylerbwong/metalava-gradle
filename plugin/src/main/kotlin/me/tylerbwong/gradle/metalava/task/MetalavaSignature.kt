@@ -52,17 +52,17 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
                     val sourcePaths = (
                         sourceFiles +
                             extension.sourcePathsFileCollection.elements.get().map { it.asFile }
+                                .also { files ->
+                                    val nonExistentDirs = files.filter { !it.exists() }
+                                    require(nonExistentDirs.isEmpty()) {
+                                        "Specified source path doesn't exist: $nonExistentDirs"
+                                    }
+                                    val nonDirectories = files.filter { !it.isDirectory }
+                                    require(nonDirectories.isEmpty()) {
+                                        "Specified source path isn't a directory: $nonDirectories"
+                                    }
+                                }
                         )
-                        .also { files ->
-                            val nonExistentDirs = files.filter { !it.exists() }
-                            require(nonExistentDirs.isEmpty()) {
-                                "Specified source path doesn't exist: $nonExistentDirs"
-                            }
-                            val nonDirectories = files.filter { !it.isDirectory }
-                            require(nonDirectories.isEmpty()) {
-                                "Specified source path isn't a directory: $nonDirectories"
-                            }
-                        }
                         .joinToString(File.pathSeparator)
 
                     val hidePackages =
