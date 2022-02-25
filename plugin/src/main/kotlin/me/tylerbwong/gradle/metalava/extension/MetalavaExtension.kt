@@ -4,8 +4,12 @@ import me.tylerbwong.gradle.metalava.Documentation
 import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
-open class MetalavaExtension {
+open class MetalavaExtension @Inject constructor(
+    objects: ObjectFactory,
+) {
     /**
      * The version of Metalava to use.
      */
@@ -96,8 +100,21 @@ open class MetalavaExtension {
     /**
      * The directories to search for source files. An exception will be thrown is the named
      * directories are not direct children of the project root. The default is "src".
+     *
+     * @see addSourcePaths
      */
     var sourcePaths = mutableSetOf("src")
+
+    /** Internal. Do not use. */
+    internal val sourcePathsFileCollection = objects.fileCollection()
+
+    /**
+     * Add a directory (or multiple) in which to search for source files.
+     * The given paths are evaluated as per [org.gradle.api.Project.files].
+     */
+    fun addSourcePaths(sourcePaths: Any) {
+        sourcePathsFileCollection.from(sourcePaths)
+    }
 
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is yes.

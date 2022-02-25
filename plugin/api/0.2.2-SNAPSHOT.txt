@@ -33,7 +33,8 @@ package me.tylerbwong.gradle.metalava {
 package me.tylerbwong.gradle.metalava.extension {
 
   public class MetalavaExtension {
-    ctor public MetalavaExtension();
+    ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objects);
+    method public final void addSourcePaths(Object sourcePaths);
     method public final me.tylerbwong.gradle.metalava.Documentation getDocumentation();
     method public final boolean getEnforceCheck();
     method public final String getFilename();
