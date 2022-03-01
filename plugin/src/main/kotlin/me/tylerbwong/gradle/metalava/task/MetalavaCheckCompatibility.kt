@@ -29,7 +29,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 variantName = variantName,
                 filename = tempFilename
             )
-            val checkCompatibilityTask = tasks.register(getFullTaskname(taskName, variantName), JavaExec::class.java) {
+            val checkCompatibilityTask = tasks.register(getFullTaskName(taskName, variantName), JavaExec::class.java) {
                 group = "verification"
                 description = taskDescription
                 mainClass.set("com.android.tools.metalava.Driver")

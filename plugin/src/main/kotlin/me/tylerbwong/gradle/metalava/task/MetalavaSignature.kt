@@ -19,7 +19,7 @@ internal object MetalavaSignature : MetalavaTaskContainer() {
         filename: String = extension.filename
     ): TaskProvider<JavaExec> {
         return with(project) {
-            tasks.register(getFullTaskname(taskName, variantName), JavaExec::class.java) {
+            tasks.register(getFullTaskName(taskName, variantName), JavaExec::class.java) {
                 require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
 
                 if (taskGroup != null) {

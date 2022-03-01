@@ -23,7 +23,7 @@ internal abstract class MetalavaTaskContainer {
         return files(configuration)
     }
 
-    protected fun getFullTaskname(taskName: String, variantName: String?): String {
+    protected fun getFullTaskName(taskName: String, variantName: String?): String {
         return if (variantName != null) {
             taskName + variantName.capitalize(Locale.getDefault())
         } else {
