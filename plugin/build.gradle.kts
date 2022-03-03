@@ -51,6 +51,7 @@ publishing {
 
 metalava {
     filename = "api/${project.version}.txt"
+    sourcePaths = mutableSetOf("src/main")
 }
 
 dependencies {
