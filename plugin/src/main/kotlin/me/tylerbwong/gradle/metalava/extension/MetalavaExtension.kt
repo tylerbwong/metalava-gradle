@@ -98,7 +98,7 @@ open class MetalavaExtension @Inject constructor(
     var releaseType = "current"
 
     /**
-     * The directories to search for source files. An exception will be thrown is the named
+     * The directories to search for source files. An exception will be thrown if the named
      * directories are not direct children of the project root. The default is "src".
      *
      * @see addSourcePaths
