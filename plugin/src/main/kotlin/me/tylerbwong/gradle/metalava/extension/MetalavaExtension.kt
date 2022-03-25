@@ -13,7 +13,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    var version = "1.0.0-alpha04"
+    var version = "1.0.0-alpha05"
 
     /**
      * A custom Metalava JAR location path to use instead of the embedded dependency.
