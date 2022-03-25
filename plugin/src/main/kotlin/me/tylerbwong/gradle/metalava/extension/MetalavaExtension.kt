@@ -46,6 +46,11 @@ open class MetalavaExtension @Inject constructor(
     var documentation: Documentation = Documentation.PROTECTED
 
     /**
+     *  Type is one of 'api' and 'removed', which checks either the public api or the removed api.
+     */
+    var apiType = "api"
+
+    /**
      * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
      * types, "" for non-nullable types, and "!" for unknown. The default is yes.
      */
@@ -88,14 +93,6 @@ open class MetalavaExtension @Inject constructor(
      * Promote all API lint warnings to errors.
      */
     var reportLintsAsErrors = false
-
-    /**
-     * Customization of the severities to apply when doing compatibility checking.
-     * "current" will identify all changes (i.e. removals and additions).
-     * "released" will identify only removals and additions of abstract methods.
-     * The default is "current".
-     */
-    var releaseType = "current"
 
     /**
      * The directories to search for source files. An exception will be thrown if the named

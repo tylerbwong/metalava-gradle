@@ -35,6 +35,7 @@ package me.tylerbwong.gradle.metalava.extension {
   public class MetalavaExtension {
     ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objects);
     method public final void addSourcePaths(Object sourcePaths);
+    method public final String getApiType();
     method public final me.tylerbwong.gradle.metalava.Documentation getDocumentation();
     method public final boolean getEnforceCheck();
     method public final String getFilename();
@@ -46,12 +47,12 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final String? getMetalavaJarPath();
     method public final boolean getOutputDefaultValues();
     method public final boolean getOutputKotlinNulls();
-    method public final String getReleaseType();
     method public final boolean getReportLintsAsErrors();
     method public final boolean getReportWarningsAsErrors();
     method public final me.tylerbwong.gradle.metalava.Signature getSignature();
     method public final java.util.Set<java.lang.String> getSourcePaths();
     method public final String getVersion();
+    method public final void setApiType(String apiType);
     method public final void setDocumentation(me.tylerbwong.gradle.metalava.Documentation documentation);
     method public final void setEnforceCheck(boolean enforceCheck);
     method public final void setFilename(String filename);
@@ -62,12 +63,12 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setMetalavaJarPath(String? metalavaJarPath);
     method public final void setOutputDefaultValues(boolean outputDefaultValues);
     method public final void setOutputKotlinNulls(boolean outputKotlinNulls);
-    method public final void setReleaseType(String releaseType);
     method public final void setReportLintsAsErrors(boolean reportLintsAsErrors);
     method public final void setReportWarningsAsErrors(boolean reportWarningsAsErrors);
     method public final void setSignature(me.tylerbwong.gradle.metalava.Signature signature);
     method public final void setSourcePaths(java.util.Set<java.lang.String> sourcePaths);
     method public final void setVersion(String version);
+    property public final String apiType;
     property public final me.tylerbwong.gradle.metalava.Documentation documentation;
     property public final boolean enforceCheck;
     property public final String filename;
@@ -79,7 +80,6 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final String? metalavaJarPath;
     property public final boolean outputDefaultValues;
     property public final boolean outputKotlinNulls;
-    property public final String releaseType;
     property public final boolean reportLintsAsErrors;
     property public final boolean reportWarningsAsErrors;
     property public final me.tylerbwong.gradle.metalava.Signature signature;

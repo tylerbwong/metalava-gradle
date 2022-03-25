@@ -42,7 +42,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 inputs.file(extension.filename)
                 inputs.property("format", extension.format)
                 inputs.property("inputKotlinNulls", extension.inputKotlinNulls.flagValue)
-                inputs.property("releaseType", extension.releaseType)
+                inputs.property("apiType", extension.apiType)
                 inputs.property("hiddenPackages", extension.hiddenPackages)
                 inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
                 outputs.file(tempFilename)
@@ -58,7 +58,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                         "--no-banner",
                         "--format=${extension.format}",
                         "--source-files", tempFilename,
-                        "--check-compatibility:api:${extension.releaseType}", extension.filename,
+                        "--check-compatibility:${extension.apiType}:released", extension.filename,
                         "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
                     ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
                         extension.reportLintsAsErrors.flag("--lints-as-errors") + hidePackages + hideAnnotations
