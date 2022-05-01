@@ -4,7 +4,7 @@ import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibility
-import me.tylerbwong.gradle.metalava.task.MetalavaSignature
+import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -35,13 +35,11 @@ class MetalavaPlugin : Plugin<Project> {
         module: Module,
         variantName: String? = null,
     ) {
-        MetalavaSignature.registerMetalavaSignatureTask(
+        MetalavaGenerateSignatureTask.registerMetalavaSignatureTask(
             project = project,
             extension = metalavaExtension,
             module = module,
-            taskName = "metalavaGenerateSignature",
-            taskDescription = "Generates a Metalava signature descriptor file.",
-            variantName = variantName
+            variantName = variantName,
         )
 
         MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
