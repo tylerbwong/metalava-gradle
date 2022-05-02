@@ -119,6 +119,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
         fun create(
             project: Project,
+            objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
             variantName: String? = null,
@@ -126,13 +127,13 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         ) {
             require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(extension)
+            val metalavaClasspath = project.getMetalavaClasspath(objectFactory, extension)
             project.tasks.create<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 this.filename.set(filename)
+                this.sourceFiles.setFrom(extension.sourcePaths)
                 shouldRunGenerateSignature.set(true)
                 compileClasspath.from(module.compileClasspath(variantName))
-                sourceFiles.setFrom(extension.sourcePaths)
                 sourcePathsFileCollection.from(extension.sourcePathsFileCollection)
                 documentation.set(extension.documentation)
                 format.set(extension.format)

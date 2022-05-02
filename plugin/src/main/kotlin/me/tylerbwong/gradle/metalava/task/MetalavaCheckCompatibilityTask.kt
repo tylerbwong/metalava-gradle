@@ -64,6 +64,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
 
         fun create(
             project: Project,
+            objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
             variantName: String?
@@ -71,14 +72,14 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             val tempFilename = project.layout.buildDirectory
                 .file(METALAVA_CURRENT_PATH).get().asFile.absolutePath
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(extension)
+            val metalavaClasspath = project.getMetalavaClasspath(objectFactory, extension)
             return project.tasks.create<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 this.filename.set(extension.filename)
                 this.tempFilename.set(tempFilename)
+                this.sourceFiles.setFrom(extension.sourcePaths)
                 shouldRunGenerateSignature.set(false)
                 compileClasspath.from(module.compileClasspath(variantName))
-                sourceFiles.setFrom(extension.sourcePaths)
                 sourcePathsFileCollection.from(extension.sourcePathsFileCollection)
                 documentation.set(extension.documentation)
                 format.set(extension.format)

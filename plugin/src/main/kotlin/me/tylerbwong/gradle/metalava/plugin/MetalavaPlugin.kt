@@ -7,8 +7,12 @@ import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibilityTask
 import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
-class MetalavaPlugin : Plugin<Project> {
+class MetalavaPlugin @Inject constructor(
+    private val objectFactory: ObjectFactory,
+) : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
@@ -17,10 +21,10 @@ class MetalavaPlugin : Plugin<Project> {
                 if (currentModule != null) {
                     if (currentModule is Module.Android) {
                         currentModule.libraryVariants.forEach {
-                            createMetalavaTasks(this, extension, currentModule, it)
+                            createMetalavaTasks(this, objectFactory, extension, currentModule, it)
                         }
                     } else {
-                        createMetalavaTasks(this, extension, currentModule)
+                        createMetalavaTasks(this, objectFactory, extension, currentModule)
                     }
                 } else {
                     logger.warn("Module $name is not supported by the Metalava Gradle plugin")
@@ -31,12 +35,14 @@ class MetalavaPlugin : Plugin<Project> {
 
     private fun createMetalavaTasks(
         project: Project,
+        objectFactory: ObjectFactory,
         metalavaExtension: MetalavaExtension,
         module: Module,
         variantName: String? = null,
     ) {
         MetalavaGenerateSignatureTask.create(
             project = project,
+            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,
@@ -44,6 +50,7 @@ class MetalavaPlugin : Plugin<Project> {
 
         val checkCompatibilityTask = MetalavaCheckCompatibilityTask.create(
             project = project,
+            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,
