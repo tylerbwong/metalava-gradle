@@ -79,20 +79,22 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         awaitWork: Boolean = false
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
+        val validSourceFiles = sourceFiles.filter { it.exists() }
+        val validSourcePathFileCollection = sourcePathsFileCollection.elements.get()
+            .map { it.asFile }
+            .filter { it.exists() }
+            .also { files ->
+                val nonExistentDirs = files.filter { !it.exists() }
+                require(nonExistentDirs.isEmpty()) {
+                    "Specified source path doesn't exist: $nonExistentDirs"
+                }
+                val nonDirectories = files.filter { !it.isDirectory }
+                require(nonDirectories.isEmpty()) {
+                    "Specified source path isn't a directory: $nonDirectories"
+                }
+            }
 
-        val sourcePaths = (
-                sourceFiles + sourcePathsFileCollection.elements.get().map { it.asFile }
-                    .also { files ->
-                        val nonExistentDirs = files.filter { !it.exists() }
-                        require(nonExistentDirs.isEmpty()) {
-                            "Specified source path doesn't exist: $nonExistentDirs"
-                        }
-                        val nonDirectories = files.filter { !it.isDirectory }
-                        require(nonDirectories.isEmpty()) {
-                            "Specified source path isn't a directory: $nonDirectories"
-                        }
-                    }
-                )
+        val sourcePaths = (validSourceFiles + validSourcePathFileCollection)
             .joinToString(File.pathSeparator)
 
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
