@@ -51,9 +51,8 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             "--source-files", tempFilename.get(),
             "--check-compatibility:${apiType.get()}:released", filename.get(),
             "--input-kotlin-nulls=${inputKotlinNulls.get().flagValue}"
-        ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") +
-                reportLintsAsErrors.get().flag("--lints-as-errors") +
-                hidePackages + hideAnnotations
+        ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
+            .flag("--lints-as-errors") + hidePackages + hideAnnotations
         executeMetalavaWork(args)
     }
 
