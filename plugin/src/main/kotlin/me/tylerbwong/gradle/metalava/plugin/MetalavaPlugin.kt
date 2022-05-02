@@ -3,7 +3,7 @@ package me.tylerbwong.gradle.metalava.plugin
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
-import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibility
+import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibilityTask
 import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -35,20 +35,25 @@ class MetalavaPlugin : Plugin<Project> {
         module: Module,
         variantName: String? = null,
     ) {
-        MetalavaGenerateSignatureTask.registerMetalavaSignatureTask(
+        MetalavaGenerateSignatureTask.create(
             project = project,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,
         )
 
-        MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
+        val checkCompatibilityTask = MetalavaCheckCompatibilityTask.create(
             project = project,
             extension = metalavaExtension,
             module = module,
-            taskName = "metalavaCheckCompatibility",
-            taskDescription = "Checks API compatibility between the code base and the current or release API.",
-            variantName = variantName
+            variantName = variantName,
         )
+
+        // Projects that apply this plugin should include API compatibility checking as part of their regular checks.
+        // However, it may be that source dirs are generated only after some other build phase, and so the
+        // association with 'check' should be configurable.
+        if (metalavaExtension.enforceCheck) {
+            project.afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
+        }
     }
 }

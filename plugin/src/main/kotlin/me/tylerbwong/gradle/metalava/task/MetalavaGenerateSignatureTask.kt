@@ -1,7 +1,6 @@
 package me.tylerbwong.gradle.metalava.task
 
 import me.tylerbwong.gradle.metalava.Documentation
-import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Signature
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
@@ -14,21 +13,19 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.listProperty
 import org.gradle.workers.WorkerExecutor
 import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
 internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
-    workerExecutor: WorkerExecutor,
     objectFactory: ObjectFactory,
-) : BaseMetalavaTask(workerExecutor) {
+    workerExecutor: WorkerExecutor,
+) : BaseMetalavaTask(objectFactory, workerExecutor) {
 
     init {
         group = "documentation"
@@ -53,9 +50,6 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     abstract val documentation: Property<Documentation>
 
     @get:Input
-    abstract val format: Property<Format>
-
-    @get:Input
     abstract val signature: Property<Signature>
 
     @get:Input
@@ -71,16 +65,19 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     abstract val includeSignatureVersion: Property<Boolean>
 
     @get:Input
-    val hiddenPackages = objectFactory.listProperty<String>()
-
-    @get:Input
-    val hiddenAnnotations = objectFactory.listProperty<String>()
-
-    @get:OutputFile
-    abstract val filename: Property<String>
+    abstract val shouldRunGenerateSignature: Property<Boolean>
 
     @TaskAction
     fun metalavaGenerateSignature() {
+        if (shouldRunGenerateSignature.get()) {
+            metalavaGenerateSignatureInternal()
+        }
+    }
+
+    protected fun metalavaGenerateSignatureInternal(
+        filenameOverride: String? = null,
+        awaitWork: Boolean = false
+    ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
 
         val sourcePaths = (
@@ -105,7 +102,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             "${documentation.get()}",
             "--no-banner",
             "--format=${format.get()}",
-            "${signature.get()}", filename.get(),
+            "${signature.get()}", filenameOverride ?: filename.get(),
             "--java-source", "${javaSourceLevel.get()}",
             "--classpath", fullClasspath,
             "--output-kotlin-nulls=${outputKotlinNulls.get().flagValue}",
@@ -113,14 +110,14 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             "--include-signature-version=${includeSignatureVersion.get().flagValue}",
             "--source-path", sourcePaths,
         ) + hidePackages + hideAnnotations
-        executeMetalavaWork(args)
+        executeMetalavaWork(args, awaitWork)
     }
 
     internal companion object : MetalavaTaskContainer() {
         private const val TASK_NAME = "metalavaGenerateSignature"
         private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
 
-        fun registerMetalavaSignatureTask(
+        fun create(
             project: Project,
             extension: MetalavaExtension,
             module: Module,
@@ -129,11 +126,11 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         ) {
             require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = extension.metalavaJarPath
-                ?: project.getMetalavaClasspath(extension.version)
+            val metalavaClasspath = project.getMetalavaClasspath(extension)
             project.tasks.create<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 this.filename.set(filename)
+                shouldRunGenerateSignature.set(true)
                 compileClasspath.from(module.compileClasspath(variantName))
                 sourceFiles.setFrom(extension.sourcePaths)
                 sourcePathsFileCollection.from(extension.sourcePathsFileCollection)
