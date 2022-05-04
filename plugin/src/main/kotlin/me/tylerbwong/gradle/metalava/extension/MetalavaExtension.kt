@@ -70,7 +70,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * Remove the given packages from the API even if they have not been marked with @hide.
      */
-    val hiddenPackages = mutableSetOf<String>()
+    var hiddenPackages = mutableSetOf<String>()
 
     /**
      * Treat any elements annotated with the given annotation as hidden.

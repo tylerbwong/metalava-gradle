@@ -57,6 +57,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final void setEnforceCheck(boolean enforceCheck);
     method public final void setFilename(String filename);
     method public final void setFormat(me.tylerbwong.gradle.metalava.Format format);
+    method public final void setHiddenAnnotations(java.util.Set<java.lang.String> hiddenAnnotations);
     method public final void setIncludeSignatureVersion(boolean includeSignatureVersion);
     method public final void setInputKotlinNulls(boolean inputKotlinNulls);
     method public final void setJavaSourceLevel(org.gradle.api.JavaVersion javaSourceLevel);
