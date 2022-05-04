@@ -75,7 +75,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * Treat any elements annotated with the given annotation as hidden.
      */
-    val hiddenAnnotations = mutableSetOf<String>()
+    var hiddenAnnotations = mutableSetOf<String>()
 
     /**
      * Whether the signature file being read should be interpreted as having encoded its types using
