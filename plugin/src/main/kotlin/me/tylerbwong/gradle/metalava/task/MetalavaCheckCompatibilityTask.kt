@@ -72,15 +72,18 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             val tempFilename = project.layout.buildDirectory
                 .file(METALAVA_CURRENT_PATH).get().asFile.absolutePath
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(objectFactory, extension)
+            val metalavaClasspath = project.getMetalavaClasspath(
+                objectFactory,
+                jarPath = extension.metalavaJarPath.get().ifEmpty { null },
+                version = extension.version.get(),
+            )
             return project.tasks.create<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                this.filename.set(extension.filename)
                 this.tempFilename.set(tempFilename)
-                this.sourceFiles.setFrom(extension.sourcePaths)
+                sourcePaths.setFrom(extension.sourcePaths)
+                filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
                 compileClasspath.from(module.compileClasspath(variantName))
-                sourcePathsFileCollection.from(extension.sourcePathsFileCollection)
                 documentation.set(extension.documentation)
                 format.set(extension.format)
                 signature.set(extension.signature)
@@ -88,8 +91,8 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 outputKotlinNulls.set(extension.outputKotlinNulls)
                 outputDefaultValues.set(extension.outputDefaultValues)
                 includeSignatureVersion.set(extension.includeSignatureVersion)
-                hiddenPackages.set(extension.hiddenPackages.toList())
-                hiddenAnnotations.set(extension.hiddenAnnotations.toList())
+                hiddenPackages.set(extension.hiddenPackages)
+                hiddenAnnotations.set(extension.hiddenAnnotations)
                 apiType.set(extension.apiType)
                 inputKotlinNulls.set(extension.inputKotlinNulls)
                 reportWarningsAsErrors.set(extension.reportWarningsAsErrors)

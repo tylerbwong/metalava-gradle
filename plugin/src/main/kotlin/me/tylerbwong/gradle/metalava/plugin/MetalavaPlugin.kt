@@ -59,8 +59,10 @@ class MetalavaPlugin @Inject constructor(
         // Projects that apply this plugin should include API compatibility checking as part of their regular checks.
         // However, it may be that source dirs are generated only after some other build phase, and so the
         // association with 'check' should be configurable.
-        if (metalavaExtension.enforceCheck) {
-            project.afterEvaluate { tasks.findByName("check")?.dependsOn(checkCompatibilityTask) }
+        project.afterEvaluate {
+            if (metalavaExtension.enforceCheck.get()) {
+                tasks.findByName("check")?.dependsOn(checkCompatibilityTask)
+            }
         }
     }
 }

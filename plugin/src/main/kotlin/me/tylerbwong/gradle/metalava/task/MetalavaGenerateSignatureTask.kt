@@ -40,11 +40,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFiles
-    abstract val sourceFiles: ConfigurableFileCollection
-
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFiles
-    abstract val sourcePathsFileCollection: ConfigurableFileCollection
+    abstract val sourcePaths: ConfigurableFileCollection
 
     @get:Input
     abstract val documentation: Property<Documentation>
@@ -79,24 +75,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         awaitWork: Boolean = false
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
-        val validSourceFiles = sourceFiles.filter { it.exists() }
-        val validSourcePathFileCollection = sourcePathsFileCollection.elements.get()
-            .map { it.asFile }
-            .filter { it.exists() }
-            .also { files ->
-                val nonExistentDirs = files.filter { !it.exists() }
-                require(nonExistentDirs.isEmpty()) {
-                    "Specified source path doesn't exist: $nonExistentDirs"
-                }
-                val nonDirectories = files.filter { !it.isDirectory }
-                require(nonDirectories.isEmpty()) {
-                    "Specified source path isn't a directory: $nonDirectories"
-                }
-            }
-
-        val sourcePaths = (validSourceFiles + validSourcePathFileCollection)
-            .joinToString(File.pathSeparator)
-
+        val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
 
@@ -125,18 +104,19 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             extension: MetalavaExtension,
             module: Module,
             variantName: String? = null,
-            filename: String = extension.filename
         ) {
-            require(extension.sourcePaths.isNotEmpty()) { "sourcePaths cannot be empty." }
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(objectFactory, extension)
+            val metalavaClasspath = project.getMetalavaClasspath(
+                objectFactory,
+                jarPath = extension.metalavaJarPath.get().ifEmpty { null },
+                version = extension.version.get(),
+            )
             project.tasks.create<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                this.filename.set(filename)
-                this.sourceFiles.setFrom(extension.sourcePaths)
+                sourcePaths.from(extension.sourcePaths)
+                filename.set(extension.filename)
                 shouldRunGenerateSignature.set(true)
                 compileClasspath.from(module.compileClasspath(variantName))
-                sourcePathsFileCollection.from(extension.sourcePathsFileCollection)
                 documentation.set(extension.documentation)
                 format.set(extension.format)
                 signature.set(extension.signature)
@@ -144,8 +124,8 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 outputKotlinNulls.set(extension.outputKotlinNulls)
                 outputDefaultValues.set(extension.outputDefaultValues)
                 includeSignatureVersion.set(extension.includeSignatureVersion)
-                hiddenPackages.set(extension.hiddenPackages.toList())
-                hiddenAnnotations.set(extension.hiddenAnnotations.toList())
+                hiddenPackages.set(extension.hiddenPackages)
+                hiddenAnnotations.set(extension.hiddenAnnotations)
             }
         }
     }

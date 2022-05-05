@@ -113,7 +113,7 @@ class MetalavaGradlePluginTest {
                     }
                     
                     metalava {
-                        addSourcePaths(customSourceGeneratingTaskProvider.map { it.outputs.files })
+                        sourcePaths.from(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
                 """
             )

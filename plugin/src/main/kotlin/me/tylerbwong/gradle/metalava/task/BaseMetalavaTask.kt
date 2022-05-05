@@ -6,10 +6,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
-import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.setProperty
 import org.gradle.workers.WorkerExecutor
 
 internal abstract class BaseMetalavaTask(
@@ -27,10 +28,10 @@ internal abstract class BaseMetalavaTask(
     abstract val format: Property<Format>
 
     @get:Input
-    val hiddenPackages = objectFactory.listProperty<String>()
+    val hiddenPackages: SetProperty<String> = objectFactory.setProperty()
 
     @get:Input
-    val hiddenAnnotations = objectFactory.listProperty<String>()
+    val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
 
     protected fun executeMetalavaWork(args: List<String>, awaitWork: Boolean = false) {
         val queue = workerExecutor.noIsolation()

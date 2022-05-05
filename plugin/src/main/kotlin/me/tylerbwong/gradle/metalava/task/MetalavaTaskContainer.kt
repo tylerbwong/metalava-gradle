@@ -23,13 +23,14 @@ internal abstract class MetalavaTaskContainer {
      */
     protected fun Project.getMetalavaClasspath(
         objectFactory: ObjectFactory,
-        extension: MetalavaExtension
+        jarPath: String?,
+        version: String,
     ): FileCollection {
-        return extension.metalavaJarPath?.let { objectFactory.fileCollection().from(it) } ?: run {
+        return jarPath?.let { objectFactory.fileCollection().from(it) } ?: run {
             val configuration = configurations.findByName(METALAVA_MODULE_ID)
                 ?: configurations.create(METALAVA_MODULE_ID).apply {
                     val dependency = this@getMetalavaClasspath.dependencies.create(
-                        "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:${extension.version}"
+                        "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version"
                     )
                     dependencies.add(dependency)
                 }
