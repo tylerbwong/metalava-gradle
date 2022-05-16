@@ -14,12 +14,13 @@ internal abstract class MetalavaTaskContainer {
     }
 
     protected fun Project.getMetalavaClasspath(version: String): FileCollection {
-        val configuration = configurations.findByName("metalava") ?: configurations.create("metalava").apply {
-            val dependency = this@getMetalavaClasspath.dependencies.create(
-                "com.android.tools.metalava:metalava:$version"
-            )
-            dependencies.add(dependency)
-        }
+        val configuration =
+            configurations.findByName("metalava") ?: configurations.create("metalava").apply {
+                val dependency = this@getMetalavaClasspath.dependencies.create(
+                    "com.android.tools.metalava:metalava:$version"
+                )
+                dependencies.add(dependency)
+            }
         return files(configuration)
     }
 

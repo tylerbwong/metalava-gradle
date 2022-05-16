@@ -99,5 +99,8 @@ internal sealed class Module {
                 listFiles()?.all { it.checkDirectory(validExtensions) } ?: false
             }
         }
+
+        internal fun Project.getTemporarySignatureFilePath() =
+            layout.buildDirectory.file("metalava/current.txt").get().asFile.absolutePath
     }
 }

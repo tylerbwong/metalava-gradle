@@ -1,40 +1,30 @@
 package me.tylerbwong.gradle.metalava.task
 
 import me.tylerbwong.gradle.metalava.Module
+import me.tylerbwong.gradle.metalava.Module.Companion.getTemporarySignatureFilePath
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
+import java.io.File
 
 internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
     fun registerMetalavaCheckCompatibilityTask(
         project: Project,
         extension: MetalavaExtension,
-        module: Module,
+        @Suppress("UNUSED_PARAMETER") module: Module,
         taskName: String,
         taskDescription: String,
         variantName: String?
     ) {
         with(project) {
-            val tempFilename = layout.buildDirectory.file("metalava/current.txt").get().asFile.absolutePath
-            val generateTempMetalavaSignatureTask = MetalavaSignature.registerMetalavaSignatureTask(
-                project = this,
-                extension = extension,
-                module = module,
-                taskName = "metalavaGenerateTempSignature",
-                taskDescription = """
-                    Generates a Metalava signature descriptor file in the project build directory for API compatibility 
-                    checking.
-                """.trimIndent(),
-                taskGroup = null,
-                variantName = variantName,
-                filename = tempFilename
-            )
             val checkCompatibilityTask = tasks.register(getFullTaskName(taskName, variantName), JavaExec::class.java) {
                 group = "verification"
                 description = taskDescription
                 mainClass.set("com.android.tools.metalava.Driver")
                 classpath(extension.metalavaJarPath?.let { files(it) } ?: getMetalavaClasspath(extension.version))
-                dependsOn(generateTempMetalavaSignatureTask)
+                dependsOn(project.tasks.findByName(getFullTaskName("metalavaGenerateTempSignature", variantName)))
+
+                val tempSignatureFilename = project.getTemporarySignatureFilePath()
 
                 // Use temp signature file for incremental Gradle task output
                 // If both the current API and temp API have not changed since last run, then
@@ -45,9 +35,11 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                 inputs.property("apiType", extension.apiType)
                 inputs.property("hiddenPackages", extension.hiddenPackages)
                 inputs.property("hiddenAnnotations", extension.hiddenAnnotations)
-                outputs.file(tempFilename)
+                outputs.file(tempSignatureFilename)
 
                 doFirst {
+                    require(File(tempSignatureFilename).exists()) { "MetalavaCheckCompatibility Couldn't find \"${tempSignatureFilename}\"." }
+
                     // TODO Consolidate flags between tasks
                     val hidePackages =
                         extension.hiddenPackages.flatMap { listOf("--hide-package", it) }
@@ -57,7 +49,7 @@ internal object MetalavaCheckCompatibility : MetalavaTaskContainer() {
                     val args: List<String> = listOf(
                         "--no-banner",
                         "--format=${extension.format}",
-                        "--source-files", tempFilename,
+                        "--source-files", tempSignatureFilename,
                         "--check-compatibility:${extension.apiType}:released", extension.filename,
                         "--input-kotlin-nulls=${extension.inputKotlinNulls.flagValue}"
                     ) + extension.reportWarningsAsErrors.flag("--warnings-as-errors") +
