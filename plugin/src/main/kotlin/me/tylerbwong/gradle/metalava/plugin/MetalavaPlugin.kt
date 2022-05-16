@@ -1,9 +1,11 @@
 package me.tylerbwong.gradle.metalava.plugin
 
 import me.tylerbwong.gradle.metalava.Module
+import me.tylerbwong.gradle.metalava.Module.Companion.getTemporarySignatureFilePath
 import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibility
+import me.tylerbwong.gradle.metalava.task.MetalavaCompareApiWithCurrent
 import me.tylerbwong.gradle.metalava.task.MetalavaSignature
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -44,12 +46,31 @@ class MetalavaPlugin : Plugin<Project> {
             variantName = variantName
         )
 
+        MetalavaSignature.registerMetalavaSignatureTask(
+            project = project,
+            extension = metalavaExtension,
+            module = module,
+            taskName = "metalavaGenerateTempSignature",
+            taskDescription = "Generates a Metalava signature descriptor file in the project build directory for API compatibility checking.",
+            variantName = variantName,
+            filename = project.getTemporarySignatureFilePath()
+        )
+
         MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
             project = project,
             extension = metalavaExtension,
             module = module,
             taskName = "metalavaCheckCompatibility",
             taskDescription = "Checks API compatibility between the code base and the current or release API.",
+            variantName = variantName,
+        )
+
+        MetalavaCompareApiWithCurrent.registerMetalavaCompareApiWithCurrent(
+            project = project,
+            extension = metalavaExtension,
+            module = module,
+            taskName = "metalavaCompareApiWithCurrent",
+            taskDescription = "Compares the current signature file with a temporary signature file, generated from the current API.",
             variantName = variantName
         )
     }
