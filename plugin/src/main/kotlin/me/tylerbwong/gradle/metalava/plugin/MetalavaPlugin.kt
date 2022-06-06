@@ -3,12 +3,16 @@ package me.tylerbwong.gradle.metalava.plugin
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
-import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibility
-import me.tylerbwong.gradle.metalava.task.MetalavaSignature
+import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibilityTask
+import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
-class MetalavaPlugin : Plugin<Project> {
+class MetalavaPlugin @Inject constructor(
+    private val objectFactory: ObjectFactory,
+) : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
@@ -17,10 +21,10 @@ class MetalavaPlugin : Plugin<Project> {
                 if (currentModule != null) {
                     if (currentModule is Module.Android) {
                         currentModule.libraryVariants.forEach {
-                            createMetalavaTasks(this, extension, currentModule, it)
+                            createMetalavaTasks(this, objectFactory, extension, currentModule, it)
                         }
                     } else {
-                        createMetalavaTasks(this, extension, currentModule)
+                        createMetalavaTasks(this, objectFactory, extension, currentModule)
                     }
                 } else {
                     logger.warn("Module $name is not supported by the Metalava Gradle plugin")
@@ -31,26 +35,34 @@ class MetalavaPlugin : Plugin<Project> {
 
     private fun createMetalavaTasks(
         project: Project,
+        objectFactory: ObjectFactory,
         metalavaExtension: MetalavaExtension,
         module: Module,
         variantName: String? = null,
     ) {
-        MetalavaSignature.registerMetalavaSignatureTask(
+        MetalavaGenerateSignatureTask.create(
             project = project,
+            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
-            taskName = "metalavaGenerateSignature",
-            taskDescription = "Generates a Metalava signature descriptor file.",
-            variantName = variantName
+            variantName = variantName,
         )
 
-        MetalavaCheckCompatibility.registerMetalavaCheckCompatibilityTask(
+        val checkCompatibilityTask = MetalavaCheckCompatibilityTask.create(
             project = project,
+            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
-            taskName = "metalavaCheckCompatibility",
-            taskDescription = "Checks API compatibility between the code base and the current or release API.",
-            variantName = variantName
+            variantName = variantName,
         )
+
+        // Projects that apply this plugin should include API compatibility checking as part of their regular checks.
+        // However, it may be that source dirs are generated only after some other build phase, and so the
+        // association with 'check' should be configurable.
+        project.afterEvaluate {
+            if (metalavaExtension.enforceCheck.get()) {
+                tasks.findByName("check")?.dependsOn(checkCompatibilityTask)
+            }
+        }
     }
 }

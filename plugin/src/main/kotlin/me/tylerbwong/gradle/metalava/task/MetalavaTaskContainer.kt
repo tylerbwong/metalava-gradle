@@ -1,7 +1,9 @@
 package me.tylerbwong.gradle.metalava.task
 
+import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.api.model.ObjectFactory
 import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
@@ -13,14 +15,27 @@ internal abstract class MetalavaTaskContainer {
         emptyList()
     }
 
-    protected fun Project.getMetalavaClasspath(version: String): FileCollection {
-        val configuration = configurations.findByName("metalava") ?: configurations.create("metalava").apply {
-            val dependency = this@getMetalavaClasspath.dependencies.create(
-                "com.android.tools.metalava:metalava:$version"
-            )
-            dependencies.add(dependency)
+    /**
+     * Obtains the Metalava classpath from either:
+     * 1. A locally provided JAR path OR
+     * 2. if no JAR path is provided, the artifact coordinates specified by
+     * [METALAVA_GROUP_ID]:[METALAVA_MODULE_ID]:[MetalavaExtension.version]
+     */
+    protected fun Project.getMetalavaClasspath(
+        objectFactory: ObjectFactory,
+        jarPath: String?,
+        version: String,
+    ): FileCollection {
+        return jarPath?.let { objectFactory.fileCollection().from(it) } ?: run {
+            val configuration = configurations.findByName(METALAVA_MODULE_ID)
+                ?: configurations.create(METALAVA_MODULE_ID).apply {
+                    val dependency = this@getMetalavaClasspath.dependencies.create(
+                        "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version"
+                    )
+                    dependencies.add(dependency)
+                }
+            files(configuration)
         }
-        return files(configuration)
     }
 
     protected fun getFullTaskName(taskName: String, variantName: String?): String {
@@ -29,5 +44,10 @@ internal abstract class MetalavaTaskContainer {
         } else {
             taskName
         }
+    }
+
+    companion object {
+        private const val METALAVA_GROUP_ID = "com.android.tools.metalava"
+        private const val METALAVA_MODULE_ID = "metalava"
     }
 }
