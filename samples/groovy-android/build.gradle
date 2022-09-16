@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace "me.tylerbwong.gradle.metalava.sample"
     compileSdk 33
 
     defaultConfig {
