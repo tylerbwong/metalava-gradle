@@ -59,18 +59,18 @@ open class MetalavaExtension @Inject constructor(
 
     /**
      * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
-     * types, "" for non-nullable types, and "!" for unknown. The default is yes.
+     * types, "" for non-nullable types, and "!" for unknown. The default is true.
      */
     val outputKotlinNulls: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
-     * Controls whether default values should be included in signature files. The default is yes.
+     * Controls whether default values should be included in signature files. The default is true.
      */
     val outputDefaultValues: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
      * Whether the signature files should include a comment listing the format version of the
-     * signature file. The default is yes.
+     * signature file. The default is true.
      */
     val includeSignatureVersion: Property<Boolean> = objectFactory.property { set(true) }
 
@@ -87,7 +87,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * Whether the signature file being read should be interpreted as having encoded its types using
      * Kotlin style types: a suffix of "?" for nullable types, no suffix for non nullable types, and
-     * "!" for unknown. The default is no.
+     * "!" for unknown. The default is false.
      */
     val inputKotlinNulls: Property<Boolean> = objectFactory.property { set(false) }
 
@@ -110,7 +110,7 @@ open class MetalavaExtension @Inject constructor(
         .apply { setFrom("src") }
 
     /**
-     * If the tasks should run as part of Gradle's `check` task. The default is yes.
+     * If the tasks should run as part of Gradle's `check` task. The default is true.
      */
     val enforceCheck: Property<Boolean> = objectFactory.property { set(true) }
 
