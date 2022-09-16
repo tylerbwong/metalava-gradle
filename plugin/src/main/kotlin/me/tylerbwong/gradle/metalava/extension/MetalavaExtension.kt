@@ -125,7 +125,6 @@ open class MetalavaExtension @Inject constructor(
      */
     val keepFilename: Property<String> = objectFactory.property { set("") }
 
-
     private inline fun <reified T> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {}
     ) = property(T::class.java).apply { configuration() }
