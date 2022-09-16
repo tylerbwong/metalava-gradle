@@ -63,6 +63,12 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     @get:Input
     abstract val shouldRunGenerateSignature: Property<Boolean>
 
+    @get:Input
+    abstract val generateKeepFile: Property<Boolean>
+
+    @get:Input
+    abstract val keepFilename: Property<String>
+
     @TaskAction
     fun metalavaGenerateSignature() {
         if (shouldRunGenerateSignature.get()) {
@@ -78,6 +84,19 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
+        val keepFileFlags = if (generateKeepFile.get()) {
+            val keepFilename = keepFilename.get()
+            listOf("--proguard") + if (keepFilename.isNotEmpty()) {
+                listOf(keepFilename)
+            } else {
+                listOf(
+                    project.layout.buildDirectory
+                        .file(DEFAULT_KEEP_FILENAME).get().asFile.absolutePath
+                )
+            }
+        } else {
+            emptyList()
+        }
 
         val args: List<String> = listOf(
             "${documentation.get()}",
@@ -90,13 +109,14 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             "--output-default-values=${outputDefaultValues.get().flagValue}",
             "--include-signature-version=${includeSignatureVersion.get().flagValue}",
             "--source-path", sourcePaths,
-        ) + hidePackages + hideAnnotations
+        ) + hidePackages + hideAnnotations + keepFileFlags
         executeMetalavaWork(args, awaitWork)
     }
 
     internal companion object : MetalavaTaskContainer() {
         private const val TASK_NAME = "metalavaGenerateSignature"
         private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
+        private const val DEFAULT_KEEP_FILENAME = "metalava/proguard-keep.txt"
 
         fun create(
             project: Project,
@@ -126,6 +146,8 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
+                generateKeepFile.set(extension.generateKeepFile)
+                keepFilename.set(extension.keepFilename)
             }
         }
     }
