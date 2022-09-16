@@ -3,4 +3,10 @@
   "extends": [
     "config:base"
   ],
+  "packageRules": [
+    {
+      "groupName": "ci",
+      "matchPackagePrefixes": ["actions/"]
+    }
+  ]
 }
