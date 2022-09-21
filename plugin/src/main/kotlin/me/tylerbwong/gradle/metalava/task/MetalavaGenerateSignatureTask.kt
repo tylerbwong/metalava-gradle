@@ -13,6 +13,8 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -63,6 +65,10 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     @get:Input
     abstract val shouldRunGenerateSignature: Property<Boolean>
 
+    @get:OutputFile
+    @get:Optional
+    abstract val keepFilename: Property<String?>
+
     @TaskAction
     fun metalavaGenerateSignature() {
         if (shouldRunGenerateSignature.get()) {
@@ -78,6 +84,12 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
+        val keepFilename = keepFilename.orNull
+        val keepFileFlags = if (!keepFilename.isNullOrEmpty()) {
+            listOf("--proguard", keepFilename)
+        } else {
+            emptyList()
+        }
 
         val args: List<String> = listOf(
             "${documentation.get()}",
@@ -90,7 +102,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             "--output-default-values=${outputDefaultValues.get().flagValue}",
             "--include-signature-version=${includeSignatureVersion.get().flagValue}",
             "--source-path", sourcePaths,
-        ) + hidePackages + hideAnnotations
+        ) + hidePackages + hideAnnotations + keepFileFlags
         executeMetalavaWork(args, awaitWork)
     }
 
@@ -126,6 +138,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
+                keepFilename.set(extension.keepFilename)
             }
         }
     }

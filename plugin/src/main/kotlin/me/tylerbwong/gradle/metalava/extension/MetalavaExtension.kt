@@ -114,6 +114,12 @@ open class MetalavaExtension @Inject constructor(
      */
     val enforceCheck: Property<Boolean> = objectFactory.property { set(true) }
 
+    /**
+     * Generate a file with keep rules at the specified location. The default is `null` which will
+     * cause no keep file to be generated.
+     */
+    val keepFilename: Property<String?> = objectFactory.property { set(null) }
+
     private inline fun <reified T> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {}
     ) = property(T::class.java).apply { configuration() }
