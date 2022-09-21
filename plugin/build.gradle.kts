@@ -8,32 +8,22 @@ plugins {
     MetalavaGradleProjectPlugin
 }
 
-group = "me.tylerbwong.gradle"
-version = "0.2.4-SNAPSHOT"
+group = "me.tylerbwong.gradle.metalava"
+version = "0.3.0"
+
+pluginBundle {
+    website = "https://github.com/tylerbwong/metalava-gradle"
+    vcsUrl = "https://github.com/tylerbwong/metalava-gradle"
+    tags = listOf("metalava", "api-tracking")
+}
 
 gradlePlugin {
     plugins {
         create("metalavaPlugin") {
             id = "me.tylerbwong.gradle.metalava"
-            implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
             displayName = "Metalava Gradle Plugin"
-        }
-    }
-}
-
-pluginBundle {
-    website = "https://github.com/tylerbwong/metalava-gradle"
-    vcsUrl = "https://github.com/tylerbwong/metalava-gradle"
-    description = "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("pluginPublication") {
-            from(components["kotlin"])
-            groupId = "${project.group}"
-            artifactId = rootProject.name
-            version = "${project.version}"
+            description = "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
+            implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
         }
     }
 }
