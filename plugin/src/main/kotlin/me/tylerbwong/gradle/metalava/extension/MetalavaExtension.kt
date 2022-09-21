@@ -115,15 +115,10 @@ open class MetalavaExtension @Inject constructor(
     val enforceCheck: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
-     * If the signature task should also generate keep rules. The default is false.
+     * Generate a file with keep rules at the specified location. The default is `null` which will
+     * cause no keep file to be generated.
      */
-    val generateKeepFile: Property<Boolean> = objectFactory.property { set(false) }
-
-    /**
-     * If keep file generation is enabled, specify the name and location of the generate keep rules.
-     * Setting this property will have no effect if `generateKeepFile` is set to false.
-     */
-    val keepFilename: Property<String> = objectFactory.property { set("") }
+    val keepFilename: Property<String?> = objectFactory.property { set(null) }
 
     private inline fun <reified T> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {}

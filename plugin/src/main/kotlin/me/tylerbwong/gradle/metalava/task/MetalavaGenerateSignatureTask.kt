@@ -13,6 +13,8 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -63,11 +65,9 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     @get:Input
     abstract val shouldRunGenerateSignature: Property<Boolean>
 
-    @get:Input
-    abstract val generateKeepFile: Property<Boolean>
-
-    @get:Input
-    abstract val keepFilename: Property<String>
+    @get:OutputFile
+    @get:Optional
+    abstract val keepFilename: Property<String?>
 
     @TaskAction
     fun metalavaGenerateSignature() {
@@ -84,16 +84,9 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-        val keepFileFlags = if (generateKeepFile.get()) {
-            val keepFilename = keepFilename.get()
-            listOf("--proguard") + if (keepFilename.isNotEmpty()) {
-                listOf(keepFilename)
-            } else {
-                listOf(
-                    project.layout.buildDirectory
-                        .file(DEFAULT_KEEP_FILENAME).get().asFile.absolutePath
-                )
-            }
+        val keepFilename = keepFilename.orNull
+        val keepFileFlags = if (!keepFilename.isNullOrEmpty()) {
+            listOf("--proguard", keepFilename)
         } else {
             emptyList()
         }
@@ -116,7 +109,6 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     internal companion object : MetalavaTaskContainer() {
         private const val TASK_NAME = "metalavaGenerateSignature"
         private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
-        private const val DEFAULT_KEEP_FILENAME = "metalava/proguard-keep.txt"
 
         fun create(
             project: Project,
@@ -146,7 +138,6 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
-                generateKeepFile.set(extension.generateKeepFile)
                 keepFilename.set(extension.keepFilename)
             }
         }
