@@ -10,7 +10,7 @@ import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-class MetalavaPlugin @Inject constructor(
+internal class MetalavaPlugin @Inject constructor(
     private val objectFactory: ObjectFactory,
 ) : Plugin<Project> {
     override fun apply(target: Project) {
