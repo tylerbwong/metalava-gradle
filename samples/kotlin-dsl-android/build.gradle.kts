@@ -14,5 +14,5 @@ android {
 }
 
 metalava {
-    filename = "api/$name-api.txt"
+    filename.set("api/$name-api.txt")
 }

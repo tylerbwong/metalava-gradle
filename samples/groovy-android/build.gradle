@@ -14,6 +14,7 @@ android {
 }
 
 metalava {
-    filename = "api/$name-api.txt"
-    sourcePaths = ["src/main"]
+    filename.set("api/$name-api.txt")
+    sourcePaths.setFrom("src/main")
+    keepFilename.set("public-api.pro")
 }
