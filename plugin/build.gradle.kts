@@ -29,8 +29,8 @@ gradlePlugin {
 }
 
 metalava {
-    filename = "api/${project.version}.txt"
-    sourcePaths = mutableSetOf("src/main")
+    filename.set("api/${project.version}.txt")
+    sourcePaths.setFrom("src/main")
 }
 
 tasks.test {
