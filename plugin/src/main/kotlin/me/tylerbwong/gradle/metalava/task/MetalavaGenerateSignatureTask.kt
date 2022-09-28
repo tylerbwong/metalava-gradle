@@ -128,6 +128,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 sourcePaths.from(extension.sourcePaths)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(true)
+                bootClasspath.from(module.bootClasspath)
                 compileClasspath.from(module.compileClasspath(variantName))
                 documentation.set(extension.documentation)
                 format.set(extension.format)
