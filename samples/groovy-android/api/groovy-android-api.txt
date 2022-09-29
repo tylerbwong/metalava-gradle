@@ -3,6 +3,7 @@ package me.tylerbwong.gradle.metalava.sample {
 
   public interface SamplePublicApi {
     method public String getPublicApiProperty();
+    method public void publicAndroidApi(android.content.Context context);
     method public void publicApiFunction();
     property public abstract String publicApiProperty;
   }

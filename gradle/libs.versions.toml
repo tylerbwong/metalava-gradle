@@ -4,7 +4,7 @@ junit = "5.9.1"
 kotlin = "1.7.10"
 ktlintGradle = "11.0.0"
 pluginPublish = "1.0.0"
-metalavaGradle = "0.3.0"
+metalavaGradle = "0.3.1"
 
 [plugins]
 ktlintGradle = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
