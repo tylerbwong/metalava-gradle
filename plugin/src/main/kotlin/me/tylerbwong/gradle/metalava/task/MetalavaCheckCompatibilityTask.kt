@@ -83,6 +83,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 sourcePaths.setFrom(extension.sourcePaths)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
+                bootClasspath.from(module.bootClasspath)
                 compileClasspath.from(module.compileClasspath(variantName))
                 documentation.set(extension.documentation)
                 format.set(extension.format)
