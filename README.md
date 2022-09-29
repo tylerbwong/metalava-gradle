@@ -23,7 +23,7 @@ buildscript {
         maven("https://plugins.gradle.org/m2/")
     }
     dependencies {
-        classpath("me.tylerbwong.gradle:metalava-gradle:<current_version>")
+        classpath("me.tylerbwong.gradle.metalava:plugin:<current_version>")
     }
 }
 
@@ -48,7 +48,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "me.tylerbwong.gradle:metalava-gradle:<current_version>"
+        classpath "me.tylerbwong.gradle.metalava:plugin:<current_version>"
     }
 }
 
