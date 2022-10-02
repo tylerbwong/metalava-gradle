@@ -1,7 +1,7 @@
 [versions]
 androidGradle = "7.3.0"
 junit = "5.9.1"
-kotlin = "1.7.10"
+kotlin = "1.7.20"
 ktlintGradle = "11.0.0"
 pluginPublish = "1.0.0"
 metalavaGradle = "0.3.1"
