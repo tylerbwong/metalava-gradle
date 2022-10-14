@@ -9,7 +9,8 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.kotlin.dsl.create
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.register
 import org.gradle.workers.WorkerExecutor
 import javax.inject.Inject
 
@@ -68,22 +69,23 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             extension: MetalavaExtension,
             module: Module,
             variantName: String?
-        ): MetalavaCheckCompatibilityTask {
-            val tempFilename = project.layout.buildDirectory
-                .file(METALAVA_CURRENT_PATH).get().asFile.absolutePath
+        ): TaskProvider<MetalavaCheckCompatibilityTask> {
+            val tempFilenameProvider = project.layout.buildDirectory
+                .file(METALAVA_CURRENT_PATH).map { it.asFile.absolutePath }
             val taskName = getFullTaskName(TASK_NAME, variantName)
             val metalavaClasspath = project.getMetalavaClasspath(
                 objectFactory,
                 jarPath = extension.metalavaJarPath.get().ifEmpty { null },
                 version = extension.version.get(),
             )
-            return project.tasks.create<MetalavaCheckCompatibilityTask>(taskName) {
+            val bootClasspathProvider = project.provider { module.bootClasspath }
+            return project.tasks.register<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                this.tempFilename.set(tempFilename)
+                tempFilename.set(tempFilenameProvider)
                 sourcePaths.setFrom(extension.sourcePaths)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
-                bootClasspath.from(module.bootClasspath)
+                bootClasspath.from(bootClasspathProvider)
                 compileClasspath.from(module.compileClasspath(variantName))
                 documentation.set(extension.documentation)
                 format.set(extension.format)
