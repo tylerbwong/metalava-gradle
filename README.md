@@ -65,6 +65,8 @@ This plugin registers the following tasks:
 
 `metalavaCheckCompatibility` - Checks API compatibility between the code base and the current API.
 
+For Android library modules, a task is created for each build variant (e.g. `metalavaGenerateSignatureRelease`)
+
 The plugin can also be configured using the `metalava` extension block
 
 ```kt
@@ -75,9 +77,9 @@ plugins {
 ...
 
 metalava {
-    documentation = Documentation.PUBLIC
-    outputKotlinNulls = false
-    includeSignatureVersion = false
+    documentation.set(Documentation.PUBLIC)
+    outputKotlinNulls.set(false)
+    includeSignatureVersion.set(false)
     ...
 }
 ```
