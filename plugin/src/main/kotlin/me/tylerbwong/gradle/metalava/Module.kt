@@ -63,10 +63,17 @@ internal sealed class Module {
     }
 
     class Java(private val extension: JavaPluginExtension) : Module() {
-        override val bootClasspath: Collection<File>
-            get() = File(System.getProperty("java.home")).walkTopDown()
-                .toList()
-                .filter { it.exists() && it.name == "rt.jar" }
+        override val bootClasspath: Collection<File> by lazy {
+            listOfNotNull(
+                System.getProperty("sun.boot.class.path")
+                    ?.let { File(it) }
+                    ?.takeIf { it.exists() },
+                File(System.getProperty("java.home"))
+                    .resolve("jre${File.separator}lib${File.separator}rt.jar")
+                    .takeIf { it.exists() }
+            )
+        }
+
         override fun compileClasspath(variant: String?): FileCollection {
             return extension.sourceSets
                 .filter { it.name.contains("main", ignoreCase = true) }
