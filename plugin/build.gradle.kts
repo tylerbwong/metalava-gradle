@@ -9,20 +9,17 @@ plugins {
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.3.3"
-
-pluginBundle {
-    website = "https://github.com/tylerbwong/metalava-gradle"
-    vcsUrl = "https://github.com/tylerbwong/metalava-gradle"
-    tags = listOf("metalava", "api-tracking")
-}
+version = "0.3.4-SNAPSHOT"
 
 gradlePlugin {
+    website.set("https://github.com/tylerbwong/metalava-gradle")
+    vcsUrl.set("https://github.com/tylerbwong/metalava-gradle")
     plugins {
         create("metalavaPlugin") {
             id = "me.tylerbwong.gradle.metalava"
             displayName = "Metalava Gradle Plugin"
             description = "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
+            tags.set(listOf("metalava", "api-tracking"))
             implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
         }
     }
