@@ -25,6 +25,10 @@ gradlePlugin {
     }
 }
 
+ktlint {
+    version.set("0.43.2")
+}
+
 metalava {
     filename.set("api/${project.version}.txt")
     sourcePaths.setFrom("src/main")
