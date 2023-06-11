@@ -9,8 +9,6 @@ include(
     ":samples:kotlin-multiplatform"
 )
 
-enableFeaturePreview("VERSION_CATALOGS")
-
 pluginManagement {
     repositories {
         mavenLocal()
