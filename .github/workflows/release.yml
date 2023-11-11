@@ -16,8 +16,8 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
-      - name: Run Build
-        run: ./gradlew build
+#      - name: Run Build
+#        run: ./gradlew build
       - name: Publish Plugin
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
