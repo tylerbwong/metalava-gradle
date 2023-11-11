@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.3.5"
+version = "0.3.6-SNAPSHOT"
 
 gradlePlugin {
     website.set("https://github.com/tylerbwong/metalava-gradle")
