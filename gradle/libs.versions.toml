@@ -2,7 +2,7 @@
 androidGradle = "8.1.3"
 junit = "5.9.3"
 kotlin = "1.9.20"
-ktlintGradle = "11.4.0"
+ktlintGradle = "12.1.0"
 pluginPublish = "1.2.0"
 metalavaGradle = "0.3.5"
 
