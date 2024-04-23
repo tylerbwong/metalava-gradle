@@ -10,6 +10,4 @@ java {
 
 metalava {
     filename = "api/$name-api.txt"
-    outputKotlinNulls = false
-    includeSignatureVersion = false
 }

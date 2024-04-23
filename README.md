@@ -77,9 +77,6 @@ plugins {
 ...
 
 metalava {
-    documentation.set(Documentation.PUBLIC)
-    outputKotlinNulls.set(false)
-    includeSignatureVersion.set(false)
     ...
 }
 ```

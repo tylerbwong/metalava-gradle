@@ -47,11 +47,9 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
 
         val args: List<String> = listOf(
-            "--no-banner",
             "--format=${format.get()}",
             "--source-files", tempFilename.get(),
             "--check-compatibility:${apiType.get()}:released", filename.get(),
-            "--input-kotlin-nulls=${inputKotlinNulls.get().flagValue}"
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
             .flag("--lints-as-errors") + hidePackages + hideAnnotations
         executeMetalavaWork(args)
@@ -87,13 +85,9 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 shouldRunGenerateSignature.set(false)
                 bootClasspath.from(bootClasspathProvider)
                 compileClasspath.from(module.compileClasspath(variantName))
-                documentation.set(extension.documentation)
                 format.set(extension.format)
                 signature.set(extension.signature)
                 javaSourceLevel.set(extension.javaSourceLevel)
-                outputKotlinNulls.set(extension.outputKotlinNulls)
-                outputDefaultValues.set(extension.outputDefaultValues)
-                includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
                 apiType.set(extension.apiType)

@@ -1,6 +1,5 @@
 package me.tylerbwong.gradle.metalava.task
 
-import me.tylerbwong.gradle.metalava.Documentation
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Signature
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
@@ -45,22 +44,10 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     abstract val sourcePaths: ConfigurableFileCollection
 
     @get:Input
-    abstract val documentation: Property<Documentation>
-
-    @get:Input
     abstract val signature: Property<Signature>
 
     @get:Input
     abstract val javaSourceLevel: Property<JavaVersion>
-
-    @get:Input
-    abstract val outputKotlinNulls: Property<Boolean>
-
-    @get:Input
-    abstract val outputDefaultValues: Property<Boolean>
-
-    @get:Input
-    abstract val includeSignatureVersion: Property<Boolean>
 
     @get:Input
     abstract val shouldRunGenerateSignature: Property<Boolean>
@@ -92,15 +79,10 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         }
 
         val args: List<String> = listOf(
-            "${documentation.get()}",
-            "--no-banner",
             "--format=${format.get()}",
             "${signature.get()}", filenameOverride ?: filename.get(),
             "--java-source", "${javaSourceLevel.get()}",
             "--classpath", fullClasspath,
-            "--output-kotlin-nulls=${outputKotlinNulls.get().flagValue}",
-            "--output-default-values=${outputDefaultValues.get().flagValue}",
-            "--include-signature-version=${includeSignatureVersion.get().flagValue}",
             "--source-path", sourcePaths,
         ) + hidePackages + hideAnnotations + keepFileFlags
         executeMetalavaWork(args, awaitWork)
@@ -131,13 +113,9 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 shouldRunGenerateSignature.set(true)
                 bootClasspath.from(bootClasspathProvider)
                 compileClasspath.from(module.compileClasspath(variantName))
-                documentation.set(extension.documentation)
                 format.set(extension.format)
                 signature.set(extension.signature)
                 javaSourceLevel.set(extension.javaSourceLevel)
-                outputKotlinNulls.set(extension.outputKotlinNulls)
-                outputDefaultValues.set(extension.outputDefaultValues)
-                includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
                 keepFilename.set(extension.keepFilename)
