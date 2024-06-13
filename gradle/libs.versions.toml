@@ -3,7 +3,7 @@ androidGradle = "8.4.2"
 junit = "5.10.2"
 kotlin = "2.0.0"
 ktlintGradle = "12.1.1"
-pluginPublish = "1.2.0"
+pluginPublish = "1.2.1"
 metalavaGradle = "0.3.5"
 
 [plugins]
