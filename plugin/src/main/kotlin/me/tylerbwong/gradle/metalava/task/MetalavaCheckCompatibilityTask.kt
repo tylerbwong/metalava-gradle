@@ -53,7 +53,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             "--check-compatibility:${apiType.get()}:released",
             filename.get(),
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
-            .flag("--lints-as-errors") + hidePackages + hideAnnotations
+            .flag("--lints-as-errors") + hidePackages + hideAnnotations + arguments.get()
         executeMetalavaWork(args)
     }
 
@@ -82,7 +82,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             return project.tasks.register<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 tempFilename.set(tempFilenameProvider)
-                sourcePaths.setFrom(module.sourceSets(project, variantName) + extension.additionalSourceSets)
+                sourceSets.setFrom(module.sourceSets(project, variantName) + extension.additionalSourceSets)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
                 bootClasspath.from(bootClasspathProvider)
@@ -96,6 +96,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 inputKotlinNulls.set(extension.inputKotlinNulls)
                 reportWarningsAsErrors.set(extension.reportWarningsAsErrors)
                 reportLintsAsErrors.set(extension.reportLintsAsErrors)
+                arguments.set(extension.arguments)
             }
         }
     }

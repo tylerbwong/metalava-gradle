@@ -5,7 +5,6 @@ import me.tylerbwong.gradle.metalava.Module.Companion.module
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibilityTask
 import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
-import me.tylerbwong.gradle.metalava.task.MetalavaHelpTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
@@ -41,12 +40,6 @@ internal class MetalavaPlugin @Inject constructor(
         module: Module,
         variantName: String? = null,
     ) {
-        MetalavaHelpTask.register(
-            project = project.rootProject,
-            objectFactory = objectFactory,
-            extension = metalavaExtension,
-        )
-
         val generateSignatureTask = MetalavaGenerateSignatureTask.register(
             project = project,
             objectFactory = objectFactory,

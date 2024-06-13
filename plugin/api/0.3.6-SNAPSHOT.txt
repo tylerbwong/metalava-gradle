@@ -31,6 +31,7 @@ package me.tylerbwong.gradle.metalava.extension {
     ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objectFactory);
     method public final org.gradle.api.file.ConfigurableFileCollection getAdditionalSourceSets();
     method public final org.gradle.api.provider.Property<java.lang.String> getApiType();
+    method public final org.gradle.api.provider.SetProperty<java.lang.String> getArguments();
     method public final org.gradle.api.provider.Property<java.lang.Boolean> getEnforceCheck();
     method public final org.gradle.api.provider.Property<java.lang.String> getFilename();
     method public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Format> getFormat();
@@ -46,6 +47,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final org.gradle.api.provider.Property<java.lang.String> getVersion();
     property public final org.gradle.api.file.ConfigurableFileCollection additionalSourceSets;
     property public final org.gradle.api.provider.Property<java.lang.String> apiType;
+    property public final org.gradle.api.provider.SetProperty<java.lang.String> arguments;
     property public final org.gradle.api.provider.Property<java.lang.Boolean> enforceCheck;
     property public final org.gradle.api.provider.Property<java.lang.String> filename;
     property public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Format> format;

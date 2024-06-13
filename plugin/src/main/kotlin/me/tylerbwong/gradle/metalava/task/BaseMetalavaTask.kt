@@ -38,11 +38,15 @@ internal abstract class BaseMetalavaTask(
     @get:Input
     val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
 
+    @get:Optional
+    @get:Input
+    val arguments: SetProperty<String> = objectFactory.setProperty()
+
     protected fun executeMetalavaWork(args: List<String>, awaitWork: Boolean = false) {
         val queue = workerExecutor.noIsolation()
         queue.submit(MetalavaWorkAction::class.java) {
             classpath.from(metalavaClasspath)
-            arguments.set(args.joinToString())
+            arguments.set(args.joinToString(" "))
         }
         if (awaitWork) {
             queue.await()

@@ -42,7 +42,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFiles
-    abstract val sourcePaths: ConfigurableFileCollection
+    abstract val sourceSets: ConfigurableFileCollection
 
     @get:Input
     abstract val signature: Property<Signature>
@@ -69,7 +69,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         awaitWork: Boolean = false,
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
-        val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)
+        val sourcePaths = sourceSets.filter { it.exists() }.joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
         val keepFilename = keepFilename.orNull
@@ -85,7 +85,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             "--java-source", "${javaSourceLevel.get()}",
             "--classpath", fullClasspath,
             "--source-path", sourcePaths,
-        ) + hidePackages + hideAnnotations + keepFileFlags
+        ) + hidePackages + hideAnnotations + keepFileFlags + arguments.get()
         executeMetalavaWork(args, awaitWork)
     }
 
@@ -109,7 +109,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                sourcePaths.from(module.sourceSets(project, variantName) + extension.additionalSourceSets)
+                sourceSets.from(module.sourceSets(project, variantName) + extension.additionalSourceSets)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(true)
                 bootClasspath.from(bootClasspathProvider)
@@ -120,6 +120,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
                 keepFilename.set(extension.keepFilename)
+                arguments.set(extension.arguments)
             }
         }
     }

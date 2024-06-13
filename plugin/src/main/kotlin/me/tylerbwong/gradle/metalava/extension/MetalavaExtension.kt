@@ -113,6 +113,11 @@ open class MetalavaExtension @Inject constructor(
      */
     val outputSignatureFileProvider: Provider<RegularFile> = outputSignatureFileProperty
 
+    /**
+     * Allows passing in custom metalava arguments.
+     */
+    val arguments: SetProperty<String> = objectFactory.setProperty()
+
     private inline fun <reified T> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {},
     ): Property<T> = property(T::class.java).apply { configuration() }
