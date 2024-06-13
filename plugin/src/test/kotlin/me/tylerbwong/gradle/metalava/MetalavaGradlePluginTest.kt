@@ -151,7 +151,7 @@ class MetalavaGradlePluginTest {
                         inputs.file(metalava.outputSignatureFileProvider)
                         doFirst { }
                     }
-                """
+                """,
             )
         }
         val result = gradleRunner

@@ -4,9 +4,11 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
+import java.util.Locale
 
 internal sealed class Module {
     /**
@@ -29,18 +31,14 @@ internal sealed class Module {
      * classpath for that Platform is used.
      * @return The classpath for to be passed to metalava. May be empty.
      */
-    abstract fun compileClasspath(variant: String? = null): FileCollection
+    abstract fun compileClasspath(project: Project, variant: String? = null): FileCollection
+
+    /**
+     * The source sets to be passed to metalava to execute on. Will exclude test sources.
+     */
+    abstract fun sourceSets(project: Project, variant: String? = null): FileCollection
 
     class Android(private val extension: LibraryExtension) : Module() {
-        override val bootClasspath: Collection<File>
-            get() = extension.bootClasspath
-        override fun compileClasspath(variant: String?): FileCollection {
-            require(variant != null) { "The compileClasspath variant cannot be null." }
-            require(libraryVariants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
-            return extension.libraryVariants.find { it.name.equals(variant) }!!
-                .getCompileClasspath(null).filter { it.exists() }
-        }
-
         /**
          * The list of available library variants to be passed into [compileClasspath] so as to
          * filter its output.
@@ -49,16 +47,56 @@ internal sealed class Module {
          */
         val libraryVariants: Collection<String>
             get() = extension.libraryVariants.map { it.name }
+
+        override val bootClasspath: Collection<File>
+            get() = extension.bootClasspath
+
+        override fun compileClasspath(project: Project, variant: String?): FileCollection {
+            require(variant != null) { "The compileClasspath variant cannot be null." }
+            require(libraryVariants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
+            return extension.libraryVariants.find { it.name.equals(variant) }
+                ?.getCompileClasspath(null)
+                ?.filter { it.exists() } ?: project.files()
+        }
+
+        override fun sourceSets(project: Project, variant: String?): FileCollection {
+            require(variant != null) { "The sourceSet variant cannot be null." }
+            require(libraryVariants.contains(variant)) { "Unexpected sourceSet variant. Got $variant." }
+            val libraryVariant = extension.libraryVariants.find { it.name.equals(variant) }
+            require(libraryVariant != null) { "Could not find library variant for $variant." }
+            return project.files(
+                extension.libraryVariants
+                    .flatMap { it.sourceSets }
+                    .filterNot {
+                        it.name
+                            .lowercase(Locale.getDefault())
+                            .contains(SourceSet.TEST_SOURCE_SET_NAME)
+                    }
+                    .flatMap { it.javaDirectories + it.kotlinDirectories },
+            )
+        }
     }
 
     class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {
-        override fun compileClasspath(variant: String?): FileCollection {
+        override fun compileClasspath(project: Project, variant: String?): FileCollection {
             return extension.targets
                 .flatMap { it.compilations }
-                .filter { it.defaultSourceSet.name.contains("main", ignoreCase = true) }
+                .filter { it.defaultSourceSet.name.contains(SourceSet.MAIN_SOURCE_SET_NAME, ignoreCase = true) }
                 .map { it.compileDependencyFiles }
                 .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+        }
+
+        override fun sourceSets(project: Project, variant: String?): FileCollection {
+            return project.files(
+                extension.sourceSets
+                    .filterNot {
+                        it.name
+                            .lowercase(Locale.getDefault())
+                            .contains(SourceSet.TEST_SOURCE_SET_NAME)
+                    }
+                    .flatMap { it.kotlin.sourceDirectories },
+            )
         }
     }
 
@@ -74,12 +112,24 @@ internal sealed class Module {
             )
         }
 
-        override fun compileClasspath(variant: String?): FileCollection {
+        override fun compileClasspath(project: Project, variant: String?): FileCollection {
             return extension.sourceSets
-                .filter { it.name.contains("main", ignoreCase = true) }
+                .filter { it.name.contains(SourceSet.MAIN_SOURCE_SET_NAME, ignoreCase = true) }
                 .map { it.compileClasspath }
                 .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+        }
+
+        override fun sourceSets(project: Project, variant: String?): FileCollection {
+            return project.files(
+                extension.sourceSets
+                    .filterNot {
+                        it.name
+                            .lowercase(Locale.getDefault())
+                            .contains(SourceSet.TEST_SOURCE_SET_NAME)
+                    }
+                    .flatMap { it.allSource.srcDirs },
+            )
         }
     }
 

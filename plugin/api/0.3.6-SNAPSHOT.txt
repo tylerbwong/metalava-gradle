@@ -29,6 +29,7 @@ package me.tylerbwong.gradle.metalava.extension {
 
   public class MetalavaExtension {
     ctor @javax.inject.Inject public MetalavaExtension(org.gradle.api.model.ObjectFactory objectFactory);
+    method public final org.gradle.api.file.ConfigurableFileCollection getAdditionalSourceSets();
     method public final org.gradle.api.provider.Property<java.lang.String> getApiType();
     method public final org.gradle.api.provider.Property<java.lang.Boolean> getEnforceCheck();
     method public final org.gradle.api.provider.Property<java.lang.String> getFilename();
@@ -42,8 +43,8 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final org.gradle.api.provider.Property<java.lang.Boolean> getReportLintsAsErrors();
     method public final org.gradle.api.provider.Property<java.lang.Boolean> getReportWarningsAsErrors();
     method public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Signature> getSignature();
-    method public final org.gradle.api.file.ConfigurableFileCollection getSourcePaths();
     method public final org.gradle.api.provider.Property<java.lang.String> getVersion();
+    property public final org.gradle.api.file.ConfigurableFileCollection additionalSourceSets;
     property public final org.gradle.api.provider.Property<java.lang.String> apiType;
     property public final org.gradle.api.provider.Property<java.lang.Boolean> enforceCheck;
     property public final org.gradle.api.provider.Property<java.lang.String> filename;
@@ -57,7 +58,6 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final org.gradle.api.provider.Property<java.lang.Boolean> reportLintsAsErrors;
     property public final org.gradle.api.provider.Property<java.lang.Boolean> reportWarningsAsErrors;
     property public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Signature> signature;
-    property public final org.gradle.api.file.ConfigurableFileCollection sourcePaths;
     property public final org.gradle.api.provider.Property<java.lang.String> version;
   }
 
