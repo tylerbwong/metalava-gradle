@@ -70,7 +70,7 @@ internal sealed class Module {
                     ?.takeIf { it.exists() },
                 File(System.getProperty("java.home"))
                     .resolve("jre${File.separator}lib${File.separator}rt.jar")
-                    .takeIf { it.exists() }
+                    .takeIf { it.exists() },
             )
         }
 

@@ -28,7 +28,7 @@ class MetalavaGradlePluginTest {
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun `check metalavaGenerateSignature runs successfully with no source`(
-        isConfigurationCacheEnabled: Boolean
+        isConfigurationCacheEnabled: Boolean,
     ) {
         buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
             appendText(
@@ -44,7 +44,7 @@ class MetalavaGradlePluginTest {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
                     }
-                """
+                """,
             )
         }
         val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {
@@ -74,7 +74,7 @@ class MetalavaGradlePluginTest {
                     plugins {
                         id("me.tylerbwong.gradle.metalava")
                     }
-                """
+                """,
             )
         }
         val arguments = if (isConfigurationCacheEnabled) {
@@ -115,7 +115,7 @@ class MetalavaGradlePluginTest {
                     metalava {
                         sourcePaths.from(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
-                """
+                """,
             )
         }
         val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {

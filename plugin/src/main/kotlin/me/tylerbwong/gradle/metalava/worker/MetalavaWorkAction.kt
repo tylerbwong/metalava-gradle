@@ -9,7 +9,7 @@ import javax.inject.Inject
  * driver.
  */
 internal abstract class MetalavaWorkAction @Inject constructor(
-    private val execOperations: ExecOperations
+    private val execOperations: ExecOperations,
 ) : WorkAction<MetalavaWorkParameters> {
 
     override fun execute() {

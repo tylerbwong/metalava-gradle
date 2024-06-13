@@ -65,7 +65,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
     protected fun metalavaGenerateSignatureInternal(
         filenameOverride: String? = null,
-        awaitWork: Boolean = false
+        awaitWork: Boolean = false,
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
         val sourcePaths = sourcePaths.filter { it.exists() }.joinToString(File.pathSeparator)

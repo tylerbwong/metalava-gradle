@@ -26,7 +26,7 @@ gradlePlugin {
 }
 
 ktlint {
-    version.set("0.43.2")
+    version.set("0.47.1")
 }
 
 metalava {

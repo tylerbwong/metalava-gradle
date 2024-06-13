@@ -48,8 +48,10 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
 
         val args: List<String> = listOf(
             "--format=${format.get()}",
-            "--source-files", tempFilename.get(),
-            "--check-compatibility:${apiType.get()}:released", filename.get(),
+            "--source-files",
+            tempFilename.get(),
+            "--check-compatibility:${apiType.get()}:released",
+            filename.get(),
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
             .flag("--lints-as-errors") + hidePackages + hideAnnotations
         executeMetalavaWork(args)
@@ -66,7 +68,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
-            variantName: String?
+            variantName: String?,
         ): TaskProvider<MetalavaCheckCompatibilityTask> {
             val tempFilenameProvider = project.layout.buildDirectory
                 .file(METALAVA_CURRENT_PATH).map { it.asFile.absolutePath }

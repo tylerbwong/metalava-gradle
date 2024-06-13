@@ -32,7 +32,7 @@ enum class Signature(private val signature: String) {
     /**
      * Generate a signature descriptor file for APIs that have been removed.
      */
-    REMOVED_API("--removed-api");
+    REMOVED_API("--removed-api"), ;
 
     override fun toString(): String = signature
 }

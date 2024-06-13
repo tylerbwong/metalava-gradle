@@ -96,10 +96,10 @@ open class MetalavaExtension @Inject constructor(
     val keepFilename: Property<String?> = objectFactory.property { set(null) }
 
     private inline fun <reified T> ObjectFactory.property(
-        configuration: Property<T>.() -> Unit = {}
+        configuration: Property<T>.() -> Unit = {},
     ): Property<T> = property(T::class.java).apply { configuration() }
 
     private inline fun <reified T> ObjectFactory.setProperty(
-        configuration: SetProperty<T>.() -> Unit = {}
+        configuration: SetProperty<T>.() -> Unit = {},
     ): SetProperty<T> = setProperty(T::class.java).apply { configuration() }
 }

@@ -28,7 +28,7 @@ internal abstract class MetalavaTaskContainer {
             val configuration = configurations.findByName(METALAVA_MODULE_ID)
                 ?: configurations.create(METALAVA_MODULE_ID).apply {
                     val dependency = this@getMetalavaClasspath.dependencies.create(
-                        "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version"
+                        "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version",
                     )
                     dependencies.add(dependency)
                 }
