@@ -25,10 +25,10 @@ open class MetalavaExtension @Inject constructor(
     val metalavaJarPath: Property<String> = objectFactory.property { set("") }
 
     /**
-     * Sets the source level for Java source files; default is 11.
+     * Sets the source level for Java source files; default is 17.
      */
     val javaSourceLevel: Property<JavaVersion> = objectFactory.property {
-        set(JavaVersion.VERSION_11)
+        set(JavaVersion.VERSION_17)
     }
 
     /**
@@ -79,12 +79,13 @@ open class MetalavaExtension @Inject constructor(
     val reportLintsAsErrors: Property<Boolean> = objectFactory.property { set(false) }
 
     /**
-     * The directories to search for source files. An exception will be thrown if the named
-     * directories are not direct children of the project root. The default is "src".
+     * Additional directories to search for source files. An exception will be thrown if the named
+     * directories are not direct children of the project root.
      *
+     * By default, Metalava will automatically detect the source sets of the project,
+     * excluding test sources.
      */
-    val sourcePaths: ConfigurableFileCollection = objectFactory.fileCollection()
-        .apply { setFrom("src") }
+    val additionalSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is true.
