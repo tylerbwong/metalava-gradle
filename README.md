@@ -77,6 +77,8 @@ plugins {
 ...
 
 metalava {
+    format.set(Format.V4)
+    filename.set("api.txt")
     ...
 }
 ```
@@ -85,7 +87,7 @@ Check out the [samples](https://github.com/tylerbwong/metalava-gradle/tree/main/
 
 ### License
 
-    Copyright 2023 Tyler Wong
+    Copyright 2024 Tyler Wong
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

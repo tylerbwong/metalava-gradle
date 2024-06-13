@@ -7,8 +7,6 @@ import org.gradle.api.model.ObjectFactory
 import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
-    protected val Boolean.flagValue: String get() = if (this) "yes" else "no"
-
     protected fun Boolean.flag(flagValue: String): List<String> = if (this) {
         listOf(flagValue)
     } else {
@@ -40,7 +38,9 @@ internal abstract class MetalavaTaskContainer {
 
     protected fun getFullTaskName(taskName: String, variantName: String?): String {
         return if (variantName != null) {
-            taskName + variantName.capitalize(Locale.getDefault())
+            taskName + variantName.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+            }
         } else {
             taskName
         }

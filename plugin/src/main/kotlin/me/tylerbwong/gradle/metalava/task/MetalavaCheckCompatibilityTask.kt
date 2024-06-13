@@ -61,7 +61,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             "Checks API compatibility between the code base and the released API."
         private const val METALAVA_CURRENT_PATH = "metalava/current.txt"
 
-        fun create(
+        fun register(
             project: Project,
             objectFactory: ObjectFactory,
             extension: MetalavaExtension,

@@ -92,7 +92,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         private const val TASK_NAME = "metalavaGenerateSignature"
         private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
 
-        fun create(
+        fun register(
             project: Project,
             objectFactory: ObjectFactory,
             extension: MetalavaExtension,

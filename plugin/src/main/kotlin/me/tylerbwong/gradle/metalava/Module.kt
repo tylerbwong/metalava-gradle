@@ -55,7 +55,7 @@ internal sealed class Module {
         override fun compileClasspath(variant: String?): FileCollection {
             return extension.targets
                 .flatMap { it.compilations }
-                .filter { it.defaultSourceSetName.contains("main", ignoreCase = true) }
+                .filter { it.defaultSourceSet.name.contains("main", ignoreCase = true) }
                 .map { it.compileDependencyFiles }
                 .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }

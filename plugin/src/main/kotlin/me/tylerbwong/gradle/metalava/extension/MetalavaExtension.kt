@@ -1,6 +1,5 @@
 package me.tylerbwong.gradle.metalava.extension
 
-import me.tylerbwong.gradle.metalava.Documentation
 import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
@@ -16,7 +15,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    val version: Property<String> = objectFactory.property { set("1.0.0-alpha10") }
+    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha10") }
 
     /**
      * A custom Metalava JAR location path to use instead of the embedded dependency.
@@ -46,37 +45,9 @@ open class MetalavaExtension @Inject constructor(
     val filename: Property<String> = objectFactory.property { set("api.txt") }
 
     /**
-     * @see Documentation
-     */
-    @Deprecated("This has been removed and is not currently used.")
-    val documentation: Property<Documentation> = objectFactory.property {
-        set(Documentation.PROTECTED)
-    }
-
-    /**
      *  Type is one of 'api' and 'removed', which checks either the public api or the removed api.
      */
     val apiType: Property<String> = objectFactory.property { set("api") }
-
-    /**
-     * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
-     * types, "" for non-nullable types, and "!" for unknown. The default is true.
-     */
-    @Deprecated("This has been removed and is not currently used.")
-    val outputKotlinNulls: Property<Boolean> = objectFactory.property { set(true) }
-
-    /**
-     * Controls whether default values should be included in signature files. The default is true.
-     */
-    @Deprecated("This has been removed and is not currently used.")
-    val outputDefaultValues: Property<Boolean> = objectFactory.property { set(true) }
-
-    /**
-     * Whether the signature files should include a comment listing the format version of the
-     * signature file. The default is true.
-     */
-    @Deprecated("This has been removed and is not currently used.")
-    val includeSignatureVersion: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
      * Remove the given packages from the API even if they have not been marked with @hide.
@@ -126,9 +97,9 @@ open class MetalavaExtension @Inject constructor(
 
     private inline fun <reified T> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {}
-    ) = property(T::class.java).apply { configuration() }
+    ): Property<T> = property(T::class.java).apply { configuration() }
 
     private inline fun <reified T> ObjectFactory.setProperty(
         configuration: SetProperty<T>.() -> Unit = {}
-    ) = setProperty(T::class.java).apply { configuration() }
+    ): SetProperty<T> = setProperty(T::class.java).apply { configuration() }
 }
