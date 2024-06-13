@@ -17,6 +17,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 import org.gradle.workers.WorkerExecutor
 import java.io.File
@@ -98,7 +99,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             extension: MetalavaExtension,
             module: Module,
             variantName: String? = null,
-        ) {
+        ): TaskProvider<MetalavaGenerateSignatureTask> {
             val taskName = getFullTaskName(TASK_NAME, variantName)
             val metalavaClasspath = project.getMetalavaClasspath(
                 objectFactory,
@@ -106,7 +107,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }
-            project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
+            return project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 sourcePaths.from(extension.sourcePaths)
                 filename.set(extension.filename)

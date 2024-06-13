@@ -47,13 +47,17 @@ internal class MetalavaPlugin @Inject constructor(
             extension = metalavaExtension,
         )
 
-        MetalavaGenerateSignatureTask.register(
+        val generateSignatureTask = MetalavaGenerateSignatureTask.register(
             project = project,
             objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,
         )
+
+        val outputSignatureFileProvider = generateSignatureTask
+            .flatMap { project.layout.projectDirectory.file(it.filename) }
+        metalavaExtension.outputSignatureFileProperty.set(outputSignatureFileProvider)
 
         val checkCompatibilityTask = MetalavaCheckCompatibilityTask.register(
             project = project,
