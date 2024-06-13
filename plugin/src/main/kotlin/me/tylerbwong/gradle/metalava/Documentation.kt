@@ -3,6 +3,7 @@ package me.tylerbwong.gradle.metalava
 /**
  * Flags to determine documented API by visibility modifier.
  */
+@Deprecated("This has been removed and is not currently used.")
 enum class Documentation(private val flagValue: String) {
     /**
      * Only include elements that are public.

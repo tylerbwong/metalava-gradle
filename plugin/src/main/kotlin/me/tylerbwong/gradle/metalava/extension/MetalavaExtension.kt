@@ -16,7 +16,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    val version: Property<String> = objectFactory.property { set("1.0.0-alpha08") }
+    val version: Property<String> = objectFactory.property { set("1.0.0-alpha10") }
 
     /**
      * A custom Metalava JAR location path to use instead of the embedded dependency.
@@ -48,6 +48,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * @see Documentation
      */
+    @Deprecated("This has been removed and is not currently used.")
     val documentation: Property<Documentation> = objectFactory.property {
         set(Documentation.PROTECTED)
     }
@@ -61,17 +62,20 @@ open class MetalavaExtension @Inject constructor(
      * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
      * types, "" for non-nullable types, and "!" for unknown. The default is true.
      */
+    @Deprecated("This has been removed and is not currently used.")
     val outputKotlinNulls: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
      * Controls whether default values should be included in signature files. The default is true.
      */
+    @Deprecated("This has been removed and is not currently used.")
     val outputDefaultValues: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
      * Whether the signature files should include a comment listing the format version of the
      * signature file. The default is true.
      */
+    @Deprecated("This has been removed and is not currently used.")
     val includeSignatureVersion: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
