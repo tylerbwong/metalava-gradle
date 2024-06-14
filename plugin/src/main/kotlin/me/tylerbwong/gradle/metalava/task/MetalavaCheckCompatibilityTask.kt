@@ -82,7 +82,12 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             return project.tasks.register<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 tempFilename.set(tempFilenameProvider)
-                sourceSets.setFrom(module.sourceSets(project, variantName) + extension.additionalSourceSets)
+                sourceSets.setFrom(
+                    module.sourceSets(
+                        project,
+                        variantName,
+                    ) + extension.additionalSourceSets - extension.excludedSourceSets,
+                )
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
                 bootClasspath.from(bootClasspathProvider)

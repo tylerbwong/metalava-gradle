@@ -109,7 +109,12 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                sourceSets.from(module.sourceSets(project, variantName) + extension.additionalSourceSets)
+                sourceSets.from(
+                    module.sourceSets(
+                        project,
+                        variantName,
+                    ) + extension.additionalSourceSets - extension.excludedSourceSets,
+                )
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(true)
                 bootClasspath.from(bootClasspathProvider)

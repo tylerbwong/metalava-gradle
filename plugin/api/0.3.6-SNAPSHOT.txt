@@ -33,6 +33,7 @@ package me.tylerbwong.gradle.metalava.extension {
     method public final org.gradle.api.provider.Property<java.lang.String> getApiType();
     method public final org.gradle.api.provider.SetProperty<java.lang.String> getArguments();
     method public final org.gradle.api.provider.Property<java.lang.Boolean> getEnforceCheck();
+    method public final org.gradle.api.file.ConfigurableFileCollection getExcludedSourceSets();
     method public final org.gradle.api.provider.Property<java.lang.String> getFilename();
     method public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Format> getFormat();
     method public final org.gradle.api.provider.SetProperty<java.lang.String> getHiddenAnnotations();
@@ -49,6 +50,7 @@ package me.tylerbwong.gradle.metalava.extension {
     property public final org.gradle.api.provider.Property<java.lang.String> apiType;
     property public final org.gradle.api.provider.SetProperty<java.lang.String> arguments;
     property public final org.gradle.api.provider.Property<java.lang.Boolean> enforceCheck;
+    property public final org.gradle.api.file.ConfigurableFileCollection excludedSourceSets;
     property public final org.gradle.api.provider.Property<java.lang.String> filename;
     property public final org.gradle.api.provider.Property<me.tylerbwong.gradle.metalava.Format> format;
     property public final org.gradle.api.provider.SetProperty<java.lang.String> hiddenAnnotations;

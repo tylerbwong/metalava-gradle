@@ -88,6 +88,11 @@ open class MetalavaExtension @Inject constructor(
     val additionalSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
+     * Source directories to exclude.
+     */
+    val excludedSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
+
+    /**
      * If the tasks should run as part of Gradle's `check` task. The default is true.
      */
     val enforceCheck: Property<Boolean> = objectFactory.property { set(true) }
