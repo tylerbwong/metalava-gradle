@@ -44,6 +44,14 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     @get:InputFiles
     abstract val sourceSets: ConfigurableFileCollection
 
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputFiles
+    abstract val additionalSourceSets: ConfigurableFileCollection
+
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputFiles
+    abstract val excludedSourceSets: ConfigurableFileCollection
+
     @get:Input
     abstract val signature: Property<Signature>
 
@@ -69,7 +77,9 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         awaitWork: Boolean = false,
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
-        val sourcePaths = sourceSets.filter { it.exists() }.joinToString(File.pathSeparator)
+        val sourcePaths = (sourceSets + additionalSourceSets - excludedSourceSets)
+            .filter { it.exists() }
+            .joinToString(File.pathSeparator)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
         val keepFilename = keepFilename.orNull
@@ -109,12 +119,9 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
-                sourceSets.from(
-                    module.sourceSets(
-                        project,
-                        variantName,
-                    ) + extension.additionalSourceSets - extension.excludedSourceSets,
-                )
+                sourceSets.from(module.sourceSets(project, variantName))
+                additionalSourceSets.setFrom(extension.additionalSourceSets)
+                excludedSourceSets.setFrom(extension.excludedSourceSets)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(true)
                 bootClasspath.from(bootClasspathProvider)

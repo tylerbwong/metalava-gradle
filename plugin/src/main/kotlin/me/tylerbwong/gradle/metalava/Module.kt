@@ -7,6 +7,10 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import java.io.File
 import java.util.Locale
 
@@ -65,8 +69,7 @@ internal sealed class Module {
             val libraryVariant = extension.libraryVariants.find { it.name.equals(variant) }
             require(libraryVariant != null) { "Could not find library variant for $variant." }
             return project.files(
-                extension.libraryVariants
-                    .flatMap { it.sourceSets }
+                libraryVariant.sourceSets
                     .filterNot {
                         it.name
                             .lowercase(Locale.getDefault())
@@ -77,11 +80,32 @@ internal sealed class Module {
         }
     }
 
-    class Multiplatform(private val extension: KotlinMultiplatformExtension) : Module() {
+    class Kotlin(
+        javaExtension: JavaPluginExtension,
+        private val kotlinExtension: KotlinProjectExtension,
+    ) : Module() {
+
+        private val javaModule = Java(javaExtension)
+
+        private val KotlinProjectExtension.targets: Iterable<KotlinTarget>
+            get() = when (this) {
+                is KotlinSingleTargetExtension<*> -> listOf(target)
+                is KotlinMultiplatformExtension -> targets
+                else -> error("Unexpected 'kotlin' extension $this")
+            }
+
+        override val bootClasspath: Collection<File>
+            get() = javaModule.bootClasspath
+
         override fun compileClasspath(project: Project, variant: String?): FileCollection {
-            return extension.targets
+            return javaModule.compileClasspath(project, variant) + kotlinExtension.targets
                 .flatMap { it.compilations }
-                .filter { it.defaultSourceSet.name.contains(SourceSet.MAIN_SOURCE_SET_NAME, ignoreCase = true) }
+                .filter {
+                    it.defaultSourceSet.name.contains(
+                        SourceSet.MAIN_SOURCE_SET_NAME,
+                        ignoreCase = true,
+                    )
+                }
                 .map { it.compileDependencyFiles }
                 .reduce(FileCollection::plus)
                 .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
@@ -89,7 +113,7 @@ internal sealed class Module {
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
             return project.files(
-                extension.sourceSets
+                javaModule.sourceSets(project, variant) + kotlinExtension.sourceSets
                     .filterNot {
                         it.name
                             .lowercase(Locale.getDefault())
@@ -116,8 +140,9 @@ internal sealed class Module {
             return extension.sourceSets
                 .filter { it.name.contains(SourceSet.MAIN_SOURCE_SET_NAME, ignoreCase = true) }
                 .map { it.compileClasspath }
-                .reduce(FileCollection::plus)
-                .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+                .reduceOrNull(FileCollection::plus)
+                ?.filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+                ?: project.files()
         }
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
@@ -128,7 +153,7 @@ internal sealed class Module {
                             .lowercase(Locale.getDefault())
                             .contains(SourceSet.TEST_SOURCE_SET_NAME)
                     }
-                    .flatMap { it.allSource.srcDirs },
+                    .flatMap { it.java.srcDirs },
             )
         }
     }
@@ -139,11 +164,16 @@ internal sealed class Module {
                 // Use findByName to avoid requiring consumers to have the Android Gradle plugin
                 // in their classpath when applying this plugin to a non-Android project
                 val libraryExtension = extensions.findByName("android")
-                val multiplatformExtension = extensions.findByName("kotlin")
+                val kotlinExtension = extensions.findByName("kotlin")
                 val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
                 return when {
-                    libraryExtension != null && libraryExtension is LibraryExtension -> Android(libraryExtension)
-                    multiplatformExtension != null && multiplatformExtension is KotlinMultiplatformExtension -> Multiplatform(multiplatformExtension)
+                    libraryExtension != null && libraryExtension is LibraryExtension -> Android(
+                        libraryExtension,
+                    )
+                    kotlinExtension != null && javaPluginExtension != null && kotlinExtension is KotlinProjectExtension -> Kotlin(
+                        javaPluginExtension,
+                        kotlinExtension,
+                    )
                     javaPluginExtension != null -> Java(javaPluginExtension)
                     else -> null
                 }

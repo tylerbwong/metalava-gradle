@@ -18,8 +18,8 @@ jobs:
           java-version: 17
       - name: Run Plugin Build
         run: ./gradlew :plugin:build
-      - name: Run Samples Build
-        run: ./gradlew :samples:build
+      - name: Run Samples Check
+        run: ./gradlew metalavaCheckCompatibility metalavaCheckCompatibilityDebug
       - name: Publish Plugin
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
