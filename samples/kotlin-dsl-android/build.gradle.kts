@@ -1,11 +1,11 @@
 plugins {
     id("com.android.library")
-    alias(libs.plugins.metalavaGradle)
+    id("me.tylerbwong.gradle.metalava")
 }
 
 android {
     namespace = "me.tylerbwong.gradle.metalava.sample"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21

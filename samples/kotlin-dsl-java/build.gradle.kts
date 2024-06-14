@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    alias(libs.plugins.metalavaGradle)
+    id("me.tylerbwong.gradle.metalava")
 }
 
 metalava {

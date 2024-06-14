@@ -17,8 +17,10 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
-      - name: Run Build
-        run: ./gradlew build
+      - name: Run Plugin Build
+        run: ./gradlew :plugin:build
+      - name: Run Samples Build
+        run: ./gradlew :samples:build
       - name: Copy Test Results
         if: always()
         run: |

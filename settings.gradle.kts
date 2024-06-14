@@ -1,18 +1,18 @@
 rootProject.name = "metalava-gradle"
 
+pluginManagement {
+    includeBuild("./plugin")
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
 include(
-    ":plugin",
     ":samples:groovy-android",
     ":samples:groovy-java",
     ":samples:kotlin-dsl-android",
     ":samples:kotlin-dsl-java",
     ":samples:kotlin-multiplatform"
 )
-
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}

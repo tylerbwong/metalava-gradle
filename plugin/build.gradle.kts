@@ -8,6 +8,11 @@ plugins {
     MetalavaGradleProjectPlugin
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 group = "me.tylerbwong.gradle.metalava"
 version = "0.3.6-SNAPSHOT"
 
