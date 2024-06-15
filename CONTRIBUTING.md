@@ -3,8 +3,8 @@
 ### Pull Requests
 - Be as descriptive as possible when submitting new pull requests
 - Link any related issues the pull request might be addressing
-- This project uses [ktlint](https://github.com/pinterest/ktlint). (`./gradlew ktlintCheck` should succeed)
-- If the pull request modifies the public API, regenerate the api file by running `./gradlew metalavaGenerateSignature`
+- This project uses [ktlint](https://github.com/pinterest/ktlint). (`./gradlew :plugin:ktlintCheck` should succeed)
+- If the pull request modifies the public API, regenerate the api file by running `./gradlew :plugin:metalavaGenerateSignature`
 
 ### Issues
 

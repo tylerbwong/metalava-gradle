@@ -44,6 +44,7 @@ internal abstract class BaseMetalavaTask(
 
     protected fun executeMetalavaWork(args: List<String>, awaitWork: Boolean = false) {
         val queue = workerExecutor.noIsolation()
+        logger.debug("Executing Metalava with arguments: {}", args)
         queue.submit(MetalavaWorkAction::class.java) {
             classpath.from(metalavaClasspath)
             arguments.set(args.joinToString())
