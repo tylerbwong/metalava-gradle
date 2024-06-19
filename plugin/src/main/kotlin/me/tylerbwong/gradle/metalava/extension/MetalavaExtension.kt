@@ -62,6 +62,14 @@ open class MetalavaExtension @Inject constructor(
     val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
 
     /**
+     * A comma separated list of fully qualified annotation names.
+     *
+     * Treat elements annotated with the passed in annotations as important for API compatibility.
+     * (e.g. @Composable)
+     */
+    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty()
+
+    /**
      * Whether the signature file being read should be interpreted as having encoded its types using
      * Kotlin style types: a suffix of "?" for nullable types, no suffix for non nullable types, and
      * "!" for unknown. The default is false.

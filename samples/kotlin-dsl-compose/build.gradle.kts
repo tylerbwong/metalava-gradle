@@ -15,6 +15,7 @@ android {
 
 metalava {
     filename.set("api/$name-api.txt")
+    apiCompatAnnotations.set(listOf("androidx.compose.runtime.Composable"))
 }
 
 dependencies {

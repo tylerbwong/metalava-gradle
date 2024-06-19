@@ -45,6 +45,10 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
         metalavaGenerateSignatureInternal(filenameOverride = tempFilename.get(), awaitWork = true)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
+        val apiCompatAnnotations = listOf(
+            "--api-compat-annotations",
+            apiCompatAnnotations.get().joinToString(),
+        )
 
         val args: List<String> = listOf(
             "--format=${format.get()}",
@@ -53,7 +57,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             "--check-compatibility:${apiType.get()}:released",
             filename.get(),
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
-            .flag("--lints-as-errors") + hidePackages + hideAnnotations + arguments.get()
+            .flag("--lints-as-errors") + hidePackages + hideAnnotations + apiCompatAnnotations + arguments.get()
         executeMetalavaWork(args)
     }
 
@@ -94,6 +98,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 javaSourceLevel.set(extension.javaSourceLevel)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
+                apiCompatAnnotations.set(extension.apiCompatAnnotations)
                 apiType.set(extension.apiType)
                 inputKotlinNulls.set(extension.inputKotlinNulls)
                 reportWarningsAsErrors.set(extension.reportWarningsAsErrors)
