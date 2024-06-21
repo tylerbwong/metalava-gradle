@@ -4,7 +4,6 @@ import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property

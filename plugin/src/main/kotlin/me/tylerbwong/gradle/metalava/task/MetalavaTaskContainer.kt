@@ -3,7 +3,6 @@ package me.tylerbwong.gradle.metalava.task
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import org.gradle.api.model.ObjectFactory
 import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
