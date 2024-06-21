@@ -4,6 +4,7 @@ import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
@@ -20,9 +21,9 @@ open class MetalavaExtension @Inject constructor(
     val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha10") }
 
     /**
-     * A custom Metalava JAR location path to use instead of the embedded dependency.
+     * A custom Metalava JAR to use instead of the embedded dependency.
      */
-    val metalavaJarPath: Property<String> = objectFactory.property { set("") }
+    val metalavaJar: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
      * Sets the source level for Java source files; default is 17.
