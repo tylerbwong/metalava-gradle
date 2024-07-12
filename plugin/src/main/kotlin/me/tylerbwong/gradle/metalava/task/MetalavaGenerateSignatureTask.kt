@@ -88,10 +88,14 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         }
 
         val args: List<String> = listOf(
-            "${signature.get()}", filenameOverride ?: filename.get(),
-            "--java-source", "${javaSourceLevel.get()}",
-            "--classpath", fullClasspath,
-            "--source-path", sourcePaths,
+            "${signature.get()}",
+            filenameOverride ?: filename.get(),
+            "--java-source",
+            "${javaSourceLevel.get()}",
+            "--classpath",
+            fullClasspath,
+            "--source-path",
+            sourcePaths,
         ) + keepFileFlags + createCommonArgs()
         executeMetalavaWork(args, awaitWork)
     }
