@@ -80,9 +80,6 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         val sourcePaths = (sourceSets + additionalSourceSets - excludedSourceSets)
             .filter { it.exists() }
             .joinToString(File.pathSeparator)
-        val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
-        val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-        val apiCompatAnnotations = apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
         val keepFilename = keepFilename.orNull
         val keepFileFlags = if (!keepFilename.isNullOrEmpty()) {
             listOf("--proguard", keepFilename)
@@ -91,12 +88,11 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         }
 
         val args: List<String> = listOf(
-            "--format=${format.get()}",
             "${signature.get()}", filenameOverride ?: filename.get(),
             "--java-source", "${javaSourceLevel.get()}",
             "--classpath", fullClasspath,
             "--source-path", sourcePaths,
-        ) + hidePackages + hideAnnotations + apiCompatAnnotations + keepFileFlags + arguments.get()
+        ) + keepFileFlags + createCommonArgs()
         executeMetalavaWork(args, awaitWork)
     }
 

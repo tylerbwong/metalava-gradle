@@ -43,18 +43,13 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
     @TaskAction
     fun metalavaCheckCompatibilityTask() {
         metalavaGenerateSignatureInternal(filenameOverride = tempFilename.get(), awaitWork = true)
-        val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
-        val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-        val apiCompatAnnotations = apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
-
         val args: List<String> = listOf(
-            "--format=${format.get()}",
             "--source-files",
             tempFilename.get(),
             "--check-compatibility:${apiType.get()}:released",
             filename.get(),
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
-            .flag("--lints-as-errors") + hidePackages + hideAnnotations + apiCompatAnnotations + arguments.get()
+            .flag("--lints-as-errors") + createCommonArgs()
         executeMetalavaWork(args)
     }
 
