@@ -109,15 +109,13 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
         fun register(
             project: Project,
-            objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
             variantName: String? = null,
         ): TaskProvider<MetalavaGenerateSignatureTask> {
             val taskName = getFullTaskName(TASK_NAME, variantName)
             val metalavaClasspath = project.getMetalavaClasspath(
-                objectFactory,
-                jarPath = extension.metalavaJarPath.get().ifEmpty { null },
+                metalavaJar = extension.metalavaJar,
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }

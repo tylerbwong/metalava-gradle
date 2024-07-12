@@ -69,7 +69,6 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
 
         fun register(
             project: Project,
-            objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
             variantName: String?,
@@ -78,8 +77,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 .file(METALAVA_CURRENT_PATH).map { it.asFile.absolutePath }
             val taskName = getFullTaskName(TASK_NAME, variantName)
             val metalavaClasspath = project.getMetalavaClasspath(
-                objectFactory,
-                jarPath = extension.metalavaJarPath.get().ifEmpty { null },
+                metalavaJar = extension.metalavaJar,
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }

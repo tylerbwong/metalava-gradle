@@ -3,7 +3,6 @@ package me.tylerbwong.gradle.metalava.task
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import org.gradle.api.model.ObjectFactory
 import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
@@ -15,16 +14,17 @@ internal abstract class MetalavaTaskContainer {
 
     /**
      * Obtains the Metalava classpath from either:
-     * 1. A locally provided JAR path OR
+     * 1. A locally provided JAR `FileCollection` OR
      * 2. if no JAR path is provided, the artifact coordinates specified by
      * [METALAVA_GROUP_ID]:[METALAVA_MODULE_ID]:[MetalavaExtension.version]
      */
     protected fun Project.getMetalavaClasspath(
-        objectFactory: ObjectFactory,
-        jarPath: String?,
+        metalavaJar: FileCollection,
         version: String,
     ): FileCollection {
-        return jarPath?.let { objectFactory.fileCollection().from(it) } ?: run {
+        return if (!metalavaJar.isEmpty) {
+            metalavaJar
+        } else {
             val configuration = configurations.findByName(METALAVA_MODULE_ID)
                 ?: configurations.create(METALAVA_MODULE_ID).apply {
                     val dependency = this@getMetalavaClasspath.dependencies.create(

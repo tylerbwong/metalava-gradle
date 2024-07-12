@@ -20,9 +20,9 @@ open class MetalavaExtension @Inject constructor(
     val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha11") }
 
     /**
-     * A custom Metalava JAR location path to use instead of the embedded dependency.
+     * A custom Metalava JAR to use instead of the embedded dependency.
      */
-    val metalavaJarPath: Property<String> = objectFactory.property { set("") }
+    val metalavaJar: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
      * Sets the source level for Java source files; default is 17.
