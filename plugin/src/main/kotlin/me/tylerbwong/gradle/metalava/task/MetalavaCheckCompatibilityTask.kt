@@ -45,10 +45,7 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
         metalavaGenerateSignatureInternal(filenameOverride = tempFilename.get(), awaitWork = true)
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-        val apiCompatAnnotations = listOf(
-            "--api-compat-annotations",
-            apiCompatAnnotations.get().joinToString(),
-        )
+        val apiCompatAnnotations = apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
 
         val args: List<String> = listOf(
             "--format=${format.get()}",
