@@ -40,6 +40,10 @@ internal abstract class BaseMetalavaTask(
 
     @get:Optional
     @get:Input
+    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty()
+
+    @get:Optional
+    @get:Input
     val arguments: SetProperty<String> = objectFactory.setProperty()
 
     protected fun executeMetalavaWork(args: List<String>, awaitWork: Boolean = false) {

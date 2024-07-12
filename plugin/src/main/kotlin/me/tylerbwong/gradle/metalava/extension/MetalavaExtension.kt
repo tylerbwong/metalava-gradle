@@ -17,7 +17,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha10") }
+    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha11") }
 
     /**
      * A custom Metalava JAR to use instead of the embedded dependency.
@@ -60,6 +60,14 @@ open class MetalavaExtension @Inject constructor(
      * Treat any elements annotated with the given annotation as hidden.
      */
     val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
+
+    /**
+     * A comma separated list of fully qualified annotation names.
+     *
+     * Treat elements annotated with the passed in annotations as important for API compatibility.
+     * (e.g. @Composable)
+     */
+    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty()
 
     /**
      * Whether the signature file being read should be interpreted as having encoded its types using
