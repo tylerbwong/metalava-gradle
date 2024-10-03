@@ -1,6 +1,6 @@
 [versions]
 androidGradle = "8.5.1"
-androidx-compose-runtime = "1.6.8"
+androidx-compose-runtime = "1.7.3"
 junit = "5.11.1"
 kotlin = "2.0.0"
 ktlintGradle = "12.1.1"
