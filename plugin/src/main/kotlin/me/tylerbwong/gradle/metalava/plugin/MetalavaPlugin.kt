@@ -15,8 +15,10 @@ internal class MetalavaPlugin : Plugin<Project> {
             afterEvaluate {
                 val currentModule = module
                 if (currentModule != null) {
-                    if (currentModule is Module.Android) {
-                        currentModule.libraryVariants.forEach {
+                    val androidModule = (currentModule as? Module.Composite)
+                        ?.extract<Module.Android>()
+                    if (androidModule != null) {
+                        androidModule.libraryVariants.forEach {
                             createMetalavaTasks(this, extension, currentModule, it)
                         }
                     } else {

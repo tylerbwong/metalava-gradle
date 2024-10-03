@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import java.io.File
 import java.util.Locale
 
@@ -158,25 +157,47 @@ internal sealed class Module {
         }
     }
 
+    class Composite(private val modules: List<Module>) : Module() {
+        override val bootClasspath: Collection<File>
+            get() = modules.flatMap { it.bootClasspath }
+
+        override fun compileClasspath(project: Project, variant: String?): FileCollection {
+            return modules
+                .map { it.compileClasspath(project, variant) }
+                .reduce(FileCollection::plus)
+                .filter { it.exists() }
+        }
+
+        override fun sourceSets(project: Project, variant: String?): FileCollection {
+            return modules
+                .map { it.sourceSets(project, variant) }
+                .reduce(FileCollection::plus)
+        }
+
+        internal inline fun <reified T : Module> extract(): T? = modules.firstOrNull {
+            it is T
+        } as? T
+    }
+
     companion object {
         internal val Project.module: Module?
             get() {
                 // Use findByName to avoid requiring consumers to have the Android Gradle plugin
                 // in their classpath when applying this plugin to a non-Android project
-                val libraryExtension = extensions.findByName("android")
-                val kotlinExtension = extensions.findByName("kotlin")
+                val androidModule = extensions.findByName("android")
+                    ?.takeIf { it is LibraryExtension }
+                    ?.let { Android(it as LibraryExtension) }
+
                 val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
-                return when {
-                    libraryExtension != null && libraryExtension is LibraryExtension -> Android(
-                        libraryExtension,
-                    )
-                    kotlinExtension != null && javaPluginExtension != null && kotlinExtension is KotlinProjectExtension -> Kotlin(
-                        javaPluginExtension,
-                        kotlinExtension,
-                    )
-                    javaPluginExtension != null -> Java(javaPluginExtension)
-                    else -> null
-                }
+
+                val kotlinModule = extensions.findByName("kotlin")
+                    ?.takeIf { it is KotlinProjectExtension && javaPluginExtension != null }
+                    ?.let { Kotlin(javaPluginExtension!!, it as KotlinProjectExtension) }
+
+                val javaModule = javaPluginExtension?.let { Java(it) }
+
+                val modules = listOfNotNull(androidModule, kotlinModule, javaModule)
+                return modules.takeIf { it.isNotEmpty() }?.let { Composite(it) }
             }
 
         internal fun File.checkDirectory(validExtensions: Collection<String>): Boolean {
