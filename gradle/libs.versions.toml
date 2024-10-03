@@ -1,8 +1,8 @@
 [versions]
-androidGradle = "8.5.1"
-androidx-compose-runtime = "1.6.8"
+androidGradle = "8.5.2"
+androidx-compose-runtime = "1.7.3"
 junit = "5.10.3"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 ktlintGradle = "12.1.1"
 pluginPublish = "1.2.1"
 metalavaGradle = "0.3.5"
