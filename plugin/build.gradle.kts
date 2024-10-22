@@ -14,7 +14,7 @@ repositories {
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.4.0-alpha01"
+version = "0.4.0-alpha02"
 
 gradlePlugin {
     website.set("https://github.com/tylerbwong/metalava-gradle")
@@ -30,13 +30,8 @@ gradlePlugin {
     }
 }
 
-ktlint {
-    version.set("0.47.1")
-}
-
 metalava {
     filename.set("api/${project.version}.txt")
-    sourcePaths.setFrom("src/main")
 }
 
 tasks.test {

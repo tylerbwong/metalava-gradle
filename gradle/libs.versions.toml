@@ -1,11 +1,11 @@
 [versions]
-androidGradle = "8.7.0"
-androidx-compose-runtime = "1.7.3"
-junit = "5.11.1"
-kotlin = "2.0.20"
+androidGradle = "8.7.1"
+androidx-compose-runtime = "1.7.4"
+junit = "5.11.3"
+kotlin = "2.0.21"
 ktlintGradle = "12.1.1"
 pluginPublish = "1.3.0"
-metalavaGradle = "0.3.5"
+metalavaGradle = "0.4.0-alpha01"
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
