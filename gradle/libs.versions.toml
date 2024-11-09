@@ -1,5 +1,5 @@
 [versions]
-androidGradle = "8.7.1"
+androidGradle = "8.7.2"
 androidx-compose-runtime = "1.7.4"
 junit = "5.11.3"
 kotlin = "2.0.21"
