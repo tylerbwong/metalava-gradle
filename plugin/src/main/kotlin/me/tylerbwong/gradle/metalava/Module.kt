@@ -97,18 +97,20 @@ internal sealed class Module {
             get() = javaModule.bootClasspath
 
         override fun compileClasspath(project: Project, variant: String?): FileCollection {
-            return javaModule.compileClasspath(project, variant) + (kotlinExtension.targets
-                .flatMap { it.compilations }
-                .filter {
-                    it.defaultSourceSet.name.contains(
-                        SourceSet.MAIN_SOURCE_SET_NAME,
-                        ignoreCase = true,
-                    )
-                }
-                .map { it.compileDependencyFiles }
-                .reduceOrNull(FileCollection::plus)
-                ?.filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
-                ?: project.files())
+            return javaModule.compileClasspath(project, variant) + (
+                kotlinExtension.targets
+                    .flatMap { it.compilations }
+                    .filter {
+                        it.defaultSourceSet.name.contains(
+                            SourceSet.MAIN_SOURCE_SET_NAME,
+                            ignoreCase = true,
+                        )
+                    }
+                    .map { it.compileDependencyFiles }
+                    .reduceOrNull(FileCollection::plus)
+                    ?.filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+                    ?: project.files()
+                )
         }
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
