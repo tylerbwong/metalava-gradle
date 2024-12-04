@@ -97,17 +97,20 @@ internal sealed class Module {
             get() = javaModule.bootClasspath
 
         override fun compileClasspath(project: Project, variant: String?): FileCollection {
-            return javaModule.compileClasspath(project, variant) + kotlinExtension.targets
-                .flatMap { it.compilations }
-                .filter {
-                    it.defaultSourceSet.name.contains(
-                        SourceSet.MAIN_SOURCE_SET_NAME,
-                        ignoreCase = true,
-                    )
-                }
-                .map { it.compileDependencyFiles }
-                .reduce(FileCollection::plus)
-                .filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+            return javaModule.compileClasspath(project, variant) + (
+                kotlinExtension.targets
+                    .flatMap { it.compilations }
+                    .filter {
+                        it.defaultSourceSet.name.contains(
+                            SourceSet.MAIN_SOURCE_SET_NAME,
+                            ignoreCase = true,
+                        )
+                    }
+                    .map { it.compileDependencyFiles }
+                    .reduceOrNull(FileCollection::plus)
+                    ?.filter { it.exists() && it.checkDirectory(listOf(".jar", ".class")) }
+                    ?: project.files()
+                )
         }
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
@@ -164,14 +167,14 @@ internal sealed class Module {
         override fun compileClasspath(project: Project, variant: String?): FileCollection {
             return modules
                 .map { it.compileClasspath(project, variant) }
-                .reduce(FileCollection::plus)
-                .filter { it.exists() }
+                .reduceOrNull(FileCollection::plus)
+                ?.filter { it.exists() } ?: project.files()
         }
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
             return modules
                 .map { it.sourceSets(project, variant) }
-                .reduce(FileCollection::plus)
+                .reduceOrNull(FileCollection::plus) ?: project.files()
         }
 
         internal inline fun <reified T : Module> extract(): T? = modules.firstOrNull {
