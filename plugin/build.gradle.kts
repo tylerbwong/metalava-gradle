@@ -14,7 +14,7 @@ repositories {
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.4.0-alpha02"
+version = "0.4.0-alpha03"
 
 gradlePlugin {
     website.set("https://github.com/tylerbwong/metalava-gradle")
