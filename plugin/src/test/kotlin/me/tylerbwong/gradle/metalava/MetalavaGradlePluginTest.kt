@@ -28,7 +28,7 @@ class MetalavaGradlePluginTest {
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun `check metalavaGenerateSignature runs successfully with no source`(
-        isConfigurationCacheEnabled: Boolean
+        isConfigurationCacheEnabled: Boolean,
     ) {
         buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
             appendText(
@@ -44,7 +44,7 @@ class MetalavaGradlePluginTest {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
                     }
-                """
+                """,
             )
         }
         val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {
@@ -74,7 +74,7 @@ class MetalavaGradlePluginTest {
                     plugins {
                         id("me.tylerbwong.gradle.metalava")
                     }
-                """
+                """,
             )
         }
         val arguments = if (isConfigurationCacheEnabled) {
@@ -113,9 +113,9 @@ class MetalavaGradlePluginTest {
                     }
                     
                     metalava {
-                        sourcePaths.from(customSourceGeneratingTaskProvider.map { it.outputs.files })
+                        additionalSourceSets.setFrom(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
-                """
+                """,
             )
         }
         val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {
@@ -127,6 +127,37 @@ class MetalavaGradlePluginTest {
             .withArguments(arguments)
             .build()
         assertTrue(result.tasks.any { it.path == ":customSourceGeneratingTask" })
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `check outputSignatureFileProvider creates dependency on generation task`() {
+        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+            appendText(
+                """
+                    allprojects {
+                        repositories {
+                            google()
+                            mavenCentral()
+                        }
+                    }
+
+                    plugins {
+                        `java-library`
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+
+                    tasks.register("customTask") {
+                        inputs.file(metalava.outputSignatureFileProvider)
+                        doFirst { }
+                    }
+                """,
+            )
+        }
+        val result = gradleRunner
+            .withArguments("customTask")
+            .build()
+        assertTrue(result.tasks.any { it.path == ":metalavaGenerateSignature" })
     }
 
     @AfterEach

@@ -7,24 +7,22 @@ import me.tylerbwong.gradle.metalava.task.MetalavaCheckCompatibilityTask
 import me.tylerbwong.gradle.metalava.task.MetalavaGenerateSignatureTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.model.ObjectFactory
-import javax.inject.Inject
 
-internal class MetalavaPlugin @Inject constructor(
-    private val objectFactory: ObjectFactory,
-) : Plugin<Project> {
+internal class MetalavaPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             val extension = extensions.create("metalava", MetalavaExtension::class.java)
             afterEvaluate {
                 val currentModule = module
                 if (currentModule != null) {
-                    if (currentModule is Module.Android) {
-                        currentModule.libraryVariants.forEach {
-                            createMetalavaTasks(this, objectFactory, extension, currentModule, it)
+                    val androidModule = (currentModule as? Module.Composite)
+                        ?.extract<Module.Android>()
+                    if (androidModule != null) {
+                        androidModule.libraryVariants.forEach {
+                            createMetalavaTasks(this, extension, currentModule, it)
                         }
                     } else {
-                        createMetalavaTasks(this, objectFactory, extension, currentModule)
+                        createMetalavaTasks(this, extension, currentModule)
                     }
                 } else {
                     logger.warn("Module $name is not supported by the Metalava Gradle plugin")
@@ -35,22 +33,23 @@ internal class MetalavaPlugin @Inject constructor(
 
     private fun createMetalavaTasks(
         project: Project,
-        objectFactory: ObjectFactory,
         metalavaExtension: MetalavaExtension,
         module: Module,
         variantName: String? = null,
     ) {
-        MetalavaGenerateSignatureTask.create(
+        val generateSignatureTask = MetalavaGenerateSignatureTask.register(
             project = project,
-            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,
         )
 
-        val checkCompatibilityTask = MetalavaCheckCompatibilityTask.create(
+        val outputSignatureFileProvider = generateSignatureTask
+            .flatMap { project.layout.projectDirectory.file(it.filename) }
+        metalavaExtension.outputSignatureFileProperty.set(outputSignatureFileProvider)
+
+        val checkCompatibilityTask = MetalavaCheckCompatibilityTask.register(
             project = project,
-            objectFactory = objectFactory,
             extension = metalavaExtension,
             module = module,
             variantName = variantName,

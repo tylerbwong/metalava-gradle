@@ -1,0 +1,9 @@
+// Signature format: 4.0
+package me.tylerbwong.gradle.metalava.sample {
+
+  public final class SampleComposeApiKt {
+    method @androidx.compose.runtime.Composable public static void SampleComposeApi();
+  }
+
+}
+

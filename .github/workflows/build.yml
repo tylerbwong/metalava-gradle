@@ -11,14 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set Up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: corretto
           java-version: 17
-      - name: Run Build
-        run: ./gradlew build
+      - name: Run Plugin Build
+        run: ./gradlew :plugin:build
+      - name: Run Samples Check
+        run: ./gradlew metalavaCheckCompatibility metalavaCheckCompatibilityDebug
       - name: Copy Test Results
         if: always()
         run: |
@@ -26,7 +28,7 @@ jobs:
           find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} junit/ \;
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: junit-results
           path: junit

@@ -1,7 +1,7 @@
 # metalava-gradle
 [![Build](https://github.com/tylerbwong/metalava-gradle/actions/workflows/build.yml/badge.svg)](https://github.com/tylerbwong/metalava-gradle/actions/workflows/build.yml)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/me/tylerbwong/gradle/metalava/me.tylerbwong.gradle.metalava.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/me.tylerbwong.gradle.metalava)
-[![Metalava](https://img.shields.io/badge/Metalava-1.0.0--alpha08-orange)](https://maven.google.com/web/index.html#com.android.tools.metalava:metalava:1.0.0-alpha08)
+[![Metalava](https://img.shields.io/badge/Metalava-1.0.0--alpha11-orange)](https://maven.google.com/web/index.html#com.android.tools.metalava:metalava:1.0.0-alpha11)
 
 A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/metalava/), AOSP's tool for API metadata extraction and compatibility tracking.
 
@@ -10,8 +10,8 @@ A Gradle plugin for [Metalava](https://android.googlesource.com/platform/tools/m
 This plugin currently supports the following plugins:
 
 * `com.android.library`
+* `kotlin`
 * `java-library`
-* `kotlin("multiplatform")`
 
 ### Setup
 
@@ -77,9 +77,8 @@ plugins {
 ...
 
 metalava {
-    documentation.set(Documentation.PUBLIC)
-    outputKotlinNulls.set(false)
-    includeSignatureVersion.set(false)
+    format.set(Format.V4)
+    filename.set("api.txt")
     ...
 }
 ```
@@ -88,7 +87,7 @@ Check out the [samples](https://github.com/tylerbwong/metalava-gradle/tree/main/
 
 ### License
 
-    Copyright 2023 Tyler Wong
+    Copyright 2024 Tyler Wong
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

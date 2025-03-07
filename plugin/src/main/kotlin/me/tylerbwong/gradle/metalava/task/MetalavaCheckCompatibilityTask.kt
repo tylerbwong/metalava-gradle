@@ -43,17 +43,13 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
     @TaskAction
     fun metalavaCheckCompatibilityTask() {
         metalavaGenerateSignatureInternal(filenameOverride = tempFilename.get(), awaitWork = true)
-        val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
-        val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-
         val args: List<String> = listOf(
-            "--no-banner",
-            "--format=${format.get()}",
-            "--source-files", tempFilename.get(),
-            "--check-compatibility:${apiType.get()}:released", filename.get(),
-            "--input-kotlin-nulls=${inputKotlinNulls.get().flagValue}"
+            "--source-files",
+            tempFilename.get(),
+            "--check-compatibility:${apiType.get()}:released",
+            filename.get(),
         ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
-            .flag("--lints-as-errors") + hidePackages + hideAnnotations
+            .flag("--lints-as-errors") + createCommonArgs()
         executeMetalavaWork(args)
     }
 
@@ -63,43 +59,41 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             "Checks API compatibility between the code base and the released API."
         private const val METALAVA_CURRENT_PATH = "metalava/current.txt"
 
-        fun create(
+        fun register(
             project: Project,
-            objectFactory: ObjectFactory,
             extension: MetalavaExtension,
             module: Module,
-            variantName: String?
+            variantName: String?,
         ): TaskProvider<MetalavaCheckCompatibilityTask> {
             val tempFilenameProvider = project.layout.buildDirectory
                 .file(METALAVA_CURRENT_PATH).map { it.asFile.absolutePath }
             val taskName = getFullTaskName(TASK_NAME, variantName)
             val metalavaClasspath = project.getMetalavaClasspath(
-                objectFactory,
-                jarPath = extension.metalavaJarPath.get().ifEmpty { null },
+                metalavaJar = extension.metalavaJar,
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register<MetalavaCheckCompatibilityTask>(taskName) {
                 this.metalavaClasspath.from(metalavaClasspath)
                 tempFilename.set(tempFilenameProvider)
-                sourcePaths.setFrom(extension.sourcePaths)
+                sourceSets.from(module.sourceSets(project, variantName))
+                additionalSourceSets.setFrom(extension.additionalSourceSets)
+                excludedSourceSets.setFrom(extension.excludedSourceSets)
                 filename.set(extension.filename)
                 shouldRunGenerateSignature.set(false)
                 bootClasspath.from(bootClasspathProvider)
-                compileClasspath.from(module.compileClasspath(variantName))
-                documentation.set(extension.documentation)
+                compileClasspath.from(module.compileClasspath(project, variantName))
                 format.set(extension.format)
                 signature.set(extension.signature)
                 javaSourceLevel.set(extension.javaSourceLevel)
-                outputKotlinNulls.set(extension.outputKotlinNulls)
-                outputDefaultValues.set(extension.outputDefaultValues)
-                includeSignatureVersion.set(extension.includeSignatureVersion)
                 hiddenPackages.set(extension.hiddenPackages)
                 hiddenAnnotations.set(extension.hiddenAnnotations)
+                apiCompatAnnotations.set(extension.apiCompatAnnotations)
                 apiType.set(extension.apiType)
                 inputKotlinNulls.set(extension.inputKotlinNulls)
                 reportWarningsAsErrors.set(extension.reportWarningsAsErrors)
                 reportLintsAsErrors.set(extension.reportLintsAsErrors)
+                arguments.set(extension.arguments)
             }
         }
     }

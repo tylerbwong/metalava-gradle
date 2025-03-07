@@ -1,18 +1,19 @@
+// Signature format: 4.0
 package me.tylerbwong.gradle.metalava.sample {
 
   public abstract class SampleJavaPublicApi {
     ctor public SampleJavaPublicApi();
     method public abstract void publicFunction();
     method public static int publicStaticIntFunction(int);
-    field public abstract String publicStringProperty;
+    field public abstract String! publicStringProperty;
   }
 
   public interface SamplePublicApi {
-    method @Nullable public String getPublicApiNullableProperty();
-    method @NonNull public String getPublicApiProperty();
+    method public String? getPublicApiNullableProperty();
+    method public String getPublicApiProperty();
     method public void publicApiFunction();
-    property @Nullable public abstract String publicApiNullableProperty;
-    property @NonNull public abstract String publicApiProperty;
+    property public abstract String? publicApiNullableProperty;
+    property public abstract String publicApiProperty;
   }
 
 }

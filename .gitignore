@@ -25,3 +25,4 @@ local.properties
 .DS_Store
 
 kotlin-js-store
+.kotlin

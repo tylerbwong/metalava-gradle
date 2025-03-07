@@ -8,8 +8,13 @@ plugins {
     MetalavaGradleProjectPlugin
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 group = "me.tylerbwong.gradle.metalava"
-version = "0.3.5"
+version = "0.4.0-alpha03"
 
 gradlePlugin {
     website.set("https://github.com/tylerbwong/metalava-gradle")
@@ -25,13 +30,8 @@ gradlePlugin {
     }
 }
 
-ktlint {
-    version.set("0.43.2")
-}
-
 metalava {
     filename.set("api/${project.version}.txt")
-    sourcePaths.setFrom("src/main")
 }
 
 tasks.test {

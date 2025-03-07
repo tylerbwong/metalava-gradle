@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    alias(libs.plugins.metalavaGradle)
+    id("me.tylerbwong.gradle.metalava")
 }
 
 java {
@@ -10,6 +10,4 @@ java {
 
 metalava {
     filename = "api/$name-api.txt"
-    outputKotlinNulls = false
-    includeSignatureVersion = false
 }

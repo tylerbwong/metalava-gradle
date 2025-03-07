@@ -1,12 +1,13 @@
 package me.tylerbwong.gradle.metalava.extension
 
-import me.tylerbwong.gradle.metalava.Documentation
 import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import javax.inject.Inject
 
@@ -16,18 +17,18 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    val version: Property<String> = objectFactory.property { set("1.0.0-alpha08") }
+    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha11") }
 
     /**
-     * A custom Metalava JAR location path to use instead of the embedded dependency.
+     * A custom Metalava JAR to use instead of the embedded dependency.
      */
-    val metalavaJarPath: Property<String> = objectFactory.property { set("") }
+    val metalavaJar: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
-     * Sets the source level for Java source files; default is 11.
+     * Sets the source level for Java source files; default is 17.
      */
     val javaSourceLevel: Property<JavaVersion> = objectFactory.property {
-        set(JavaVersion.VERSION_11)
+        set(JavaVersion.VERSION_17)
     }
 
     /**
@@ -46,33 +47,9 @@ open class MetalavaExtension @Inject constructor(
     val filename: Property<String> = objectFactory.property { set("api.txt") }
 
     /**
-     * @see Documentation
-     */
-    val documentation: Property<Documentation> = objectFactory.property {
-        set(Documentation.PROTECTED)
-    }
-
-    /**
      *  Type is one of 'api' and 'removed', which checks either the public api or the removed api.
      */
     val apiType: Property<String> = objectFactory.property { set("api") }
-
-    /**
-     * Controls whether nullness annotations should be formatted as in Kotlin (with "?" for nullable
-     * types, "" for non-nullable types, and "!" for unknown. The default is true.
-     */
-    val outputKotlinNulls: Property<Boolean> = objectFactory.property { set(true) }
-
-    /**
-     * Controls whether default values should be included in signature files. The default is true.
-     */
-    val outputDefaultValues: Property<Boolean> = objectFactory.property { set(true) }
-
-    /**
-     * Whether the signature files should include a comment listing the format version of the
-     * signature file. The default is true.
-     */
-    val includeSignatureVersion: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
      * Remove the given packages from the API even if they have not been marked with @hide.
@@ -83,6 +60,14 @@ open class MetalavaExtension @Inject constructor(
      * Treat any elements annotated with the given annotation as hidden.
      */
     val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
+
+    /**
+     * A comma separated list of fully qualified annotation names.
+     *
+     * Treat elements annotated with the passed in annotations as important for API compatibility.
+     * (e.g. @Composable)
+     */
+    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty()
 
     /**
      * Whether the signature file being read should be interpreted as having encoded its types using
@@ -102,12 +87,18 @@ open class MetalavaExtension @Inject constructor(
     val reportLintsAsErrors: Property<Boolean> = objectFactory.property { set(false) }
 
     /**
-     * The directories to search for source files. An exception will be thrown if the named
-     * directories are not direct children of the project root. The default is "src".
+     * Additional directories to search for source files. An exception will be thrown if the named
+     * directories are not direct children of the project root.
      *
+     * By default, Metalava will automatically detect the source sets of the project,
+     * excluding test sources.
      */
-    val sourcePaths: ConfigurableFileCollection = objectFactory.fileCollection()
-        .apply { setFrom("src") }
+    val additionalSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
+
+    /**
+     * Source directories to exclude.
+     */
+    val excludedSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
      * If the tasks should run as part of Gradle's `check` task. The default is true.
@@ -120,11 +111,31 @@ open class MetalavaExtension @Inject constructor(
      */
     val keepFilename: Property<String?> = objectFactory.property { set(null) }
 
+    /**
+     * Internal setter for `outputSignatureFileProvider`.
+     *
+     * @see outputSignatureFileProvider
+     */
+    internal val outputSignatureFileProperty: Property<RegularFile> = objectFactory.fileProperty()
+
+    /**
+     * A provider for the signature file generated by Metalava.
+     *
+     * Using this as an input to a task will run the generate signature task and generate a
+     * signature file.
+     */
+    val outputSignatureFileProvider: Provider<RegularFile> = outputSignatureFileProperty
+
+    /**
+     * Allows passing in custom metalava arguments.
+     */
+    val arguments: SetProperty<String> = objectFactory.setProperty()
+
     private inline fun <reified T> ObjectFactory.property(
-        configuration: Property<T>.() -> Unit = {}
-    ) = property(T::class.java).apply { configuration() }
+        configuration: Property<T>.() -> Unit = {},
+    ): Property<T> = property(T::class.java).apply { configuration() }
 
     private inline fun <reified T> ObjectFactory.setProperty(
-        configuration: SetProperty<T>.() -> Unit = {}
-    ) = setProperty(T::class.java).apply { configuration() }
+        configuration: SetProperty<T>.() -> Unit = {},
+    ): SetProperty<T> = setProperty(T::class.java).apply { configuration() }
 }
