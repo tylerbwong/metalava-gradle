@@ -2,8 +2,10 @@ package me.tylerbwong.gradle.metalava
 
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -22,7 +24,6 @@ class MetalavaGradlePluginTest {
         gradleRunner = GradleRunner.create()
             .withPluginClasspath()
             .withProjectDir(testProjectDir.absoluteFile)
-            .withTestKitDir(testProjectDir.resolve("test"))
     }
 
     @ParameterizedTest
@@ -39,7 +40,7 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
@@ -70,7 +71,7 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         id("me.tylerbwong.gradle.metalava")
                     }
@@ -100,18 +101,18 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
                     }
-                    
+
                     val customSourceGeneratingTaskProvider = tasks.register("customSourceGeneratingTask") {
                         val outputDir = file("customSrc/")
                         outputs.dir(outputDir)
                         mkdir(outputDir)
                     }
-                    
+
                     metalava {
                         additionalSourceSets.setFrom(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
@@ -158,6 +159,101 @@ class MetalavaGradlePluginTest {
             .withArguments("customTask")
             .build()
         assertTrue(result.tasks.any { it.path == ":metalavaGenerateSignature" })
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `should ignore debug source sets by default`(debug: Boolean) {
+        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+            writeText(
+                """
+                   allprojects {
+                        repositories {
+                            google()
+                            mavenCentral()
+                        }
+                    }
+
+                    plugins {
+                        id("com.android.library")
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+
+                    android {
+                        namespace = "com.example"
+                        compileSdk = 36
+                    }
+                """.trimIndent(),
+            )
+        }
+        testProjectDir.resolve("src/main/java/com/example/Foo.java").apply {
+            parentFile.mkdirs()
+            writeText(
+                """
+                    package com.example;
+
+                    public final class Foo {}
+                """,
+            )
+        }
+        testProjectDir.resolve("src/debug/java/com/example/Bar.java").apply {
+            parentFile.mkdirs()
+            writeText(
+                """
+                    package com.example
+
+                    public final class Bar {}
+                """,
+            )
+        }
+        testProjectDir.resolve("src/release/java/com/example/FooBar.kt").apply {
+            parentFile.mkdirs()
+            writeText(
+                """
+                    package com.example
+
+                    public final class FooBar {}
+                """,
+            )
+        }
+
+        val metalavaTask = if (debug) "metalavaGenerateSignatureDebug" else "metalavaGenerateSignatureRelease"
+        gradleRunner
+            .withArguments(metalavaTask)
+            .build()
+
+        val expected = if (debug) {
+            """
+            // Signature format: 4.0
+            package com.example {
+
+              public final class Foo {
+                ctor public Foo();
+              }
+
+            }
+            """.trimIndent()
+        } else {
+            """
+            // Signature format: 4.0
+            package com.example {
+
+              public final class Foo {
+                ctor public Foo();
+              }
+
+              public final class FooBar {
+                ctor public FooBar();
+              }
+
+            }
+            """.trimIndent()
+        }
+
+        assertEquals(
+            expected,
+            testProjectDir.resolve("api.txt").readText().trimEnd(),
+        )
     }
 
     @AfterEach
