@@ -26,6 +26,7 @@ gradlePlugin {
 kotlin {
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation { enabled = true }
+    explicitApi()
 }
 
 tasks.test {
