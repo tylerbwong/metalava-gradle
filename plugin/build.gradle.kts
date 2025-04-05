@@ -30,6 +30,10 @@ gradlePlugin {
     }
 }
 
+kotlin {
+    explicitApi()
+}
+
 metalava {
     filename.set("api/${project.version}.txt")
 }
