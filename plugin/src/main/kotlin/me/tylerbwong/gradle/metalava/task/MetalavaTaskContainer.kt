@@ -1,9 +1,9 @@
 package me.tylerbwong.gradle.metalava.task
 
+import java.util.Locale
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
-import java.util.Locale
 
 internal abstract class MetalavaTaskContainer {
     protected fun Boolean.flag(flagValue: String): List<String> = if (this) {

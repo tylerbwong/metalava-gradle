@@ -1,5 +1,6 @@
 package me.tylerbwong.gradle.metalava.extension
 
+import javax.inject.Inject
 import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
@@ -9,7 +10,6 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
-import javax.inject.Inject
 
 open class MetalavaExtension @Inject constructor(
     objectFactory: ObjectFactory,
