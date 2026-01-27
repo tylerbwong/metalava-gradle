@@ -1,6 +1,8 @@
 package me.tylerbwong.gradle.metalava
 
 import com.android.build.gradle.LibraryExtension
+import java.io.File
+import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
@@ -10,8 +12,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
-import java.io.File
-import java.util.Locale
 
 internal sealed class Module {
     /**

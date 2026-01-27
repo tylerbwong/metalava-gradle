@@ -1,8 +1,8 @@
 package me.tylerbwong.gradle.metalava.worker
 
+import javax.inject.Inject
 import org.gradle.process.ExecOperations
 import org.gradle.workers.WorkAction
-import javax.inject.Inject
 
 /**
  * A [WorkAction] that executes the Metalava main class and passes the necessary arguments to the
