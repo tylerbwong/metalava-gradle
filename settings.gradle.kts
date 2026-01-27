@@ -1,11 +1,30 @@
-rootProject.name = "metalava-gradle"
-
 pluginManagement {
-    includeBuild("./plugin")
-
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        gradlePluginPortal()
+    }
+
+    includeBuild("./plugin")
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        gradlePluginPortal()
     }
 }
 

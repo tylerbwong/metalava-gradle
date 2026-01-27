@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("me.tylerbwong.gradle.metalava")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.metalava)
 }
 
 android {
@@ -13,5 +13,5 @@ android {
 }
 
 metalava {
-    filename.set("api/$name-api.txt")
+    filename = "api/$name-api.txt"
 }
