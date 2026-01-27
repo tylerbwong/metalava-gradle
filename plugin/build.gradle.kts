@@ -46,6 +46,8 @@ dependencies {
     compileOnly(kotlin("gradle-plugin"))
     compileOnly(libs.androidGradle)
 
+    testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.junit.jupiterParams)
+    testRuntimeOnly(libs.junit.platformLauncher)
 }
