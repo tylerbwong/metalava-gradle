@@ -1,12 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:base",
   ],
   "packageRules": [
     {
       "groupName": "ci",
-      "matchPackagePrefixes": ["actions/"]
-    }
-  ]
+      "matchPackagePrefixes": ["actions/"],
+    },
+  ],
 }
