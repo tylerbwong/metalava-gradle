@@ -11,7 +11,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.register
 import org.gradle.workers.WorkerExecutor
 
 @CacheableTask
@@ -73,27 +72,27 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }
-            return project.tasks.register<MetalavaCheckCompatibilityTask>(taskName) {
-                this.metalavaClasspath.from(metalavaClasspath)
-                tempFilename.set(tempFilenameProvider)
-                sourceSets.from(module.sourceSets(project, variantName))
-                additionalSourceSets.setFrom(extension.additionalSourceSets)
-                excludedSourceSets.setFrom(extension.excludedSourceSets)
-                filename.set(extension.filename)
-                shouldRunGenerateSignature.set(false)
-                bootClasspath.from(bootClasspathProvider)
-                compileClasspath.from(module.compileClasspath(project, variantName))
-                format.set(extension.format)
-                signature.set(extension.signature)
-                javaSourceLevel.set(extension.javaSourceLevel)
-                hiddenPackages.set(extension.hiddenPackages)
-                hiddenAnnotations.set(extension.hiddenAnnotations)
-                apiCompatAnnotations.set(extension.apiCompatAnnotations)
-                apiType.set(extension.apiType)
-                inputKotlinNulls.set(extension.inputKotlinNulls)
-                reportWarningsAsErrors.set(extension.reportWarningsAsErrors)
-                reportLintsAsErrors.set(extension.reportLintsAsErrors)
-                arguments.set(extension.arguments)
+            return project.tasks.register(taskName, MetalavaCheckCompatibilityTask::class.java) {
+                it.metalavaClasspath.from(metalavaClasspath)
+                it.tempFilename.set(tempFilenameProvider)
+                it.sourceSets.from(module.sourceSets(project, variantName))
+                it.additionalSourceSets.setFrom(extension.additionalSourceSets)
+                it.excludedSourceSets.setFrom(extension.excludedSourceSets)
+                it.filename.set(extension.filename)
+                it.shouldRunGenerateSignature.set(false)
+                it.bootClasspath.from(bootClasspathProvider)
+                it.compileClasspath.from(module.compileClasspath(project, variantName))
+                it.format.set(extension.format)
+                it.signature.set(extension.signature)
+                it.javaSourceLevel.set(extension.javaSourceLevel)
+                it.hiddenPackages.set(extension.hiddenPackages)
+                it.hiddenAnnotations.set(extension.hiddenAnnotations)
+                it.apiCompatAnnotations.set(extension.apiCompatAnnotations)
+                it.apiType.set(extension.apiType)
+                it.inputKotlinNulls.set(extension.inputKotlinNulls)
+                it.reportWarningsAsErrors.set(extension.reportWarningsAsErrors)
+                it.reportLintsAsErrors.set(extension.reportLintsAsErrors)
+                it.arguments.set(extension.arguments)
             }
         }
     }

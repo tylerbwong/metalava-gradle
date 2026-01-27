@@ -60,7 +60,7 @@ internal class MetalavaPlugin : Plugin<Project> {
         // association with 'check' should be configurable.
         project.tasks.named("check").configure {
             if (metalavaExtension.enforceCheck.get()) {
-                dependsOn(checkCompatibilityTask)
+                it.dependsOn(checkCompatibilityTask)
             }
         }
     }

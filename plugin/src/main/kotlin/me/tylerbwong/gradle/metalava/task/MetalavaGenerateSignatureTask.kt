@@ -20,7 +20,6 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.register
 import org.gradle.workers.WorkerExecutor
 
 @CacheableTask
@@ -116,23 +115,23 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
                 version = extension.version.get(),
             )
             val bootClasspathProvider = project.provider { module.bootClasspath }
-            return project.tasks.register<MetalavaGenerateSignatureTask>(taskName) {
-                this.metalavaClasspath.from(metalavaClasspath)
-                sourceSets.from(module.sourceSets(project, variantName))
-                additionalSourceSets.setFrom(extension.additionalSourceSets)
-                excludedSourceSets.setFrom(extension.excludedSourceSets)
-                filename.set(extension.filename)
-                shouldRunGenerateSignature.set(true)
-                bootClasspath.from(bootClasspathProvider)
-                compileClasspath.from(module.compileClasspath(project, variantName))
-                format.set(extension.format)
-                signature.set(extension.signature)
-                javaSourceLevel.set(extension.javaSourceLevel)
-                hiddenPackages.set(extension.hiddenPackages)
-                hiddenAnnotations.set(extension.hiddenAnnotations)
-                apiCompatAnnotations.set(extension.apiCompatAnnotations)
-                keepFilename.set(extension.keepFilename)
-                arguments.set(extension.arguments)
+            return project.tasks.register(taskName, MetalavaGenerateSignatureTask::class.java) {
+                it.metalavaClasspath.from(metalavaClasspath)
+                it.sourceSets.from(module.sourceSets(project, variantName))
+                it.additionalSourceSets.setFrom(extension.additionalSourceSets)
+                it.excludedSourceSets.setFrom(extension.excludedSourceSets)
+                it.filename.set(extension.filename)
+                it.shouldRunGenerateSignature.set(true)
+                it.bootClasspath.from(bootClasspathProvider)
+                it.compileClasspath.from(module.compileClasspath(project, variantName))
+                it.format.set(extension.format)
+                it.signature.set(extension.signature)
+                it.javaSourceLevel.set(extension.javaSourceLevel)
+                it.hiddenPackages.set(extension.hiddenPackages)
+                it.hiddenAnnotations.set(extension.hiddenAnnotations)
+                it.apiCompatAnnotations.set(extension.apiCompatAnnotations)
+                it.keepFilename.set(extension.keepFilename)
+                it.arguments.set(extension.arguments)
             }
         }
     }

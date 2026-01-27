@@ -1,0 +1,46 @@
+public final class me/tylerbwong/gradle/metalava/Format : java/lang/Enum {
+	public static final field V2 Lme/tylerbwong/gradle/metalava/Format;
+	public static final field V3 Lme/tylerbwong/gradle/metalava/Format;
+	public static final field V4 Lme/tylerbwong/gradle/metalava/Format;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lme/tylerbwong/gradle/metalava/Format;
+	public static fun values ()[Lme/tylerbwong/gradle/metalava/Format;
+}
+
+public final class me/tylerbwong/gradle/metalava/Signature : java/lang/Enum {
+	public static final field API Lme/tylerbwong/gradle/metalava/Signature;
+	public static final field DEX_API Lme/tylerbwong/gradle/metalava/Signature;
+	public static final field DEX_API_MAPPING Lme/tylerbwong/gradle/metalava/Signature;
+	public static final field PRIVATE_API Lme/tylerbwong/gradle/metalava/Signature;
+	public static final field PRIVATE_DEX_API Lme/tylerbwong/gradle/metalava/Signature;
+	public static final field REMOVED_API Lme/tylerbwong/gradle/metalava/Signature;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lme/tylerbwong/gradle/metalava/Signature;
+	public static fun values ()[Lme/tylerbwong/gradle/metalava/Signature;
+}
+
+public class me/tylerbwong/gradle/metalava/extension/MetalavaExtension {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun getAdditionalSourceSets ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public final fun getApiCompatAnnotations ()Lorg/gradle/api/provider/SetProperty;
+	public final fun getApiType ()Lorg/gradle/api/provider/Property;
+	public final fun getArguments ()Lorg/gradle/api/provider/SetProperty;
+	public final fun getEnforceCheck ()Lorg/gradle/api/provider/Property;
+	public final fun getExcludedSourceSets ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public final fun getFilename ()Lorg/gradle/api/provider/Property;
+	public final fun getFormat ()Lorg/gradle/api/provider/Property;
+	public final fun getHiddenAnnotations ()Lorg/gradle/api/provider/SetProperty;
+	public final fun getHiddenPackages ()Lorg/gradle/api/provider/SetProperty;
+	public final fun getInputKotlinNulls ()Lorg/gradle/api/provider/Property;
+	public final fun getJavaSourceLevel ()Lorg/gradle/api/provider/Property;
+	public final fun getKeepFilename ()Lorg/gradle/api/provider/Property;
+	public final fun getMetalavaJar ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public final fun getOutputSignatureFileProvider ()Lorg/gradle/api/provider/Provider;
+	public final fun getReportLintsAsErrors ()Lorg/gradle/api/provider/Property;
+	public final fun getReportWarningsAsErrors ()Lorg/gradle/api/provider/Property;
+	public final fun getSignature ()Lorg/gradle/api/provider/Property;
+	public final fun getVersion ()Lorg/gradle/api/provider/Property;
+}
+

@@ -11,7 +11,6 @@ import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
-import org.gradle.kotlin.dsl.setProperty
 import org.gradle.workers.WorkerExecutor
 
 internal abstract class BaseMetalavaTask(
@@ -32,26 +31,26 @@ internal abstract class BaseMetalavaTask(
 
     @get:Optional
     @get:Input
-    val hiddenPackages: SetProperty<String> = objectFactory.setProperty()
+    val hiddenPackages: SetProperty<String> = objectFactory.setProperty(String::class.java)
 
     @get:Optional
     @get:Input
-    val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
+    val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty(String::class.java)
 
     @get:Optional
     @get:Input
-    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty()
+    val apiCompatAnnotations: SetProperty<String> = objectFactory.setProperty(String::class.java)
 
     @get:Optional
     @get:Input
-    val arguments: SetProperty<String> = objectFactory.setProperty()
+    val arguments: SetProperty<String> = objectFactory.setProperty(String::class.java)
 
     protected fun executeMetalavaWork(args: List<String>, awaitWork: Boolean = false) {
         val queue = workerExecutor.noIsolation()
         logger.debug("Executing Metalava with arguments: {}", args)
         queue.submit(MetalavaWorkAction::class.java) {
-            classpath.from(metalavaClasspath)
-            arguments.set(args.joinToString())
+            it.classpath.from(metalavaClasspath)
+            it.arguments.set(args.joinToString())
         }
         if (awaitWork) {
             queue.await()

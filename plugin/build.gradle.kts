@@ -1,11 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+
 plugins {
-    `kotlin-dsl`
-    `java-gradle-plugin`
-    `maven-publish`
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.pluginPublish)
-    alias(libs.plugins.metalavaGradle)
-    MetalavaGradleProjectPlugin
 }
 
 repositories {
@@ -30,8 +28,9 @@ gradlePlugin {
     }
 }
 
-metalava {
-    filename.set("api/${project.version}.txt")
+kotlin {
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation { enabled = true }
 }
 
 tasks.test {
@@ -50,4 +49,11 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiterParams)
     testRuntimeOnly(libs.junit.platformLauncher)
+}
+
+tasks.check {
+    dependsOn(
+        // TODO: https://youtrack.jetbrains.com/issue/KT-78525
+        tasks.checkLegacyAbi,
+    )
 }

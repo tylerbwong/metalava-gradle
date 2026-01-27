@@ -7,7 +7,6 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
-import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
@@ -191,7 +190,7 @@ internal sealed class Module {
                     ?.takeIf { it is LibraryExtension }
                     ?.let { Android(it as LibraryExtension) }
 
-                val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
+                val javaPluginExtension = extensions.findByType(JavaPluginExtension::class.java)
 
                 val kotlinModule = extensions.findByName("kotlin")
                     ?.takeIf { it is KotlinProjectExtension && javaPluginExtension != null }
