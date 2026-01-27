@@ -109,7 +109,7 @@ open class MetalavaExtension @Inject constructor(
      * Generate a file with keep rules at the specified location. The default is `null` which will
      * cause no keep file to be generated.
      */
-    val keepFilename: Property<String?> = objectFactory.property { set(null) }
+    val keepFilename: Property<String> = objectFactory.property()
 
     /**
      * Internal setter for `outputSignatureFileProvider`.
@@ -131,11 +131,11 @@ open class MetalavaExtension @Inject constructor(
      */
     val arguments: SetProperty<String> = objectFactory.setProperty()
 
-    private inline fun <reified T> ObjectFactory.property(
+    private inline fun <reified T : Any> ObjectFactory.property(
         configuration: Property<T>.() -> Unit = {},
     ): Property<T> = property(T::class.java).apply { configuration() }
 
-    private inline fun <reified T> ObjectFactory.setProperty(
+    private inline fun <reified T : Any> ObjectFactory.setProperty(
         configuration: SetProperty<T>.() -> Unit = {},
     ): SetProperty<T> = setProperty(T::class.java).apply { configuration() }
 }

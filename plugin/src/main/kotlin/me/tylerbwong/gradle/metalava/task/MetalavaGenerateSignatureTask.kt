@@ -63,7 +63,7 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
 
     @get:OutputFile
     @get:Optional
-    abstract val keepFilename: Property<String?>
+    abstract val keepFilename: Property<String>
 
     @TaskAction
     fun metalavaGenerateSignature() {
