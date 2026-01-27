@@ -1,28 +1,25 @@
-# Java class files
-*.class
+.fleet
+.gradle
+.kotlin
+build
 
-# Generated files
-bin/
-gen/
-out/
-
-# Gradle files
-.gradle/
-build/
-
-# Local configuration file (sdk path, etc)
+### Android Studio ###
 local.properties
 
-# Log Files
-*.log
-
-# Intellij
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
-.idea/*
-!.idea/codeStyles/
-!.idea/icon.png
+*.ipr
+out
 
+### VS Code ###
+.vscode
+bin
+
+### Mac OS ###
 .DS_Store
 
-kotlin-js-store
-.kotlin
+### MkDocs ###
+docs/api
+site
