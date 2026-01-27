@@ -3,13 +3,13 @@ package me.tylerbwong.gradle.metalava.sample {
 
   public abstract class SampleProtectedApi {
     ctor public SampleProtectedApi();
-    method public abstract String getPublicApiProperty();
-    method protected final String protectedApiFunction();
+    method @InaccessibleFromKotlin public abstract java.lang.String getPublicApiProperty();
+    method protected final java.lang.String protectedApiFunction();
     property public abstract String publicApiProperty;
   }
 
   public interface SamplePublicApi {
-    method public String getPublicApiProperty();
+    method @InaccessibleFromKotlin public java.lang.String getPublicApiProperty();
     method public void publicApiFunction();
     property public abstract String publicApiProperty;
   }
