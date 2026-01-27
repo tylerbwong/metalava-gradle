@@ -2,6 +2,7 @@
 .gradle
 .kotlin
 build
+kotlin-js-store/yarn.lock
 
 ### Android Studio ###
 local.properties
