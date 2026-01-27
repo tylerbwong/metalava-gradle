@@ -17,7 +17,7 @@ open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha11") }
+    val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha14") }
 
     /**
      * A custom Metalava JAR to use instead of the embedded dependency.
