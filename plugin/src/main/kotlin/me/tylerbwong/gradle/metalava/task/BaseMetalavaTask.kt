@@ -7,6 +7,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -14,6 +15,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.kotlin.dsl.setProperty
 import org.gradle.workers.WorkerExecutor
 
+@CacheableTask
 internal abstract class BaseMetalavaTask(
     objectFactory: ObjectFactory,
     private val workerExecutor: WorkerExecutor,
