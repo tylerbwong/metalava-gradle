@@ -10,6 +10,7 @@ minSdk = "21"
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-kmpLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -21,6 +22,8 @@ pluginPublish = "com.gradle.plugin-publish:2.0.0"
 android-gradlePluginApi = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose-runtime" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha05"
 
 junit-bom = "org.junit:junit-bom:6.0.2"
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }

@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlintGradle)
+    alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
 }
 
@@ -42,6 +43,10 @@ kotlin {
     }
 }
 
+lint {
+    baseline = file("lint-baseline.xml")
+}
+
 configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
     attributes.attribute(
         // TODO: https://github.com/gradle/gradle/issues/24608
@@ -58,6 +63,8 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiterParams)
     testRuntimeOnly(libs.junit.platformLauncher)
+
+    lintChecks(libs.androidx.gradlePluginLints)
 }
 
 tasks.withType<JavaCompile>().configureEach {
