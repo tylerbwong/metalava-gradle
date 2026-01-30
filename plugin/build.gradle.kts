@@ -46,7 +46,7 @@ tasks.test {
 
 dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.android.gradlePluginApi)
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
