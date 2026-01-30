@@ -16,3 +16,8 @@ metalava {
     filename = "api/$name-api.txt"
     keepFilename = "public-api.pro"
 }
+
+tasks.withType(Test) {
+    // The generated build config fails the test task.
+    failOnNoDiscoveredTests = false
+}
