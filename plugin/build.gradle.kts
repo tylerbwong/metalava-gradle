@@ -70,6 +70,11 @@ tasks.test {
     )
 }
 
+tasks.validatePlugins {
+    // TODO: https://github.com/gradle/gradle/issues/22600
+    enableStricterValidation = true
+}
+
 tasks.check {
     dependsOn(
         // TODO: https://youtrack.jetbrains.com/issue/KT-78525
