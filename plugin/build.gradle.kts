@@ -1,3 +1,4 @@
+import org.gradle.api.plugins.JavaPlugin.API_ELEMENTS_CONFIGURATION_NAME
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -39,6 +40,14 @@ kotlin {
         jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
         freeCompilerArgs.add("-Xjdk-release=${libs.versions.jvmTarget.get()}")
     }
+}
+
+configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
+    attributes.attribute(
+        // TODO: https://github.com/gradle/gradle/issues/24608
+        GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+        objects.named(libs.versions.minGradle.get()),
+    )
 }
 
 dependencies {
