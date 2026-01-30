@@ -8,10 +8,10 @@ plugins {
 
 android {
     namespace = "me.tylerbwong.gradle.metalava.sample"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 21
+        minSdk = libs.versions.minSdk.get().toInt()
     }
 }
 

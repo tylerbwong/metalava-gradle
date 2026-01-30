@@ -7,8 +7,8 @@ plugins {
 kotlin {
     android {
         namespace = "me.tylerbwong.gradle.metalava.sample"
-        compileSdk = 34
-        minSdk = 21
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
         androidResources.enable = true
     }
     iosX64()
