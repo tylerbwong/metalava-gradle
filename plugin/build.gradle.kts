@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
@@ -24,9 +27,32 @@ gradlePlugin {
 }
 
 kotlin {
+    explicitApi()
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation { enabled = true }
-    explicitApi()
+    compilerOptions {
+        allWarningsAsErrors = true
+        // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
+        apiVersion = KotlinVersion.KOTLIN_2_2
+        languageVersion = apiVersion
+        jvmTarget = JvmTarget.fromTarget(libs.versions.jvmTarget.get())
+        jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+        freeCompilerArgs.add("-Xjdk-release=${libs.versions.jvmTarget.get()}")
+    }
+}
+
+dependencies {
+    compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.android.gradlePluginApi)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiterParams)
+    testRuntimeOnly(libs.junit.platformLauncher)
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = libs.versions.jvmTarget.get().toInt()
 }
 
 tasks.test {
@@ -42,16 +68,6 @@ tasks.test {
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
         "--add-opens=java.base/java.net=ALL-UNNAMED",
     )
-}
-
-dependencies {
-    compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.android.gradlePluginApi)
-
-    testImplementation(platform(libs.junit.bom))
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiterParams)
-    testRuntimeOnly(libs.junit.platformLauncher)
 }
 
 tasks.check {
