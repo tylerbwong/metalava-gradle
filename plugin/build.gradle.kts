@@ -3,6 +3,7 @@ plugins {
     `java-gradle-plugin`
     `maven-publish`
     alias(libs.plugins.ktlintGradle)
+    alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
 }
@@ -33,6 +34,14 @@ kotlin {
     explicitApi()
 }
 
+lint {
+    baseline = file("lint-baseline.xml")
+    warningsAsErrors = true
+    disable += "NewerVersionAvailable"
+    disable += "GradleDependency"
+    disable += "AndroidGradlePluginVersion"
+}
+
 metalava {
     filename.set("api/${project.version}.txt")
 }
@@ -51,4 +60,6 @@ dependencies {
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
+
+    lintChecks(libs.androidx.gradlePluginLints)
 }
