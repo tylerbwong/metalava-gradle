@@ -45,6 +45,10 @@ kotlin {
 
 lint {
     baseline = file("lint-baseline.xml")
+    warningsAsErrors = true
+    disable += "NewerVersionAvailable"
+    disable += "GradleDependency"
+    disable += "AndroidGradlePluginVersion"
 }
 
 configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
