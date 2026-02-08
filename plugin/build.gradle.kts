@@ -2,17 +2,17 @@ import org.gradle.api.plugins.JavaPlugin.API_ELEMENTS_CONFIGURATION_NAME
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
+    alias(libs.plugins.metalavaGradle)
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.4.0-alpha03"
+version = "0.5.0"
 
 gradlePlugin {
     website = "https://github.com/tylerbwong/metalava-gradle"
@@ -30,8 +30,6 @@ gradlePlugin {
 
 kotlin {
     explicitApi()
-    @OptIn(ExperimentalAbiValidation::class)
-    abiValidation { enabled = true }
     compilerOptions {
         allWarningsAsErrors = true
         // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
@@ -49,6 +47,11 @@ lint {
     disable += "NewerVersionAvailable"
     disable += "GradleDependency"
     disable += "AndroidGradlePluginVersion"
+}
+
+metalava {
+    filename.set("api/${project.version}.txt")
+    version = "1.0.0-alpha14"
 }
 
 configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
@@ -93,11 +96,4 @@ tasks.test {
 tasks.validatePlugins {
     // TODO: https://github.com/gradle/gradle/issues/22600
     enableStricterValidation = true
-}
-
-tasks.check {
-    dependsOn(
-        // TODO: https://youtrack.jetbrains.com/issue/KT-78525
-        tasks.checkLegacyAbi,
-    )
 }
