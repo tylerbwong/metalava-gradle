@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
+    alias(libs.plugins.buildConfig)
 }
 
 repositories {
@@ -14,7 +15,15 @@ repositories {
 }
 
 group = "me.tylerbwong.gradle.metalava"
-version = "0.4.0-alpha03"
+version = "0.5.0"
+
+buildConfig {
+    generateAtSync = true
+    packageName = "me.tylerbwong.gradle.metalava"
+    sourceSets.named("main") {
+        buildConfigField("METALAVA_VERSION", libs.versions.android.metalava)
+    }
+}
 
 gradlePlugin {
     website.set("https://github.com/tylerbwong/metalava-gradle")
@@ -44,6 +53,7 @@ lint {
 
 metalava {
     filename.set("api/${project.version}.txt")
+    version = libs.versions.android.metalava
 }
 
 tasks.test {
@@ -62,6 +72,13 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
 
     lintChecks(libs.androidx.gradlePluginLints)
+}
+
+tasks.whenTaskAdded {
+    if (name == "metalavaCheckCompatibility") {
+        // TODO: there might be a bug, metalava tasks should run after generation tasks.
+        dependsOn(tasks.generateBuildConfigClasses)
+    }
 }
 
 tasks.validatePlugins {
