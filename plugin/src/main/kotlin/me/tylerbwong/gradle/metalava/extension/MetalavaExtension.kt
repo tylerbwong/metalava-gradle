@@ -1,6 +1,7 @@
 package me.tylerbwong.gradle.metalava.extension
 
 import javax.inject.Inject
+import me.tylerbwong.gradle.metalava.BuildConfig.METALAVA_VERSION
 import me.tylerbwong.gradle.metalava.Format
 import me.tylerbwong.gradle.metalava.Signature
 import org.gradle.api.JavaVersion
@@ -17,7 +18,7 @@ public open class MetalavaExtension @Inject constructor(
     /**
      * The version of Metalava to use.
      */
-    public val version: Property<String> = objectFactory.property<String>().also { it.set("1.0.0-alpha14") }
+    public val version: Property<String> = objectFactory.property<String>().also { it.set(METALAVA_VERSION) }
 
     /**
      * A custom Metalava JAR to use instead of the embedded dependency.
