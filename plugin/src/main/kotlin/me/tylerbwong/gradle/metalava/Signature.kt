@@ -3,7 +3,7 @@ package me.tylerbwong.gradle.metalava
 /**
  * Flags to determine which type of signature file to generate.
  */
-enum class Signature(private val signature: String) {
+public enum class Signature(private val signature: String) {
     /**
      * Generate a signature descriptor file.
      */
