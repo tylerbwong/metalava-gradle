@@ -9,5 +9,5 @@ public enum class Format(private val format: String) {
     V4("v4"),
     ;
 
-    public override fun toString(): String = format
+    override fun toString(): String = format
 }

@@ -70,14 +70,14 @@ internal sealed class Module {
                 it.filterNot { dir ->
                     val dirName = dir.asFile.name
                     dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
-                      dirName.contains("debug", ignoreCase = true)
+                        dirName.contains("debug", ignoreCase = true)
                 }
             }
             val kotlinSources = v.sources.kotlin?.all?.map {
                 it.filterNot { dir ->
                     val dirName = dir.asFile.name
                     dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
-                      dirName.contains("debug", ignoreCase = true)
+                        dirName.contains("debug", ignoreCase = true)
                 }
             }
             return project.files()

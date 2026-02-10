@@ -35,5 +35,5 @@ public enum class Signature(private val signature: String) {
     REMOVED_API("--removed-api"),
     ;
 
-    public override fun toString(): String = signature
+    override fun toString(): String = signature
 }

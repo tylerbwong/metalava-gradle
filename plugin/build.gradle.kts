@@ -71,6 +71,10 @@ configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
     )
 }
 
+val testPluginClasspath by configurations.registering {
+    isCanBeResolved = true
+}
+
 dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.android.gradlePluginApi)
@@ -79,6 +83,8 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiterParams)
     testRuntimeOnly(libs.junit.platformLauncher)
+
+    testPluginClasspath(libs.android.gradlePlugin)
 
     lintChecks(libs.androidx.gradlePluginLints)
 }
@@ -99,6 +105,13 @@ tasks.test {
         "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
         "--add-opens=java.base/java.net=ALL-UNNAMED",
+    )
+}
+
+tasks.pluginUnderTestMetadata {
+    // Plugins used in tests could be resolved in classpath.
+    pluginClasspath.from(
+        testPluginClasspath,
     )
 }
 
