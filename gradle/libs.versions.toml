@@ -1,6 +1,7 @@
 [versions]
 androidGradle = "8.7.3"
 androidx-compose-runtime = "1.7.5"
+android-metalava = "1.0.0-alpha14"
 junit = "5.11.3"
 kotlin = "2.1.0"
 ktlintGradle = "14.0.1"
@@ -13,6 +14,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ktlintGradle = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
 metalavaGradle = { id = "me.tylerbwong.gradle.metalava", version.ref = "metalavaGradle" }
+buildConfig = "com.github.gmazzo.buildconfig:6.0.7"
 
 [libraries]
 androidGradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
@@ -21,4 +23,5 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 kotlinGradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
+android-metalava = { module = "com.android.tools.metalava:metalava", version.ref = "android-metalava" }
 androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha05"
