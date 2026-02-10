@@ -2,33 +2,33 @@
 package me.tylerbwong.gradle.metalava.sample {
 
   public interface Platform {
-    method public String getPlatform();
+    method @InaccessibleFromKotlin public String getPlatform();
     property public abstract String platform;
   }
 
   public final class SampleAndroidPublicApiKt {
-    method public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
-    property public static final me.tylerbwong.gradle.metalava.sample.Platform platform;
+    method @InaccessibleFromKotlin public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
+    property public static me.tylerbwong.gradle.metalava.sample.Platform platform;
   }
 
   public final class SampleIosPublicApiKt {
-    method public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
-    property public static final me.tylerbwong.gradle.metalava.sample.Platform platform;
+    method @InaccessibleFromKotlin public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
+    property public static me.tylerbwong.gradle.metalava.sample.Platform platform;
   }
 
   public final class SampleJsPublicApiKt {
-    method public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
-    property public static final me.tylerbwong.gradle.metalava.sample.Platform platform;
+    method @InaccessibleFromKotlin public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
+    property public static me.tylerbwong.gradle.metalava.sample.Platform platform;
   }
 
   public final class SampleJvmPublicApiKt {
-    method public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
-    property public static final me.tylerbwong.gradle.metalava.sample.Platform platform;
+    method @InaccessibleFromKotlin public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
+    property public static me.tylerbwong.gradle.metalava.sample.Platform platform;
   }
 
   public final class SampleLinuxPublicApiKt {
-    method public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
-    property public static final me.tylerbwong.gradle.metalava.sample.Platform platform;
+    method @InaccessibleFromKotlin public static me.tylerbwong.gradle.metalava.sample.Platform getPlatform();
+    property public static me.tylerbwong.gradle.metalava.sample.Platform platform;
   }
 
 }

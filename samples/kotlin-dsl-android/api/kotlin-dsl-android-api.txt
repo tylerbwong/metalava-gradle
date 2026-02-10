@@ -2,7 +2,7 @@
 package me.tylerbwong.gradle.metalava.sample {
 
   public interface SamplePublicApi {
-    method public String getPublicApiProperty();
+    method @InaccessibleFromKotlin public String getPublicApiProperty();
     method public void publicApiFunction();
     method public void publicApiFunctionWithDefaultValueParam(optional int value);
     property public abstract String publicApiProperty;
