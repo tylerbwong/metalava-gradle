@@ -1,36 +1,24 @@
 package me.tylerbwong.gradle.metalava
 
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 
 class MetalavaGradlePluginTest {
 
     @TempDir
     lateinit var testProjectDir: File
+        private set
 
-    private lateinit var buildscriptFile: File
-    private lateinit var gradleRunner: GradleRunner
+    private val buildscriptFile: File get() = testProjectDir.resolve("build.gradle.kts")
 
-    @BeforeEach
-    fun setUp() {
-        gradleRunner = GradleRunner.create()
-            .withPluginClasspath()
-            .withProjectDir(testProjectDir.absoluteFile)
-            .withTestKitDir(testProjectDir.resolve("test"))
-    }
-
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `check metalavaGenerateSignature runs successfully with no source`(
-        isConfigurationCacheEnabled: Boolean,
-    ) {
-        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+    @Test
+    fun `check metalavaGenerateSignature runs successfully with no source`() {
+        buildscriptFile.apply {
             appendText(
                 """
                     allprojects {
@@ -39,7 +27,7 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
@@ -47,21 +35,14 @@ class MetalavaGradlePluginTest {
                 """,
             )
         }
-        val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {
-            listOf("--configuration-cache")
-        } else {
-            emptyList()
-        }
-        val result = gradleRunner
-            .withArguments(arguments)
+        val result = runner("metalavaGenerateSignature")
             .build()
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `check plugin reports warning for unsupported module`(isConfigurationCacheEnabled: Boolean) {
-        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+    @Test
+    fun `check plugin reports warning for unsupported module`() {
+        buildscriptFile.apply {
             appendText(
                 """
                     allprojects {
@@ -70,28 +51,21 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         id("me.tylerbwong.gradle.metalava")
                     }
                 """,
             )
         }
-        val arguments = if (isConfigurationCacheEnabled) {
-            listOf("--configuration-cache")
-        } else {
-            emptyList()
-        }
-        val result = gradleRunner
-            .withArguments(arguments)
+        val result = runner()
             .build()
         assertTrue(result.output.contains("not supported by the Metalava Gradle plugin"))
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `check addSourcePaths propagates task dependency`(isConfigurationCacheEnabled: Boolean) {
-        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+    @Test
+    fun `check addSourcePaths propagates task dependency`() {
+        buildscriptFile.apply {
             appendText(
                 """
                     allprojects {
@@ -100,39 +74,32 @@ class MetalavaGradlePluginTest {
                             mavenCentral()
                         }
                     }
-    
+
                     plugins {
                         `java-library`
                         id("me.tylerbwong.gradle.metalava")
                     }
-                    
+
                     val customSourceGeneratingTaskProvider = tasks.register("customSourceGeneratingTask") {
                         val outputDir = file("customSrc/")
                         outputs.dir(outputDir)
                         mkdir(outputDir)
                     }
-                    
+
                     metalava {
                         additionalSourceSets.setFrom(customSourceGeneratingTaskProvider.map { it.outputs.files })
                     }
                 """,
             )
         }
-        val arguments = listOf("metalavaGenerateSignature") + if (isConfigurationCacheEnabled) {
-            listOf("--configuration-cache")
-        } else {
-            emptyList()
-        }
-        val result = gradleRunner
-            .withArguments(arguments)
+        val result = runner("metalavaGenerateSignature")
             .build()
         assertTrue(result.tasks.any { it.path == ":customSourceGeneratingTask" })
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
+    @Test
     fun `check outputSignatureFileProvider creates dependency on generation task`() {
-        buildscriptFile = testProjectDir.resolve("build.gradle.kts").apply {
+        buildscriptFile.apply {
             appendText(
                 """
                     allprojects {
@@ -154,14 +121,28 @@ class MetalavaGradlePluginTest {
                 """,
             )
         }
-        val result = gradleRunner
-            .withArguments("customTask")
+        val result = runner("customTask")
             .build()
         assertTrue(result.tasks.any { it.path == ":metalavaGenerateSignature" })
     }
 
-    @AfterEach
-    fun tearDown() {
-        buildscriptFile.delete()
+    private fun runner(vararg arguments: String): GradleRunner {
+        return GradleRunner.create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withProjectDir(testProjectDir)
+            .withTestKitDir(testKitDir.toFile())
+            .withArguments(arguments.toList() + commonGradleArgs)
     }
 }
+
+private val testKitDir by lazy {
+    val gradleUserHome = System.getenv("GRADLE_USER_HOME")
+        ?: Path(System.getProperty("user.home"), ".gradle").absolutePathString()
+    Path(gradleUserHome, "testkit")
+}
+
+private val commonGradleArgs = setOf(
+    "--configuration-cache",
+    "--stacktrace",
+)
