@@ -1,17 +1,17 @@
 plugins {
-    id("com.android.library")
-    id("me.tylerbwong.gradle.metalava")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.metalava)
 }
 
 android {
     namespace = "me.tylerbwong.gradle.metalava.sample"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 21
+        minSdk = libs.versions.minSdk.get().toInt()
     }
 }
 
 metalava {
-    filename.set("api/$name-api.txt")
+    filename = "api/$name-api.txt"
 }

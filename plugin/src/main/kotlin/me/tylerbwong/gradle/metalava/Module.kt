@@ -1,13 +1,14 @@
 package me.tylerbwong.gradle.metalava
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+import com.android.build.api.variant.LibraryVariant
 import java.io.File
 import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
-import org.gradle.kotlin.dsl.findByType
+import org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
@@ -41,42 +42,47 @@ internal sealed class Module {
      */
     abstract fun sourceSets(project: Project, variant: String? = null): FileCollection
 
-    class Android(private val extension: LibraryExtension) : Module() {
+    class Android(val extension: LibraryAndroidComponentsExtension) : Module() {
         /**
-         * The list of available library variants to be passed into [compileClasspath] so as to
+         * The map of available library variants to be passed into [compileClasspath] so as to
          * filter its output.
+         *
+         * This map is populated dynamically during the Android Gradle configuration phase,
+         * typically from an `onVariants` callback when each [LibraryVariant] is registered.
+         * Callers should therefore only rely on its contents after variant registration has
+         * completed.
          *
          * @see compileClasspath
          */
-        val libraryVariants: Collection<String>
-            get() = extension.libraryVariants.map { it.name }
+        val libraryVariants: MutableMap<String, LibraryVariant> = mutableMapOf()
 
         override val bootClasspath: Collection<File>
-            get() = extension.bootClasspath
+            get() = extension.sdkComponents.bootClasspath.get().map { it.asFile }
 
         override fun compileClasspath(project: Project, variant: String?): FileCollection {
-            require(variant != null) { "The compileClasspath variant cannot be null." }
-            require(libraryVariants.contains(variant)) { "Unexpected compileClasspath variant. Got $variant." }
-            return extension.libraryVariants.find { it.name.equals(variant) }
-                ?.getCompileClasspath(null)
-                ?.filter { it.exists() } ?: project.files()
+            val v = requireNotNull(libraryVariants[variant]) { "Variant '$variant' not found in $libraryVariants." }
+            return v.compileClasspath.filter(File::exists)
         }
 
         override fun sourceSets(project: Project, variant: String?): FileCollection {
-            require(variant != null) { "The sourceSet variant cannot be null." }
-            require(libraryVariants.contains(variant)) { "Unexpected sourceSet variant. Got $variant." }
-            val libraryVariant = extension.libraryVariants.find { it.name.equals(variant) }
-            require(libraryVariant != null) { "Could not find library variant for $variant." }
-            return project.files(
-                libraryVariant.sourceSets
-                    .filterNot {
-                        val lowerName = it.name.lowercase(Locale.getDefault())
-                        // TODO: test and debug checks should be correctly handled by types instead of names.
-                        lowerName.contains(SourceSet.TEST_SOURCE_SET_NAME) ||
-                            lowerName.contains("debug")
-                    }
-                    .flatMap { it.javaDirectories + it.kotlinDirectories },
-            )
+            val v = requireNotNull(libraryVariants[variant]) { "Variant '$variant' not found in $libraryVariants." }
+            val javaSources = v.sources.java?.all?.map {
+                it.filterNot { dir ->
+                    val dirName = dir.asFile.parentFile.name
+                    dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
+                        dirName.contains("debug", ignoreCase = true)
+                }
+            }
+            val kotlinSources = v.sources.kotlin?.all?.map {
+                it.filterNot { dir ->
+                    val dirName = dir.asFile.parentFile.name
+                    dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
+                        dirName.contains("debug", ignoreCase = true)
+                }
+            }
+            return project.files()
+                .from(javaSources)
+                .from(kotlinSources)
         }
     }
 
@@ -188,11 +194,11 @@ internal sealed class Module {
             get() {
                 // Use findByName to avoid requiring consumers to have the Android Gradle plugin
                 // in their classpath when applying this plugin to a non-Android project
-                val androidModule = extensions.findByName("android")
-                    ?.takeIf { it is LibraryExtension }
-                    ?.let { Android(it as LibraryExtension) }
+                val androidModule = extensions.findByName("androidComponents")
+                    ?.takeIf { it is LibraryAndroidComponentsExtension }
+                    ?.let { Android(it as LibraryAndroidComponentsExtension) }
 
-                val javaPluginExtension = extensions.findByType<JavaPluginExtension>()
+                val javaPluginExtension = extensions.findByType(JavaPluginExtension::class.java)
 
                 val kotlinModule = extensions.findByName("kotlin")
                     ?.takeIf { it is KotlinProjectExtension && javaPluginExtension != null }

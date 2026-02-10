@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm")
-    id("me.tylerbwong.gradle.metalava")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.metalava)
 }
 
 metalava {
-    filename.set("api/$name-api.txt")
+    filename = "api/$name-api.txt"
 }

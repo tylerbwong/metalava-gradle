@@ -1,18 +1,17 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("com.android.library")
-    alias(libs.plugins.compose.compiler)
-    id("me.tylerbwong.gradle.metalava")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.compiler)
+    alias(libs.plugins.metalava)
 }
 
 android {
     namespace = "me.tylerbwong.gradle.metalava.sample"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 21
+        minSdk = libs.versions.minSdk.get().toInt()
     }
 }
 
@@ -23,8 +22,8 @@ kotlin {
 }
 
 metalava {
-    filename.set("api/$name-api.txt")
-    apiCompatAnnotations.set(listOf("androidx.compose.runtime.Composable"))
+    filename = "api/$name-api.txt"
+    apiCompatAnnotations = listOf("androidx.compose.runtime.Composable")
 }
 
 dependencies {

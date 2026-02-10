@@ -14,11 +14,11 @@ internal abstract class MetalavaWorkAction @Inject constructor(
 
     override fun execute() {
         execOperations.javaexec {
-            systemProperty("java.awt.headless", "true")
-            mainClass.set(METALAVA_MAIN_CLASS)
-            classpath(parameters.classpath)
-            isIgnoreExitValue = false
-            args = parameters.arguments.get().split(", ")
+            it.systemProperty("java.awt.headless", "true")
+            it.mainClass.set(METALAVA_MAIN_CLASS)
+            it.classpath(parameters.classpath)
+            it.isIgnoreExitValue = false
+            it.args = parameters.arguments.get().split(", ")
         }
     }
 

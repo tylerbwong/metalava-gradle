@@ -9,25 +9,25 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 internal class MetalavaPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            val extension = extensions.create("metalava", MetalavaExtension::class.java)
-            afterEvaluate {
-                val currentModule = module
-                if (currentModule != null) {
-                    val androidModule = (currentModule as? Module.Composite)
-                        ?.extract<Module.Android>()
-                    if (androidModule != null) {
-                        androidModule.libraryVariants.forEach {
-                            createMetalavaTasks(this, extension, currentModule, it)
-                        }
-                    } else {
-                        createMetalavaTasks(this, extension, currentModule)
+    override fun apply(target: Project) = with(target) {
+        val extension = extensions.create("metalava", MetalavaExtension::class.java)
+        val currentModule = module
+        if (currentModule != null) {
+            val androidModule = (currentModule as? Module.Composite)?.extract<Module.Android>()
+            if (androidModule != null) {
+                plugins.withId("com.android.library") {
+                    // Called in the withId block to fix `NoClassDefFoundError: com/android/build/api/variant/LibraryVariant`.
+                    androidModule.extension.onVariants { variant ->
+                        val variantName = variant.name
+                        androidModule.libraryVariants[variantName] = variant
+                        createMetalavaTasks(this@with, extension, currentModule, variantName)
                     }
-                } else {
-                    logger.warn("Module $name is not supported by the Metalava Gradle plugin")
                 }
+            } else {
+                createMetalavaTasks(this, extension, currentModule)
             }
+        } else {
+            logger.warn("Module $name is not supported by the Metalava Gradle plugin")
         }
     }
 
@@ -60,7 +60,7 @@ internal class MetalavaPlugin : Plugin<Project> {
         // association with 'check' should be configurable.
         project.tasks.named("check").configure {
             if (metalavaExtension.enforceCheck.get()) {
-                dependsOn(checkCompatibilityTask)
+                it.dependsOn(checkCompatibilityTask)
             }
         }
     }

@@ -168,7 +168,7 @@ class MetalavaGradlePluginTest {
             parentFile.mkdirs()
             writeText(
                 """
-                    package com.example
+                    package com.example;
 
                     public final class Bar {}
                 """,
@@ -178,7 +178,7 @@ class MetalavaGradlePluginTest {
             parentFile.mkdirs()
             writeText(
                 """
-                    package com.example
+                    package com.example;
 
                     public final class FooBar {}
                 """,
