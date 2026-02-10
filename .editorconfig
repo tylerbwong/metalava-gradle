@@ -2,14 +2,28 @@ root = true
 
 [*]
 charset = utf-8
+indent_size = 2
+indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.{gradle,java}]
+indent_size = 4
+
 [*.{kt,kts}]
 indent_size = 4
+ij_kotlin_imports_layout = *
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ij_kotlin_continuation_indent_size = 2
+ij_kotlin_line_break_after_multiline_when_entry = false
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
 ij_kotlin_packages_to_use_import_on_demand = unset
-ij_kotlin_name_count_to_use_star_import = 999
-ij_kotlin_name_count_to_use_star_import_for_members = 999
-ij_kotlin_allow_trailing_comma_on_call_site=true
-ij_kotlin_allow_trailing_comma=true
-ktlint_code_style=intellij_idea
+
+ktlint_code_style = intellij_idea
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_mixed-condition-operators = disabled
+
+[*.md]
+trim_trailing_whitespace = false
