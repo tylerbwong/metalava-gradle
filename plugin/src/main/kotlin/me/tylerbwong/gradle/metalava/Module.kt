@@ -70,9 +70,10 @@ internal sealed class Module {
             return project.files(
                 libraryVariant.sourceSets
                     .filterNot {
-                        it.name
-                            .lowercase(Locale.getDefault())
-                            .contains(SourceSet.TEST_SOURCE_SET_NAME)
+                        val lowerName = it.name.lowercase(Locale.getDefault())
+                        // TODO: test and debug checks should be correctly handled by types instead of names.
+                        lowerName.contains(SourceSet.TEST_SOURCE_SET_NAME) ||
+                            lowerName.contains("debug")
                     }
                     .flatMap { it.javaDirectories + it.kotlinDirectories },
             )
