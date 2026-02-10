@@ -18,7 +18,6 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 metalava = { id = "me.tylerbwong.gradle.metalava" }
 ktlintGradle = "org.jlleitschuh.gradle.ktlint:14.0.1"
 pluginPublish = "com.gradle.plugin-publish:2.0.0"
-metalavaGradle = "me.tylerbwong.gradle.metalava:0.4.0-alpha03"
 buildConfig = "com.github.gmazzo.buildconfig:6.0.7"
 
 [libraries]

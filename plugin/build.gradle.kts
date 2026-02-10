@@ -2,13 +2,13 @@ import org.gradle.api.plugins.JavaPlugin.API_ELEMENTS_CONFIGURATION_NAME
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
-    alias(libs.plugins.metalavaGradle)
     alias(libs.plugins.buildConfig)
 }
 
@@ -38,6 +38,8 @@ gradlePlugin {
 }
 
 kotlin {
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation { enabled = true }
     explicitApi()
     compilerOptions {
         allWarningsAsErrors = true
@@ -56,11 +58,6 @@ lint {
     disable += "NewerVersionAvailable"
     disable += "GradleDependency"
     disable += "AndroidGradlePluginVersion"
-}
-
-metalava {
-    filename.set("api/${project.version}.txt")
-    version = libs.versions.android.metalava
 }
 
 configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
@@ -115,14 +112,14 @@ tasks.pluginUnderTestMetadata {
     )
 }
 
-tasks.whenTaskAdded {
-    if (name == "metalavaCheckCompatibility") {
-        // TODO: there might be a bug, metalava tasks should run after generation tasks.
-        dependsOn(tasks.generateBuildConfigClasses)
-    }
-}
-
 tasks.validatePlugins {
     // TODO: https://github.com/gradle/gradle/issues/22600
     enableStricterValidation = true
+}
+
+tasks.check {
+    dependsOn(
+        // TODO: https://youtrack.jetbrains.com/issue/KT-78525
+        tasks.checkLegacyAbi,
+    )
 }
