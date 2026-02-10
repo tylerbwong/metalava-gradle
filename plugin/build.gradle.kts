@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
-    MetalavaGradleProjectPlugin
 }
 
 repositories {
