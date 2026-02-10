@@ -1,5 +1,5 @@
 [versions]
-androidGradle = "8.7.3"
+androidGradle = "8.13.2"
 androidx-compose-runtime = "1.7.5"
 android-metalava = "1.0.0-alpha14"
 junit = "5.11.3"
