@@ -5,7 +5,6 @@ package me.tylerbwong.gradle.metalava.sample {
     ctor public SampleJavaPublicApi();
     method public abstract void publicFunction();
     method public static int publicStaticIntFunction(int);
-    field public abstract String! publicStringProperty;
   }
 
   public interface SamplePublicApi {

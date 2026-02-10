@@ -3,9 +3,9 @@ plugins {
     `java-gradle-plugin`
     `maven-publish`
     alias(libs.plugins.ktlintGradle)
+    alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
-    MetalavaGradleProjectPlugin
 }
 
 repositories {
@@ -28,6 +28,18 @@ gradlePlugin {
             implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
         }
     }
+}
+
+kotlin {
+    explicitApi()
+}
+
+lint {
+    baseline = file("lint-baseline.xml")
+    warningsAsErrors = true
+    disable += "NewerVersionAvailable"
+    disable += "GradleDependency"
+    disable += "AndroidGradlePluginVersion"
 }
 
 metalava {
@@ -54,6 +66,8 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
 
     testPluginClasspath(libs.androidGradle)
+
+    lintChecks(libs.androidx.gradlePluginLints)
 }
 
 tasks.pluginUnderTestMetadata {
