@@ -68,14 +68,14 @@ internal sealed class Module {
             val v = requireNotNull(libraryVariants[variant]) { "Variant '$variant' not found in $libraryVariants." }
             val javaSources = v.sources.java?.all?.map {
                 it.filterNot { dir ->
-                    val dirName = dir.asFile.name
+                    val dirName = dir.asFile.parentFile.name
                     dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
                         dirName.contains("debug", ignoreCase = true)
                 }
             }
             val kotlinSources = v.sources.kotlin?.all?.map {
                 it.filterNot { dir ->
-                    val dirName = dir.asFile.name
+                    val dirName = dir.asFile.parentFile.name
                     dirName.contains(TEST_SOURCE_SET_NAME, ignoreCase = true) ||
                         dirName.contains("debug", ignoreCase = true)
                 }
