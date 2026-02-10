@@ -23,21 +23,19 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.workers.WorkerExecutor
 
 @CacheableTask
-internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
-    objectFactory: ObjectFactory,
-    workerExecutor: WorkerExecutor,
-) : BaseMetalavaTask(objectFactory, workerExecutor) {
+internal abstract class MetalavaGenerateSignatureTask
+@Inject
+constructor(objectFactory: ObjectFactory, workerExecutor: WorkerExecutor) :
+    BaseMetalavaTask(objectFactory, workerExecutor) {
 
     init {
         group = "documentation"
         description = TASK_DESCRIPTION
     }
 
-    @get:Classpath
-    abstract val bootClasspath: ConfigurableFileCollection
+    @get:Classpath abstract val bootClasspath: ConfigurableFileCollection
 
-    @get:Classpath
-    abstract val compileClasspath: ConfigurableFileCollection
+    @get:Classpath abstract val compileClasspath: ConfigurableFileCollection
 
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFiles
@@ -51,18 +49,13 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
     @get:InputFiles
     abstract val excludedSourceSets: ConfigurableFileCollection
 
-    @get:Input
-    abstract val signature: Property<Signature>
+    @get:Input abstract val signature: Property<Signature>
 
-    @get:Input
-    abstract val javaSourceLevel: Property<JavaVersion>
+    @get:Input abstract val javaSourceLevel: Property<JavaVersion>
 
-    @get:Input
-    abstract val shouldRunGenerateSignature: Property<Boolean>
+    @get:Input abstract val shouldRunGenerateSignature: Property<Boolean>
 
-    @get:OutputFile
-    @get:Optional
-    abstract val keepFilename: Property<String>
+    @get:OutputFile @get:Optional abstract val keepFilename: Property<String>
 
     @TaskAction
     fun metalavaGenerateSignature() {
@@ -76,26 +69,29 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
         awaitWork: Boolean = false,
     ) {
         val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
-        val sourcePaths = (sourceSets + additionalSourceSets - excludedSourceSets)
-            .filter { it.exists() }
-            .joinToString(File.pathSeparator)
+        val sourcePaths =
+            (sourceSets + additionalSourceSets - excludedSourceSets)
+                .filter { it.exists() }
+                .joinToString(File.pathSeparator)
         val keepFilename = keepFilename.orNull
-        val keepFileFlags = if (!keepFilename.isNullOrEmpty()) {
-            listOf("--proguard", keepFilename)
-        } else {
-            emptyList()
-        }
+        val keepFileFlags =
+            if (!keepFilename.isNullOrEmpty()) {
+                listOf("--proguard", keepFilename)
+            } else {
+                emptyList()
+            }
 
-        val args: List<String> = listOf(
-            "${signature.get()}",
-            filenameOverride ?: filename.get(),
-            "--java-source",
-            "${javaSourceLevel.get()}",
-            "--classpath",
-            fullClasspath,
-            "--source-path",
-            sourcePaths,
-        ) + keepFileFlags + createCommonArgs()
+        val args: List<String> =
+            listOf(
+                "${signature.get()}",
+                filenameOverride ?: filename.get(),
+                "--java-source",
+                "${javaSourceLevel.get()}",
+                "--classpath",
+                fullClasspath,
+                "--source-path",
+                sourcePaths,
+            ) + keepFileFlags + createCommonArgs()
         executeMetalavaWork(args, awaitWork)
     }
 
@@ -110,10 +106,11 @@ internal abstract class MetalavaGenerateSignatureTask @Inject constructor(
             variantName: String? = null,
         ): TaskProvider<MetalavaGenerateSignatureTask> {
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(
-                metalavaJar = extension.metalavaJar,
-                version = extension.version.get(),
-            )
+            val metalavaClasspath =
+                project.getMetalavaClasspath(
+                    metalavaJar = extension.metalavaJar,
+                    version = extension.version.get(),
+                )
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register(taskName, MetalavaGenerateSignatureTask::class.java) {
                 it.metalavaClasspath.from(metalavaClasspath)

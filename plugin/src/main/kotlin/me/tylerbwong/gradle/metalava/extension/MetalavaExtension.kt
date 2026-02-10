@@ -12,54 +12,36 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 
-public open class MetalavaExtension @Inject constructor(
-    objectFactory: ObjectFactory,
-) {
-    /**
-     * The version of Metalava to use.
-     */
-    public val version: Property<String> = objectFactory.property<String>().also { it.set(METALAVA_VERSION) }
+public open class MetalavaExtension @Inject constructor(objectFactory: ObjectFactory) {
+    /** The version of Metalava to use. */
+    public val version: Property<String> =
+        objectFactory.property<String>().also { it.set(METALAVA_VERSION) }
 
-    /**
-     * A custom Metalava JAR to use instead of the embedded dependency.
-     */
+    /** A custom Metalava JAR to use instead of the embedded dependency. */
     public val metalavaJar: ConfigurableFileCollection = objectFactory.fileCollection()
 
-    /**
-     * Sets the source level for Java source files; default is 17.
-     */
-    public val javaSourceLevel: Property<JavaVersion> = objectFactory.property {
-        set(JavaVersion.VERSION_17)
-    }
+    /** Sets the source level for Java source files; default is 17. */
+    public val javaSourceLevel: Property<JavaVersion> =
+        objectFactory.property { set(JavaVersion.VERSION_17) }
 
-    /**
-     * @see Format
-     */
+    /** @see Format */
     public val format: Property<Format> = objectFactory.property { set(Format.V4) }
 
-    /**
-     * @see Signature
-     */
+    /** @see Signature */
     public val signature: Property<Signature> = objectFactory.property { set(Signature.API) }
 
-    /**
-     * The final descriptor file output name.
-     */
+    /** The final descriptor file output name. */
     public val filename: Property<String> = objectFactory.property { set("api.txt") }
 
     /**
-     *  Type is one of 'api' and 'removed', which checks either the public api or the removed api.
+     * Type is one of 'api' and 'removed', which checks either the public api or the removed api.
      */
     public val apiType: Property<String> = objectFactory.property { set("api") }
 
-    /**
-     * Remove the given packages from the API even if they have not been marked with @hide.
-     */
+    /** Remove the given packages from the API even if they have not been marked with @hide. */
     public val hiddenPackages: SetProperty<String> = objectFactory.setProperty()
 
-    /**
-     * Treat any elements annotated with the given annotation as hidden.
-     */
+    /** Treat any elements annotated with the given annotation as hidden. */
     public val hiddenAnnotations: SetProperty<String> = objectFactory.setProperty()
 
     /**
@@ -77,33 +59,25 @@ public open class MetalavaExtension @Inject constructor(
      */
     public val inputKotlinNulls: Property<Boolean> = objectFactory.property { set(false) }
 
-    /**
-     * Promote all warnings to errors.
-     */
+    /** Promote all warnings to errors. */
     public val reportWarningsAsErrors: Property<Boolean> = objectFactory.property { set(false) }
 
-    /**
-     * Promote all API lint warnings to errors.
-     */
+    /** Promote all API lint warnings to errors. */
     public val reportLintsAsErrors: Property<Boolean> = objectFactory.property { set(false) }
 
     /**
      * Additional directories to search for source files. An exception will be thrown if the named
      * directories are not direct children of the project root.
      *
-     * By default, Metalava will automatically detect the source sets of the project,
-     * excluding test sources.
+     * By default, Metalava will automatically detect the source sets of the project, excluding test
+     * sources.
      */
     public val additionalSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
 
-    /**
-     * Source directories to exclude.
-     */
+    /** Source directories to exclude. */
     public val excludedSourceSets: ConfigurableFileCollection = objectFactory.fileCollection()
 
-    /**
-     * If the tasks should run as part of Gradle's `check` task. The default is true.
-     */
+    /** If the tasks should run as part of Gradle's `check` task. The default is true. */
     public val enforceCheck: Property<Boolean> = objectFactory.property { set(true) }
 
     /**
@@ -127,16 +101,14 @@ public open class MetalavaExtension @Inject constructor(
      */
     public val outputSignatureFileProvider: Provider<RegularFile> = outputSignatureFileProperty
 
-    /**
-     * Allows passing in custom metalava arguments.
-     */
+    /** Allows passing in custom metalava arguments. */
     public val arguments: SetProperty<String> = objectFactory.setProperty()
 
     private inline fun <reified T : Any> ObjectFactory.property(
-        configuration: Property<T>.() -> Unit = {},
+        configuration: Property<T>.() -> Unit = {}
     ): Property<T> = property(T::class.java).apply { configuration() }
 
     private inline fun <reified T : Any> ObjectFactory.setProperty(
-        configuration: SetProperty<T>.() -> Unit = {},
+        configuration: SetProperty<T>.() -> Unit = {}
     ): SetProperty<T> = setProperty(T::class.java).apply { configuration() }
 }
