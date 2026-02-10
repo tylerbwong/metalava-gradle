@@ -2,7 +2,7 @@
 androidGradle = "8.7.3"
 androidx-compose-runtime = "1.7.5"
 android-metalava = "1.0.0-alpha14"
-junit = "5.11.3"
+junit = "6.0.2"
 kotlin = "2.1.0"
 ktlintGradle = "14.0.1"
 pluginPublish = "1.3.0"
