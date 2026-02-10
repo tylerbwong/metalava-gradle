@@ -53,6 +53,10 @@ tasks.test {
     }
 }
 
+val testPluginClasspath by configurations.registering {
+    isCanBeResolved = true
+}
+
 dependencies {
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
@@ -61,7 +65,16 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
 
+    testPluginClasspath(libs.androidGradle)
+
     lintChecks(libs.androidx.gradlePluginLints)
+}
+
+tasks.pluginUnderTestMetadata {
+    // Plugins used in tests could be resolved in classpath.
+    pluginClasspath.from(
+        testPluginClasspath,
+    )
 }
 
 tasks.validatePlugins {
