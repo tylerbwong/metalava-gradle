@@ -1,5 +1,7 @@
 package me.tylerbwong.gradle.metalava.task
 
+import java.io.File
+import javax.inject.Inject
 import me.tylerbwong.gradle.metalava.Module
 import me.tylerbwong.gradle.metalava.Signature
 import me.tylerbwong.gradle.metalava.extension.MetalavaExtension
@@ -20,8 +22,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 import org.gradle.workers.WorkerExecutor
-import java.io.File
-import javax.inject.Inject
 
 @CacheableTask
 internal abstract class MetalavaGenerateSignatureTask @Inject constructor(

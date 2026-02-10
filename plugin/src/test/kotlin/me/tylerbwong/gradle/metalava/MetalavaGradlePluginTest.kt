@@ -1,5 +1,8 @@
 package me.tylerbwong.gradle.metalava
 
+import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -7,9 +10,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.io.File
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
 
 class MetalavaGradlePluginTest {
 
