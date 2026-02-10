@@ -63,3 +63,8 @@ dependencies {
 
     lintChecks(libs.androidx.gradlePluginLints)
 }
+
+tasks.validatePlugins {
+    // TODO: https://github.com/gradle/gradle/issues/22600
+    enableStricterValidation = true
+}
