@@ -17,9 +17,9 @@ jobs:
           java-version: 25
       - uses: gradle/actions/setup-gradle@v5
       - name: Run Plugin Build
-        run: ./gradlew :plugin:build
+        run: ./gradlew :plugin:build --stacktrace
       - name: Run Samples Check
-        run: ./gradlew build metalavaCheckCompatibility metalavaCheckCompatibilityDebug
+        run: ./gradlew build metalavaCheckCompatibility metalavaCheckCompatibilityDebug --stacktrace
       - name: Copy Test Results
         if: always()
         run: |
