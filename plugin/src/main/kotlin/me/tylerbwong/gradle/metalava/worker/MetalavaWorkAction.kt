@@ -8,9 +8,9 @@ import org.gradle.workers.WorkAction
  * A [WorkAction] that executes the Metalava main class and passes the necessary arguments to the
  * driver.
  */
-internal abstract class MetalavaWorkAction @Inject constructor(
-    private val execOperations: ExecOperations,
-) : WorkAction<MetalavaWorkParameters> {
+internal abstract class MetalavaWorkAction
+@Inject
+constructor(private val execOperations: ExecOperations) : WorkAction<MetalavaWorkParameters> {
 
     override fun execute() {
         execOperations.javaexec {

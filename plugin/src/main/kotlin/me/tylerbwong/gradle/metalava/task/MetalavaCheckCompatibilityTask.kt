@@ -14,41 +14,39 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.workers.WorkerExecutor
 
 @CacheableTask
-internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
-    objectFactory: ObjectFactory,
-    workerExecutor: WorkerExecutor,
-) : MetalavaGenerateSignatureTask(objectFactory, workerExecutor) {
+internal abstract class MetalavaCheckCompatibilityTask
+@Inject
+constructor(objectFactory: ObjectFactory, workerExecutor: WorkerExecutor) :
+    MetalavaGenerateSignatureTask(objectFactory, workerExecutor) {
 
     init {
         group = "verification"
         description = TASK_DESCRIPTION
     }
 
-    @get:OutputFile
-    abstract val tempFilename: Property<String>
+    @get:OutputFile abstract val tempFilename: Property<String>
 
-    @get:Input
-    abstract val apiType: Property<String>
+    @get:Input abstract val apiType: Property<String>
 
-    @get:Input
-    abstract val inputKotlinNulls: Property<Boolean>
+    @get:Input abstract val inputKotlinNulls: Property<Boolean>
 
-    @get:Input
-    abstract val reportWarningsAsErrors: Property<Boolean>
+    @get:Input abstract val reportWarningsAsErrors: Property<Boolean>
 
-    @get:Input
-    abstract val reportLintsAsErrors: Property<Boolean>
+    @get:Input abstract val reportLintsAsErrors: Property<Boolean>
 
     @TaskAction
     fun metalavaCheckCompatibilityTask() {
         metalavaGenerateSignatureInternal(filenameOverride = tempFilename.get(), awaitWork = true)
-        val args: List<String> = listOf(
-            "--source-files",
-            tempFilename.get(),
-            "--check-compatibility:${apiType.get()}:released",
-            filename.get(),
-        ) + reportWarningsAsErrors.get().flag("--warnings-as-errors") + reportLintsAsErrors.get()
-            .flag("--lints-as-errors") + createCommonArgs()
+        val args: List<String> =
+            listOf(
+                "--source-files",
+                tempFilename.get(),
+                "--check-compatibility:${apiType.get()}:released",
+                filename.get(),
+            ) +
+                reportWarningsAsErrors.get().flag("--warnings-as-errors") +
+                reportLintsAsErrors.get().flag("--lints-as-errors") +
+                createCommonArgs()
         executeMetalavaWork(args)
     }
 
@@ -64,13 +62,16 @@ internal abstract class MetalavaCheckCompatibilityTask @Inject constructor(
             module: Module,
             variantName: String?,
         ): TaskProvider<MetalavaCheckCompatibilityTask> {
-            val tempFilenameProvider = project.layout.buildDirectory
-                .file(METALAVA_CURRENT_PATH).map { it.asFile.absolutePath }
+            val tempFilenameProvider =
+                project.layout.buildDirectory.file(METALAVA_CURRENT_PATH).map {
+                    it.asFile.absolutePath
+                }
             val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath = project.getMetalavaClasspath(
-                metalavaJar = extension.metalavaJar,
-                version = extension.version.get(),
-            )
+            val metalavaClasspath =
+                project.getMetalavaClasspath(
+                    metalavaJar = extension.metalavaJar,
+                    version = extension.version.get(),
+                )
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register(taskName, MetalavaCheckCompatibilityTask::class.java) {
                 it.metalavaClasspath.from(metalavaClasspath)

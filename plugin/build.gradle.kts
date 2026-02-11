@@ -5,14 +5,15 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.metalavaGradle)
     alias(libs.plugins.buildConfig)
+    alias(libs.plugins.spotless)
 }
 
 group = "me.tylerbwong.gradle.metalava"
+
 version = "0.5.0"
 
 buildConfig {
@@ -30,7 +31,8 @@ gradlePlugin {
         create("metalavaPlugin") {
             id = "me.tylerbwong.gradle.metalava"
             displayName = "Metalava Gradle Plugin"
-            description = "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
+            description =
+                "A Gradle plugin for Metalava, AOSP's tool for API metadata extraction and compatibility tracking."
             tags = listOf("metalava", "api-tracking")
             implementationClass = "me.tylerbwong.gradle.metalava.plugin.MetalavaPlugin"
         }
@@ -63,6 +65,14 @@ metalava {
     version = libs.versions.android.metalava
 }
 
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktfmt(libs.ktfmt.get().version).kotlinlangStyle()
+    }
+    kotlinGradle { ktfmt(libs.ktfmt.get().version).kotlinlangStyle() }
+}
+
 configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
     attributes.attribute(
         // TODO: https://github.com/gradle/gradle/issues/24608
@@ -71,9 +81,7 @@ configurations.named(API_ELEMENTS_CONFIGURATION_NAME) {
     )
 }
 
-val testPluginClasspath by configurations.registering {
-    isCanBeResolved = true
-}
+val testPluginClasspath by configurations.registering { isCanBeResolved = true }
 
 dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
@@ -95,9 +103,7 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
-    }
+    testLogging { events("passed", "skipped", "failed") }
     // Required to test configuration cache in tests when using withDebug().
     // See https://github.com/gradle/gradle/issues/22765#issuecomment-1339427241.
     jvmArgs(
@@ -110,9 +116,7 @@ tasks.test {
 
 tasks.pluginUnderTestMetadata {
     // Plugins used in tests could be resolved in classpath.
-    pluginClasspath.from(
-        testPluginClasspath,
-    )
+    pluginClasspath.from(testPluginClasspath)
 }
 
 tasks.whenTaskAdded {

@@ -1,5 +1,0 @@
-# TODO: https://github.com/JLLeitschuh/ktlint-gradle/issues/724
-[build/generated/**]
-generated_code = true
-ij_formatter_enabled = false
-ktlint = disabled

@@ -20,16 +20,11 @@ internal abstract class BaseMetalavaTask(
     private val workerExecutor: WorkerExecutor,
 ) : DefaultTask() {
 
-    @get:Classpath
-    abstract val metalavaClasspath: ConfigurableFileCollection
+    @get:Classpath abstract val metalavaClasspath: ConfigurableFileCollection
 
-    @get:Optional
-    @get:OutputFile
-    abstract val filename: Property<String>
+    @get:Optional @get:OutputFile abstract val filename: Property<String>
 
-    @get:Optional
-    @get:Input
-    abstract val format: Property<Format>
+    @get:Optional @get:Input abstract val format: Property<Format>
 
     @get:Optional
     @get:Input
@@ -62,9 +57,12 @@ internal abstract class BaseMetalavaTask(
     protected fun createCommonArgs(): List<String> {
         val hidePackages = hiddenPackages.get().flatMap { listOf("--hide-package", it) }
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
-        val apiCompatAnnotations = apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
-        return listOf(
-            "--format=${format.get()}",
-        ) + hidePackages + hideAnnotations + apiCompatAnnotations + arguments.get()
+        val apiCompatAnnotations =
+            apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
+        return listOf("--format=${format.get()}") +
+            hidePackages +
+            hideAnnotations +
+            apiCompatAnnotations +
+            arguments.get()
     }
 }
