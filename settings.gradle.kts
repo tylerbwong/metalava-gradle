@@ -14,6 +14,19 @@ pluginManagement {
     includeBuild("./plugin")
 }
 
+plugins {
+    id("com.gradle.develocity") version "4.3.2"
+}
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        val isCI = providers.environmentVariable("CI").isPresent
+        publishing.onlyIf { isCI }
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -35,5 +48,5 @@ include(
     ":samples:kotlin-dsl-compose",
     ":samples:kotlin-dsl-empty",
     ":samples:kotlin-dsl-kotlin",
-    ":samples:kotlin-multiplatform"
+    ":samples:kotlin-multiplatform",
 )
