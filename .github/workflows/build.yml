@@ -25,9 +25,3 @@ jobs:
         run: |
           mkdir -p junit
           find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} junit/ \;
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: junit-results
-          path: junit
