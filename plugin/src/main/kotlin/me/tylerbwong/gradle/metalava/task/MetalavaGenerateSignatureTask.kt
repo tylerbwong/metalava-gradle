@@ -26,110 +26,110 @@ import org.gradle.workers.WorkerExecutor
 internal abstract class MetalavaGenerateSignatureTask
 @Inject
 constructor(objectFactory: ObjectFactory, workerExecutor: WorkerExecutor) :
-    BaseMetalavaTask(objectFactory, workerExecutor) {
+  BaseMetalavaTask(objectFactory, workerExecutor) {
 
-    init {
-        group = "documentation"
-        description = TASK_DESCRIPTION
+  init {
+    group = "documentation"
+    description = TASK_DESCRIPTION
+  }
+
+  @get:Classpath abstract val bootClasspath: ConfigurableFileCollection
+
+  @get:Classpath abstract val compileClasspath: ConfigurableFileCollection
+
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  @get:InputFiles
+  abstract val sourceSets: ConfigurableFileCollection
+
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  @get:InputFiles
+  abstract val additionalSourceSets: ConfigurableFileCollection
+
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  @get:InputFiles
+  abstract val excludedSourceSets: ConfigurableFileCollection
+
+  @get:Input abstract val signature: Property<Signature>
+
+  @get:Input abstract val javaSourceLevel: Property<JavaVersion>
+
+  @get:Input abstract val shouldRunGenerateSignature: Property<Boolean>
+
+  @get:OutputFile @get:Optional abstract val keepFilename: Property<String>
+
+  @TaskAction
+  fun metalavaGenerateSignature() {
+    if (shouldRunGenerateSignature.get()) {
+      metalavaGenerateSignatureInternal()
     }
+  }
 
-    @get:Classpath abstract val bootClasspath: ConfigurableFileCollection
+  protected fun metalavaGenerateSignatureInternal(
+    filenameOverride: String? = null,
+    awaitWork: Boolean = false,
+  ) {
+    val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
+    val sourcePaths =
+      (sourceSets + additionalSourceSets - excludedSourceSets)
+        .filter { it.exists() }
+        .joinToString(File.pathSeparator)
+    val keepFilename = keepFilename.orNull
+    val keepFileFlags =
+      if (!keepFilename.isNullOrEmpty()) {
+        listOf("--proguard", keepFilename)
+      } else {
+        emptyList()
+      }
 
-    @get:Classpath abstract val compileClasspath: ConfigurableFileCollection
+    val args: List<String> =
+      listOf(
+        "${signature.get()}",
+        filenameOverride ?: filename.get(),
+        "--java-source",
+        "${javaSourceLevel.get()}",
+        "--classpath",
+        fullClasspath,
+        "--source-path",
+        sourcePaths,
+      ) + keepFileFlags + createCommonArgs()
+    executeMetalavaWork(args, awaitWork)
+  }
 
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFiles
-    abstract val sourceSets: ConfigurableFileCollection
+  internal companion object : MetalavaTaskContainer() {
+    private const val TASK_NAME = "metalavaGenerateSignature"
+    private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
 
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFiles
-    abstract val additionalSourceSets: ConfigurableFileCollection
-
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    @get:InputFiles
-    abstract val excludedSourceSets: ConfigurableFileCollection
-
-    @get:Input abstract val signature: Property<Signature>
-
-    @get:Input abstract val javaSourceLevel: Property<JavaVersion>
-
-    @get:Input abstract val shouldRunGenerateSignature: Property<Boolean>
-
-    @get:OutputFile @get:Optional abstract val keepFilename: Property<String>
-
-    @TaskAction
-    fun metalavaGenerateSignature() {
-        if (shouldRunGenerateSignature.get()) {
-            metalavaGenerateSignatureInternal()
-        }
+    fun register(
+      project: Project,
+      extension: MetalavaExtension,
+      module: Module,
+      variantName: String? = null,
+    ): TaskProvider<MetalavaGenerateSignatureTask> {
+      val taskName = getFullTaskName(TASK_NAME, variantName)
+      val metalavaClasspath =
+        project.getMetalavaClasspath(
+          metalavaJar = extension.metalavaJar,
+          version = extension.version.get(),
+        )
+      val bootClasspathProvider = project.provider { module.bootClasspath }
+      return project.tasks.register(taskName, MetalavaGenerateSignatureTask::class.java) {
+        it.metalavaClasspath.from(metalavaClasspath)
+        it.sourceSets.from(module.sourceSets(project, variantName))
+        it.additionalSourceSets.setFrom(extension.additionalSourceSets)
+        it.excludedSourceSets.setFrom(extension.excludedSourceSets)
+        it.filename.set(extension.filename)
+        it.shouldRunGenerateSignature.set(true)
+        it.bootClasspath.from(bootClasspathProvider)
+        it.compileClasspath.from(module.compileClasspath(project, variantName))
+        it.format.set(extension.format)
+        it.signature.set(extension.signature)
+        it.javaSourceLevel.set(extension.javaSourceLevel)
+        it.hiddenPackages.set(extension.hiddenPackages)
+        it.hiddenAnnotations.set(extension.hiddenAnnotations)
+        it.apiCompatAnnotations.set(extension.apiCompatAnnotations)
+        it.keepFilename.set(extension.keepFilename)
+        it.arguments.set(extension.arguments)
+      }
     }
-
-    protected fun metalavaGenerateSignatureInternal(
-        filenameOverride: String? = null,
-        awaitWork: Boolean = false,
-    ) {
-        val fullClasspath = (bootClasspath + compileClasspath).joinToString(File.pathSeparator)
-        val sourcePaths =
-            (sourceSets + additionalSourceSets - excludedSourceSets)
-                .filter { it.exists() }
-                .joinToString(File.pathSeparator)
-        val keepFilename = keepFilename.orNull
-        val keepFileFlags =
-            if (!keepFilename.isNullOrEmpty()) {
-                listOf("--proguard", keepFilename)
-            } else {
-                emptyList()
-            }
-
-        val args: List<String> =
-            listOf(
-                "${signature.get()}",
-                filenameOverride ?: filename.get(),
-                "--java-source",
-                "${javaSourceLevel.get()}",
-                "--classpath",
-                fullClasspath,
-                "--source-path",
-                sourcePaths,
-            ) + keepFileFlags + createCommonArgs()
-        executeMetalavaWork(args, awaitWork)
-    }
-
-    internal companion object : MetalavaTaskContainer() {
-        private const val TASK_NAME = "metalavaGenerateSignature"
-        private const val TASK_DESCRIPTION = "Generates a Metalava signature descriptor file."
-
-        fun register(
-            project: Project,
-            extension: MetalavaExtension,
-            module: Module,
-            variantName: String? = null,
-        ): TaskProvider<MetalavaGenerateSignatureTask> {
-            val taskName = getFullTaskName(TASK_NAME, variantName)
-            val metalavaClasspath =
-                project.getMetalavaClasspath(
-                    metalavaJar = extension.metalavaJar,
-                    version = extension.version.get(),
-                )
-            val bootClasspathProvider = project.provider { module.bootClasspath }
-            return project.tasks.register(taskName, MetalavaGenerateSignatureTask::class.java) {
-                it.metalavaClasspath.from(metalavaClasspath)
-                it.sourceSets.from(module.sourceSets(project, variantName))
-                it.additionalSourceSets.setFrom(extension.additionalSourceSets)
-                it.excludedSourceSets.setFrom(extension.excludedSourceSets)
-                it.filename.set(extension.filename)
-                it.shouldRunGenerateSignature.set(true)
-                it.bootClasspath.from(bootClasspathProvider)
-                it.compileClasspath.from(module.compileClasspath(project, variantName))
-                it.format.set(extension.format)
-                it.signature.set(extension.signature)
-                it.javaSourceLevel.set(extension.javaSourceLevel)
-                it.hiddenPackages.set(extension.hiddenPackages)
-                it.hiddenAnnotations.set(extension.hiddenAnnotations)
-                it.apiCompatAnnotations.set(extension.apiCompatAnnotations)
-                it.keepFilename.set(extension.keepFilename)
-                it.arguments.set(extension.arguments)
-            }
-        }
-    }
+  }
 }

@@ -1,23 +1,23 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.metalava)
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.metalava)
 }
 
 android {
-    namespace = "me.tylerbwong.gradle.metalava.sample"
-    compileSdk = libs.versions.compileSdk.get().toInteger()
+  namespace = "me.tylerbwong.gradle.metalava.sample"
+  compileSdk = libs.versions.compileSdk.get().toInteger()
 
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInteger()
-    }
+  defaultConfig {
+    minSdk = libs.versions.minSdk.get().toInteger()
+  }
 }
 
 metalava {
-    filename = "api/$name-api.txt"
-    keepFilename = "public-api.pro"
+  filename = "api/$name-api.txt"
+  keepFilename = "public-api.pro"
 }
 
 tasks.withType(Test) {
-    // The generated build config fails the test task.
-    failOnNoDiscoveredTests = false
+  // The generated build config fails the test task.
+  failOnNoDiscoveredTests = false
 }

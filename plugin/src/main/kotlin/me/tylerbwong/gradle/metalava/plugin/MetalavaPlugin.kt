@@ -9,65 +9,65 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 internal class MetalavaPlugin : Plugin<Project> {
-    override fun apply(target: Project) =
-        with(target) {
-            val extension = extensions.create("metalava", MetalavaExtension::class.java)
-            val currentModule = module
-            if (currentModule != null) {
-                val androidModule = (currentModule as? Module.Composite)?.extract<Module.Android>()
-                if (androidModule != null) {
-                    plugins.withId("com.android.library") {
-                        // Called in the withId block to fix `NoClassDefFoundError:
-                        // com/android/build/api/variant/LibraryVariant`.
-                        androidModule.extension.onVariants { variant ->
-                            val variantName = variant.name
-                            androidModule.libraryVariants[variantName] = variant
-                            createMetalavaTasks(this@with, extension, currentModule, variantName)
-                        }
-                    }
-                } else {
-                    createMetalavaTasks(this, extension, currentModule)
-                }
-            } else {
-                logger.warn("Module $name is not supported by the Metalava Gradle plugin")
+  override fun apply(target: Project) =
+    with(target) {
+      val extension = extensions.create("metalava", MetalavaExtension::class.java)
+      val currentModule = module
+      if (currentModule != null) {
+        val androidModule = (currentModule as? Module.Composite)?.extract<Module.Android>()
+        if (androidModule != null) {
+          plugins.withId("com.android.library") {
+            // Called in the withId block to fix `NoClassDefFoundError:
+            // com/android/build/api/variant/LibraryVariant`.
+            androidModule.extension.onVariants { variant ->
+              val variantName = variant.name
+              androidModule.libraryVariants[variantName] = variant
+              createMetalavaTasks(this@with, extension, currentModule, variantName)
             }
+          }
+        } else {
+          createMetalavaTasks(this, extension, currentModule)
         }
-
-    private fun createMetalavaTasks(
-        project: Project,
-        metalavaExtension: MetalavaExtension,
-        module: Module,
-        variantName: String? = null,
-    ) {
-        val generateSignatureTask =
-            MetalavaGenerateSignatureTask.register(
-                project = project,
-                extension = metalavaExtension,
-                module = module,
-                variantName = variantName,
-            )
-
-        val outputSignatureFileProvider =
-            generateSignatureTask.flatMap { project.layout.projectDirectory.file(it.filename) }
-        metalavaExtension.outputSignatureFileProperty.set(outputSignatureFileProvider)
-
-        val checkCompatibilityTask =
-            MetalavaCheckCompatibilityTask.register(
-                project = project,
-                extension = metalavaExtension,
-                module = module,
-                variantName = variantName,
-            )
-
-        // Projects that apply this plugin should include API compatibility checking as part of
-        // their regular checks.
-        // However, it may be that source dirs are generated only after some other build phase, and
-        // so the
-        // association with 'check' should be configurable.
-        project.tasks.named("check").configure {
-            if (metalavaExtension.enforceCheck.get()) {
-                it.dependsOn(checkCompatibilityTask)
-            }
-        }
+      } else {
+        logger.warn("Module $name is not supported by the Metalava Gradle plugin")
+      }
     }
+
+  private fun createMetalavaTasks(
+    project: Project,
+    metalavaExtension: MetalavaExtension,
+    module: Module,
+    variantName: String? = null,
+  ) {
+    val generateSignatureTask =
+      MetalavaGenerateSignatureTask.register(
+        project = project,
+        extension = metalavaExtension,
+        module = module,
+        variantName = variantName,
+      )
+
+    val outputSignatureFileProvider =
+      generateSignatureTask.flatMap { project.layout.projectDirectory.file(it.filename) }
+    metalavaExtension.outputSignatureFileProperty.set(outputSignatureFileProvider)
+
+    val checkCompatibilityTask =
+      MetalavaCheckCompatibilityTask.register(
+        project = project,
+        extension = metalavaExtension,
+        module = module,
+        variantName = variantName,
+      )
+
+    // Projects that apply this plugin should include API compatibility checking as part of
+    // their regular checks.
+    // However, it may be that source dirs are generated only after some other build phase, and
+    // so the
+    // association with 'check' should be configurable.
+    project.tasks.named("check").configure {
+      if (metalavaExtension.enforceCheck.get()) {
+        it.dependsOn(checkCompatibilityTask)
+      }
+    }
+  }
 }
