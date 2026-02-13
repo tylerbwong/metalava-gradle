@@ -12,17 +12,17 @@ internal abstract class MetalavaWorkAction
 @Inject
 constructor(private val execOperations: ExecOperations) : WorkAction<MetalavaWorkParameters> {
 
-    override fun execute() {
-        execOperations.javaexec {
-            it.systemProperty("java.awt.headless", "true")
-            it.mainClass.set(METALAVA_MAIN_CLASS)
-            it.classpath(parameters.classpath)
-            it.isIgnoreExitValue = false
-            it.args = parameters.arguments.get().split(", ")
-        }
+  override fun execute() {
+    execOperations.javaexec {
+      it.systemProperty("java.awt.headless", "true")
+      it.mainClass.set(METALAVA_MAIN_CLASS)
+      it.classpath(parameters.classpath)
+      it.isIgnoreExitValue = false
+      it.args = parameters.arguments.get().split(", ")
     }
+  }
 
-    companion object {
-        private const val METALAVA_MAIN_CLASS = "com.android.tools.metalava.Driver"
-    }
+  companion object {
+    private const val METALAVA_MAIN_CLASS = "com.android.tools.metalava.Driver"
+  }
 }

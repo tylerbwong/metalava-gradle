@@ -5,6 +5,6 @@ import org.gradle.api.provider.Property
 import org.gradle.workers.WorkParameters
 
 internal interface MetalavaWorkParameters : WorkParameters {
-    val classpath: ConfigurableFileCollection
-    val arguments: Property<String>
+  val classpath: ConfigurableFileCollection
+  val arguments: Property<String>
 }

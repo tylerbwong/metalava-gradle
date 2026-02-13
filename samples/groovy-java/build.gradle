@@ -1,13 +1,13 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.metalava)
+  id("java-library")
+  alias(libs.plugins.metalava)
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 metalava {
-    filename = "api/$name-api.txt"
+  filename = "api/$name-api.txt"
 }
