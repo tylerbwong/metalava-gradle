@@ -20,8 +20,3 @@ jobs:
         run: ./gradlew :plugin:build --stacktrace
       - name: Run Samples Check
         run: ./gradlew build metalavaCheckCompatibility metalavaCheckCompatibilityDebug --stacktrace
-      - name: Copy Test Results
-        if: always()
-        run: |
-          mkdir -p junit
-          find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} junit/ \;
