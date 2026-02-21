@@ -20,7 +20,7 @@ This plugin currently supports the following plugins:
 ```kt
 buildscript {
     repositories {
-        maven("https://plugins.gradle.org/m2/")
+        gradlePluginPortal()
     }
     dependencies {
         classpath("me.tylerbwong.gradle.metalava:plugin:<current_version>")
@@ -43,9 +43,7 @@ plugins {
 ```groovy
 buildscript {
     repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "me.tylerbwong.gradle.metalava:plugin:<current_version>"
@@ -61,9 +59,8 @@ Also ensure that [Google's Maven Repository](https://docs.gradle.org/current/use
 
 This plugin registers the following tasks:
 
-`metalavaGenerateSignature` - Generates a Metalava signature descriptor file at a specified location.
-
-`metalavaCheckCompatibility` - Checks API compatibility between the code base and the current API.
+- `metalavaGenerateSignature` - Generates a Metalava signature descriptor file at a specified location.
+- `metalavaCheckCompatibility` - Checks API compatibility between the code base and the current API.
 
 For Android library modules, a task is created for each build variant (e.g. `metalavaGenerateSignatureRelease`)
 
@@ -77,8 +74,8 @@ plugins {
 ...
 
 metalava {
-    format.set(Format.V4)
-    filename.set("api.txt")
+    format = Format.V4
+    filename = "api.txt"
     ...
 }
 ```
