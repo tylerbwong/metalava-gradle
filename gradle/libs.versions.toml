@@ -1,7 +1,7 @@
 [versions]
 agp = "9.0.0"
 kotlin = "2.3.10"
-androidx-compose-runtime = "1.10.2"
+androidx-compose-runtime = "1.10.4"
 android-metalava = "1.0.0-alpha14"
 jvmTarget = "17"
 minGradle = "9.0.0"
