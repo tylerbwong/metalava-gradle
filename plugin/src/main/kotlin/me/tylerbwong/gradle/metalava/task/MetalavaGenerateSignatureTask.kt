@@ -83,7 +83,7 @@ constructor(objectFactory: ObjectFactory, workerExecutor: WorkerExecutor) :
 
         val args: List<String> =
             listOf(
-                "${signature.get()}",
+                signature.get().argument,
                 filenameOverride ?: filename.get(),
                 "--java-source",
                 "${javaSourceLevel.get()}",

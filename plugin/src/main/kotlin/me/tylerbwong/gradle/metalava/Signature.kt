@@ -1,7 +1,9 @@
 package me.tylerbwong.gradle.metalava
 
 /** Flags to determine which type of signature file to generate. */
-public enum class Signature(private val signature: String) {
+public enum class Signature(
+    internal val argument: String
+) {
     /** Generate a signature descriptor file. */
     API("--api"),
 
@@ -21,6 +23,4 @@ public enum class Signature(private val signature: String) {
 
     /** Generate a signature descriptor file for APIs that have been removed. */
     REMOVED_API("--removed-api");
-
-    override fun toString(): String = signature
 }

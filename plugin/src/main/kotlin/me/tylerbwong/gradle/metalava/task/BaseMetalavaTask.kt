@@ -59,7 +59,7 @@ internal abstract class BaseMetalavaTask(
         val hideAnnotations = hiddenAnnotations.get().flatMap { listOf("--hide-annotation", it) }
         val apiCompatAnnotations =
             apiCompatAnnotations.get().flatMap { listOf("--api-compat-annotation", it) }
-        return listOf("--format=${format.get()}") +
+        return listOf("--format=${format.get().version}") +
             hidePackages +
             hideAnnotations +
             apiCompatAnnotations +
