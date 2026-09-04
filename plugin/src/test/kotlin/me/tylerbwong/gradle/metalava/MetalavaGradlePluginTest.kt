@@ -43,6 +43,44 @@ class MetalavaGradlePluginTest {
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 
+    @ParameterizedTest
+    @ValueSource(
+        strings =
+            [
+                "1.0.0-alpha10",
+                "1.0.0-alpha11",
+                "1.0.0-alpha12",
+                "1.0.0-alpha13",
+                "1.0.0-alpha14",
+                "1.0.0-alpha15",
+            ]
+    )
+    fun `format argument works across Metalava versions`(metalavaVersion: String) {
+        buildscriptFile.apply {
+            appendText(
+                """
+                    allprojects {
+                        repositories {
+                            google()
+                            mavenCentral()
+                        }
+                    }
+
+                    plugins {
+                        `java-library`
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+
+                    metalava {
+                        version = "$metalavaVersion"
+                    }
+                """
+            )
+        }
+        val result = runner("metalavaGenerateSignature").build()
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
     @Test
     fun `check plugin reports warning for unsupported module`() {
         buildscriptFile.apply {
