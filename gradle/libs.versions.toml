@@ -17,7 +17,7 @@ kotlin-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 metalava = { id = "me.tylerbwong.gradle.metalava" }
 pluginPublish = "com.gradle.plugin-publish:2.0.0"
-metalavaGradle = "me.tylerbwong.gradle.metalava:0.4.0-alpha03"
+metalavaGradle = "me.tylerbwong.gradle.metalava:0.5.0"
 buildConfig = "com.github.gmazzo.buildconfig:6.0.7"
 spotless = "com.diffplug.spotless:8.2.1"
 
