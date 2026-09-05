@@ -28,7 +28,7 @@ androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", versio
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 android-metalava = { module = "com.android.tools.metalava:metalava", version.ref = "android-metalava" }
-androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha05"
+androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktfmt = "com.facebook:ktfmt:0.61"
 
