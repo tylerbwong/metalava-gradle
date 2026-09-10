@@ -15,7 +15,7 @@ jobs:
         with:
           distribution: zulu
           java-version: 25
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: true
       - name: Publish Plugin
