@@ -15,7 +15,7 @@ jobs:
         with:
           distribution: zulu
           java-version: 25
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
       - name: Run Plugin Build
         run: ./gradlew :plugin:build --stacktrace
       - name: Run Samples Check
