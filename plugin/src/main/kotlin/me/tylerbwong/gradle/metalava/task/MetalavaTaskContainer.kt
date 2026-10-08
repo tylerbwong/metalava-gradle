@@ -3,6 +3,7 @@ package me.tylerbwong.gradle.metalava.task
 import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 
 internal abstract class MetalavaTaskContainer {
     protected fun Boolean.flag(flagValue: String): List<String> =
@@ -20,22 +21,21 @@ internal abstract class MetalavaTaskContainer {
      */
     protected fun Project.getMetalavaClasspath(
         metalavaJar: FileCollection,
-        version: String,
+        version: Provider<String>,
     ): FileCollection {
-        return if (!metalavaJar.isEmpty) {
-            metalavaJar
-        } else {
-            val configuration =
-                configurations.findByName(METALAVA_MODULE_ID)
-                    ?: configurations.create(METALAVA_MODULE_ID).apply {
-                        val dependency =
-                            this@getMetalavaClasspath.dependencies.create(
-                                "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version"
+        val dependencyHandler = dependencies
+        val configuration =
+            configurations.findByName(METALAVA_MODULE_ID)
+                ?: configurations.create(METALAVA_MODULE_ID).apply {
+                    defaultDependencies { dependencies ->
+                        dependencies.add(
+                            dependencyHandler.create(
+                                "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:${version.get()}"
                             )
-                        dependencies.add(dependency)
+                        )
                     }
-            files(configuration)
-        }
+                }
+        return files(provider { if (metalavaJar.isEmpty) configuration else metalavaJar })
     }
 
     protected fun getFullTaskName(taskName: String, variantName: String?): String {

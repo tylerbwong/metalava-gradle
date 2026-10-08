@@ -82,6 +82,55 @@ class MetalavaGradlePluginTest {
     }
 
     @Test
+    fun `JVM module honors Metalava version override`() {
+        buildscriptFile.apply {
+            appendText(
+                """
+                    plugins {
+                        `java-library`
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+
+                    metalava {
+                        version = "1.0.0-alpha14"
+                    }
+                """
+            )
+        }
+        val result = runner("dependencies", "--configuration", "metalava").build()
+        assertTrue(
+            result.output.contains("\\--- com.android.tools.metalava:metalava:1.0.0-alpha14 FAILED")
+        )
+    }
+
+    @Test
+    fun `Android module honors Metalava version override`() {
+        buildscriptFile.apply {
+            appendText(
+                """
+                    plugins {
+                        id("com.android.library")
+                        id("me.tylerbwong.gradle.metalava")
+                    }
+
+                    android {
+                        namespace = "com.example"
+                        compileSdk = 36
+                    }
+
+                    metalava {
+                        version = "1.0.0-alpha14"
+                    }
+                """
+            )
+        }
+        val result = runner("dependencies", "--configuration", "metalava").build()
+        assertTrue(
+            result.output.contains("\\--- com.android.tools.metalava:metalava:1.0.0-alpha14 FAILED")
+        )
+    }
+
+    @Test
     fun `check plugin reports warning for unsupported module`() {
         buildscriptFile.apply {
             appendText(
