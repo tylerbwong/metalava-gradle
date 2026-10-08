@@ -94,13 +94,13 @@ class MetalavaGradlePluginTest {
                     metalava {
                         version = "1.0.0-alpha14"
                     }
-
-                    check(configurations.getByName("metalava").dependencies.single().version == "1.0.0-alpha14")
                 """
             )
         }
-        val result = runner("help").build()
-        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        val result = runner("dependencies", "--configuration", "metalava").build()
+        assertTrue(
+            result.output.contains("\\--- com.android.tools.metalava:metalava:1.0.0-alpha14 FAILED")
+        )
     }
 
     @Test
@@ -121,17 +121,13 @@ class MetalavaGradlePluginTest {
                     metalava {
                         version = "1.0.0-alpha14"
                     }
-
-                    androidComponents {
-                        onVariants {
-                            check(configurations.getByName("metalava").dependencies.single().version == "1.0.0-alpha14")
-                        }
-                    }
                 """
             )
         }
-        val result = runner("help").build()
-        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        val result = runner("dependencies", "--configuration", "metalava").build()
+        assertTrue(
+            result.output.contains("\\--- com.android.tools.metalava:metalava:1.0.0-alpha14 FAILED")
+        )
     }
 
     @Test

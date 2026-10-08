@@ -27,13 +27,13 @@ internal abstract class MetalavaTaskContainer {
         val configuration =
             configurations.findByName(METALAVA_MODULE_ID)
                 ?: configurations.create(METALAVA_MODULE_ID).apply {
-                    dependencies.addLater(
-                        version.map { version ->
+                    defaultDependencies { dependencies ->
+                        dependencies.add(
                             dependencyHandler.create(
-                                "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:$version"
+                                "$METALAVA_GROUP_ID:$METALAVA_MODULE_ID:${version.get()}"
                             )
-                        }
-                    )
+                        )
+                    }
                 }
         return files(provider { if (metalavaJar.isEmpty) configuration else metalavaJar })
     }
