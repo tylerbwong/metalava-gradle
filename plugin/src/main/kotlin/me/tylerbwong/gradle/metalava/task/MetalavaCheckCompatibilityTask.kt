@@ -70,7 +70,7 @@ constructor(objectFactory: ObjectFactory, workerExecutor: WorkerExecutor) :
             val metalavaClasspath =
                 project.getMetalavaClasspath(
                     metalavaJar = extension.metalavaJar,
-                    version = extension.version.get(),
+                    version = extension.version,
                 )
             val bootClasspathProvider = project.provider { module.bootClasspath }
             return project.tasks.register(taskName, MetalavaCheckCompatibilityTask::class.java) {

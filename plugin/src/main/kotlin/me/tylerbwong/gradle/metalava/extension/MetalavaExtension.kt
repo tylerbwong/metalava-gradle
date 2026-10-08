@@ -13,7 +13,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 
 public open class MetalavaExtension @Inject constructor(objectFactory: ObjectFactory) {
-    /** The version of Metalava to use. */
+    /** The version of Metalava to use, unless [metalavaJar] is provided. */
     public val version: Property<String> =
         objectFactory.property<String>().also { it.set(METALAVA_VERSION) }
 
